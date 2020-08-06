@@ -8,11 +8,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
-
+        <item name="android:windowLightStatusBar">false</item>
         <!-- Change Overflow Menu ListView Item Height & Property -->
-        <item name="android:listPreferredItemHeightSmall">10dp</item>
-        <item name="android:listPreferredItemPaddingLeft">5dp</item>
-        <item name="android:listPreferredItemPaddingRight">5dp</item>
         <item name="android:elevation" tools:ignore="NewApi">0dp</item>
     </style>
 
@@ -24,6 +21,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 
 
     <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -44,12 +42,10 @@
         <item name="android:typeface">sans</item>
 
     </style>
-
     <style name="chipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">12sp</item>
         <item name="android:gravity">center</item>
     </style>
-
     <style name="popupMenuStyle" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@drawable/roundbackgroud</item>
         <item name="android:layout_width">250dp</item>
@@ -59,7 +55,6 @@
 
 
     </style>
-
     <style name="DialogAnimation_2">
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
         <item name="android:windowExitAnimation">@anim/slide_bottom</item>

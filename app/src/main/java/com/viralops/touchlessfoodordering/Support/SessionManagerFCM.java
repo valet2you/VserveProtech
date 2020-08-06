@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.viralops.touchlessfoodordering.ui.Acitities.Login_Activity;
+import com.viralops.touchlessfoodordering.Acitities.Login_Activity;
 
 
 /**

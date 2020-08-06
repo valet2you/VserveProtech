@@ -1,6 +1,8 @@
 package com.viralops.touchlessfoodordering.Acitities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
@@ -10,8 +12,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.viralops.touchlessfoodordering.MainActivity;
+import com.viralops.touchlessfoodordering.Mobile.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.Tablet.IRdMainActivity;
 
 public class Splash_Screen extends AppCompatActivity {
     private TextView v;
@@ -50,14 +54,27 @@ public class Splash_Screen extends AppCompatActivity {
                         logoTimer = logoTimer +100;
                     };
                     try {
+
                         if (sessionManager.getPorchName().equals("")) {
                             startActivity(new Intent(Splash_Screen.this, Login_Activity.class));
                             finish();
                         } else {
-                            Intent intent=new Intent(Splash_Screen.this, MainActivity.class);
-                            intent.putExtra("openvalue","dashboard");
-                            startActivity(intent);
-                            finish();
+                            if(isTablet(Splash_Screen.this)){
+                                if(sessionManager.getNAME().equals("ird_manager")){
+                                    Intent intent=new Intent(Splash_Screen.this, IRdMainActivity.class);
+                                    intent.putExtra("openvalue","dashboard");
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                            }
+                            else{
+                                Intent intent=new Intent(Splash_Screen.this, MainActivity_Mobile.class);
+                                intent.putExtra("openvalue","dashboard");
+                                startActivity(intent);
+                                finish();
+                            }
+
                         }
                     }
                     catch (Exception e){
@@ -67,7 +84,7 @@ public class Splash_Screen extends AppCompatActivity {
                 }
 
                 catch (InterruptedException e) {
-                    //  Auto-generated catch block
+                    //  Auto-generated catc3h block
                     e.printStackTrace();
                 }
 
@@ -79,5 +96,10 @@ public class Splash_Screen extends AppCompatActivity {
 
         logoTimer.start();
 
+    }
+    public boolean isTablet(Context context) {
+        boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
+        boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        return (xlarge || large);
     }
 }

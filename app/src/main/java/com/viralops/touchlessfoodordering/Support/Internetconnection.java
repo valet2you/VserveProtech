@@ -19,7 +19,7 @@ TextView home;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.internet_page);
+      //  setContentView(R.layout.internet_page);
         final String value=getIntent().getStringExtra("openvalue");
 
         home=findViewById(R.id.home);

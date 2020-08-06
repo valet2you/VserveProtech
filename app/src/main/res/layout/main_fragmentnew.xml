@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.MainFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/view"
+            android:layout_alignParentTop="true"
+
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+         android:layout_below="@+id/view1"
+            android:id="@+id/top1"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="150dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/neworder"
+                android:padding="10dp"
+
+                android:background="@drawable/bluebackgroudblack"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/newordertext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Order"
+                    android:textColor="@color/white" /> <TextView
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="@color/white"
+
+                android:id="@+id/newordercount"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="150dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/acceptedorder"
+                android:padding="10dp"
+                android:background="@drawable/whitebackgroudblack"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="In Kitchen"
+                android:id="@+id/acceptedtexttext"
+                android:textColor="@color/gray"
+                android:layout_height="wrap_content"
+                /> <TextView
+                android:layout_width="wrap_content"
+                android:text=""
+                android:id="@+id/acceptedcount"
+                android:textColor="@color/gray"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="220dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/diaptachedorders"
+                android:padding="10dp"
+                android:background="@drawable/whitebackgroudblack"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Dispatched Order"
+                android:id="@+id/dispatchedtext"
+                android:layout_height="wrap_content"
+                /> <TextView
+                android:layout_width="wrap_content"
+                android:text=""
+                android:id="@+id/dispatchedcount"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <AutoCompleteTextView
+                android:id="@+id/searchView"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="500dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/whitebackgroudblack"
+                android:layout_height="wrap_content"
+                android:hint="Search for Room No"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@mipmap/search"
+                android:paddingLeft="10dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:iconifiedByDefault="false"
+                />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+        <com.todkars.shimmer.ShimmerRecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+            android:layout_below="@+id/top1"
+        android:layout_height="match_parent"
+        android:text="MainFragment"
+        android:padding="5dp"
+        app:shimmer_recycler_layout="@layout/workforceshimmer"
+        app:shimmer_recycler_item_count="10"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+       />
+        <TextView
+            android:layout_width="match_parent"
+            android:text="No record Found"
+            android:gravity="center"
+            android:id="@+id/norecord"
+            android:layout_below="@+id/top1"
+            android:visibility="gone"
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

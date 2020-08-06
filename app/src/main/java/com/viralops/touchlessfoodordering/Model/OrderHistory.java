@@ -269,7 +269,6 @@ public class Order_menu_items
     public class Data
     {
         private String hotel_id;
-        private String is_complementary;
 
         private String payment_status;
 
@@ -282,6 +281,8 @@ public class Order_menu_items
         private String table_id;
 
         private Order_detail order_detail;
+        private String is_complementary;
+
 
         private ArrayList<Order_menu_items> order_menu_items;
 
@@ -316,14 +317,6 @@ public class Order_menu_items
         public String getPayment_status ()
         {
             return payment_status;
-        }
-
-        public String getIs_complementary() {
-            return is_complementary;
-        }
-
-        public void setIs_complementary(String is_complementary) {
-            this.is_complementary = is_complementary;
         }
 
         public void setPayment_status (String payment_status)
@@ -365,6 +358,14 @@ public class Order_menu_items
     {
         return table_id;
     }
+
+        public String getIs_complementary() {
+            return is_complementary;
+        }
+
+        public void setIs_complementary(String is_complementary) {
+            this.is_complementary = is_complementary;
+        }
 
         public void setTable_id (String table_id)
         {
@@ -484,7 +485,7 @@ public class Order_menu_items
         @Override
         public String toString()
         {
-            return "ClassPojo [hotel_id = "+hotel_id+", payment_status = "+payment_status+", created_at = "+created_at+", description = "+description+", type = "+type+", table_id = "+table_id+", order_detail = "+order_detail+", order_menu_items = "+order_menu_items+", is_complementary = "+is_complementary+", no_of_guest = "+no_of_guest+", guest_signature = "+guest_signature+", updated_at = "+updated_at+", guest_id = "+guest_id+", primises = "+primises+", primises_id = "+primises_id+", guest = "+guest+", id = "+id+", status = "+status+"]";
+            return "ClassPojo [hotel_id = "+hotel_id+", payment_status = "+payment_status+", created_at = "+created_at+", description = "+description+", type = "+type+", table_id = "+table_id+", order_detail = "+order_detail+", is_complementary = "+is_complementary+", order_menu_items = "+order_menu_items+", no_of_guest = "+no_of_guest+", guest_signature = "+guest_signature+", updated_at = "+updated_at+", guest_id = "+guest_id+", primises = "+primises+", primises_id = "+primises_id+", guest = "+guest+", id = "+id+", status = "+status+"]";
         }
     }
 

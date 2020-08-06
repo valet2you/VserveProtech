@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:focusableInTouchMode="true"
+    android:background="@color/white"
     android:focusable="true"
-    >
+>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,31 +21,31 @@
             android:layout_width="wrap_content"
             android:src="@mipmap/launcherbluesmall"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:layout_height="wrap_content"/>
 
 
         <LinearLayout
             android:layout_width="600dp"
             android:orientation="vertical"
-            android:gravity="center"
             android:layout_marginTop="10dp"
-
+            android:gravity="center"
             android:layout_height="500dp">
             <TextView
                 android:layout_width="match_parent"
                 android:gravity="center"
-                android:id="@+id/text"
                 android:textColor="@color/black"
+                android:visibility="gone"
+                android:text="LOGIN TO YOUR VSERVE++ ACCOUNT"
                 android:textSize="16sp"
 
                 android:layout_height="wrap_content"/>
             <EditText
                 android:layout_width="500dp"
                 android:id="@+id/username"
-                android:layout_marginTop="20dp"
-                android:hint="Username"
                 android:paddingLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:hint="Username"
                 android:textSize="24sp"
                 android:inputType="text"
                 android:imeOptions="actionNext"
@@ -55,27 +55,26 @@
             <EditText
                 android:layout_width="500dp"
                 android:id="@+id/password"
+                android:paddingLeft="30dp"
                 android:textSize="24sp"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
                 android:layout_marginTop="50dp"
                 android:hint="Password"
-                android:paddingLeft="30dp"
-
                 android:textColor="#65000000"
                 android:background="@drawable/whitebackgroud"
                 android:layout_height="80dp"/>
             <TextView
                 android:layout_width="160sp"
                 android:id="@+id/button"
+                android:text="LOGIN"
                 android:gravity="center"
+                android:layout_gravity="right"
                 android:layout_marginTop="50dp"
                 android:layout_marginRight="50dp"
-                android:text="LOGIN"
-                android:layout_gravity="right"
-
                 android:textColor="#888888"
                 android:textSize="24sp"
+
                 android:background="@drawable/whitebackgroudblack"
                 android:layout_height="60dp"/>
         </LinearLayout>

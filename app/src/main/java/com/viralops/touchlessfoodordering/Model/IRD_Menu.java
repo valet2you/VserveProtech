@@ -1,18 +1,16 @@
 package com.viralops.touchlessfoodordering.Model;
 
-import java.util.ArrayList;
-
 public class IRD_Menu {
-    private ArrayList<IRD_Data> data;
+    private IRD_Data data;
 
     private String message;
 
-    public ArrayList<IRD_Data> getData ()
+    public IRD_Data getData ()
     {
         return data;
     }
 
-    public void setData (ArrayList<IRD_Data> data)
+    public void setData (IRD_Data data)
     {
         this.data = data;
     }

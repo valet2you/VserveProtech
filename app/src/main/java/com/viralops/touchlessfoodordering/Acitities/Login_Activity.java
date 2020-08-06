@@ -1,6 +1,7 @@
 package com.viralops.touchlessfoodordering.Acitities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
@@ -19,11 +20,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.MainActivity;
+import com.viralops.touchlessfoodordering.Mobile.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Model.Login;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRdMainActivity;
 
 
 import java.util.Arrays;
@@ -46,19 +49,27 @@ SessionManagerFCM sessionManagerFCM;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (getResources().getConfiguration().orientation ==
+        if(isTablet(Login_Activity.this)){
+            setContentView(R.layout.activity_login_);
+
+        }
+        else{
+            setContentView(R.layout.activity_login);
+
+        }
+       /* if (getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_PORTRAIT) {
             setContentView(R.layout.activity_login_);
         } else {
             setContentView(R.layout.activity_login);
-        }
+        }*/
          sessionManager=new SessionManager(Login_Activity.this);
          sessionManagerFCM=new SessionManagerFCM(Login_Activity.this);
 
         Typeface font = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Regular.ttf");
-        text=findViewById(R.id.text);
+       // text=findViewById(R.id.text);
         username=findViewById(R.id.username);
         username.setTypeface(font);
         password=findViewById(R.id.password);
@@ -68,10 +79,10 @@ SessionManagerFCM sessionManagerFCM;
         button.setTypeface(font);
 
         button.setOnClickListener(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             text.setLetterSpacing((float) 0.2);
 
-        }
+        }*/
     }
 
 
@@ -120,10 +131,21 @@ SessionManagerFCM sessionManagerFCM;
                     Login login = response.body();
                     Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
                         sessionManager.setPorchName(login.getHotel().getName());
-                        sessionManager.setACCESSTOKEN(login.getAccess_token());
+                    sessionManager.setNAME(login.getUser_type());
 
-                        Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                    sessionManager.setACCESSTOKEN(login.getAccess_token());
+                   if(isTablet(Login_Activity.this)){
+                        if(sessionManager.getNAME().equals("ird_manager")){
+                            Intent intent = new Intent(Login_Activity.this, IRdMainActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+                    else{
+                        Intent intent = new Intent(Login_Activity.this, MainActivity_Mobile.class);
                         startActivity(intent);
+                    }
+
 
                     progressDialog.dismiss();
 
@@ -160,5 +182,9 @@ SessionManagerFCM sessionManagerFCM;
 
     }
 
-
+    public boolean isTablet(Context context) {
+        boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
+        boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        return (xlarge || large);
+    }
 }
