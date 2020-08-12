@@ -32,7 +32,7 @@ public class ConnectHistory {
     {
         return "ClassPojo [data = "+data+", message = "+message+"]";
     }
-    public class Data
+    public static class Data
     {
         private String hotel_id;
 

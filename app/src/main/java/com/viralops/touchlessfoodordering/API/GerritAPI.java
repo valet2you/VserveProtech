@@ -4,6 +4,10 @@ package com.viralops.touchlessfoodordering.API;
 import android.view.Menu;
 
 import com.viralops.touchlessfoodordering.BuildConfig;
+import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Dashboard1;
+import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantApp_Dashboard;
+import com.viralops.touchlessfoodordering.Mobile.Restaurant.Restaurant_Dashboard;
+import com.viralops.touchlessfoodordering.Mobile.Restaurant.ResturantOrderHistory;
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.ConnectHistory;
 import com.viralops.touchlessfoodordering.Model.Connect_Header;
@@ -165,6 +169,8 @@ public interface GerritAPI {
     Call<Action> getSubcategorydisabledLaundry(@Header("Authorization") String Authorization, @Url String url);
     @GET(BuildConfig.laundry_get_orders)
     Call<Laundry_Dashboard> Laundry_getOrders(@Header("Authorization") String Authorization);
+    @GET(BuildConfig.laundry_get_orders)
+    Call<Laundry_Dashboard1> Laundry_getOrders1(@Header("Authorization") String Authorization);
     @PUT()
     Call<Action> Laundry_OrderAccepted(@Url String url, @Header("Authorization") String Authorization);
 
@@ -173,7 +179,7 @@ public interface GerritAPI {
 
     @FormUrlEncoded
     @POST()
-    Call<Action> Laundry_OrderCleared(@Url String url, @Header("Authorization") String Authorization, @Field("stagestage") String stage, @Field("stage_text") String stage_text);
+    Call<Action> Laundry_OrderCleared(@Url String url, @Header("Authorization") String Authorization, @Field("stage") String stage, @Field("stage_text") String stage_text);
 
     @GET(BuildConfig.laundry_get_order_header)
     Call<Laundry_Header> Laundry_getHeader(@Header("Authorization") String Authorization);
@@ -182,12 +188,20 @@ public interface GerritAPI {
     Call<LaundryOrderHistory1> Laundry_getHistory(@Header("Authorization") String Authorization, @Query("show") String show);
 
 
+    @GET(BuildConfig.laundry_get_order_history)
+    Call<Laundry_Dashboard1> Laundry_getHistory1(@Header("Authorization") String Authorization, @Query("show") String show);
+
+
 
     //--------------End of laundry----------------------------------------//
 
 //----------------Spa----------------------------------------------//
     @GET(BuildConfig.spa_menu)
     Call<Menu> getMenuSpa(@Header("Authorization") String Authorization);
+    @PUT()
+    Call<Action> getEnabledspa(@Header("Authorization") String Authorization, @Url String url);
+    @PUT()
+    Call<Action> getDisablespa(@Header("Authorization") String Authorization, @Url String url);
     @PUT()
     Call<Action> getItemEnabledspa(@Header("Authorization") String Authorization, @Url String url);
     @PUT()
@@ -249,6 +263,53 @@ public interface GerritAPI {
 
 
     //--------------End of SPa----------------------------------------//
+
+    //-------------------------Restaurant App---------------------------//
+    @GET(BuildConfig.restaurant_menu)
+    Call<Menu> RestaurantgetMenu(@Header("Authorization") String Authorization);
+    @PUT()
+    Call<Action> RestaurantgetItemEnabled(@Header("Authorization") String Authorization, @Url String url);
+    @PUT()
+    Call<Action> RestaurantgetItemDisabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetEnabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> Restaurantgetdisabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetcategoryEnabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> Restaurantgetcategorydisabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetSubcategoryEnabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetSubaddondisabled(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetSubaddonenable(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetSubaddonitemenable(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetSubaddonitemdisable(@Header("Authorization") String Authorization,@Url String url);
+    @PUT()
+    Call<Action> RestaurantgetSubcategorydisabled(@Header("Authorization") String Authorization,@Url String url);
+
+    @GET(BuildConfig.restaurant_get_orders)
+    Call<RestaurantApp_Dashboard> RestaurantgetOrders(@Header("Authorization") String Authorization);
+
+    @PUT()
+    Call<Action> RestaurantOrderAccepted(@Url String url,@Header("Authorization") String Authorization);
+
+    @PUT()
+    Call<Action> RestaurantOrderDispatched(@Url String url,@Header("Authorization") String Authorization);
+
+    @GET(BuildConfig.restaurant_get_order_header)
+    Call<com.viralops.touchlessfoodordering.Model.Header> RestaurantgetHeader(@Header("Authorization") String Authorization);
+
+    @GET(BuildConfig.restaurant_get_order_history)
+    Call<ResturantOrderHistory> RestaurantgetHistory(@Header("Authorization") String Authorization, @Query("show") String show);
+    @PUT()
+    Call<Action> RestaurantOrderCleared(@Url String url,@Header("Authorization") String Authorization);
+
+    //--------------------End of Restaurant App------------------------//
 
 
 

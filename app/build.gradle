@@ -102,6 +102,8 @@ android {
 
             //----------------Spa-------------------------------------//
             buildConfigField "String", "spa_menu", '"sanitarium/spa"'
+            buildConfigField "String", "spa_menu_enable", '"sanitarium/spa/enable/"'
+            buildConfigField "String", "spa_menu_disable", '"sanitarium/spa/disable/"'
             buildConfigField "String", "Spa_item_enable", '"sanitarium/spa/item/enable/"'
             buildConfigField "String", "spa_disable_item", '"sanitarium/spa/item/disable/"'
             buildConfigField "String", "spa_disable_category", '"sanitarium/spa/category/disable/"'
@@ -131,6 +133,30 @@ android {
             buildConfigField "String", "connect_get_order_history", '"connect/order/history"'
             buildConfigField "String", "connect_get_order_header", '"connect/header"'
             //--------------End of Connect Services-------------------------------//
+
+
+            //----------------Restaurant ---------------------------------------//
+            buildConfigField "String", "restaurant_menu", '"restaurant/menu"'
+            buildConfigField "String", "restaurant_menu_enable", '"restaurant/menu/enable/"'
+            buildConfigField "String", "restaurant_disable_menu", '"restaurant/menu/disable/"'
+            buildConfigField "String", "restaurant_item_enable", '"restaurant/menu/item/enable/"'
+            buildConfigField "String", "restaurant_disable_item", '"restaurant/menu/item/disable/"'
+            buildConfigField "String", "restaurant_disable_category", '"restaurant/menu/category/disable/"'
+            buildConfigField "String", "restaurant_enable_category", '"restaurant/menu/category/enable/"'
+            buildConfigField "String", "restaurant_addon_itemenable", '"restaurant/menu/item/addon/enable/"'
+            buildConfigField "String", "restaurant_addon_itemdisable", '"restaurant/menu/item/addon/disable/"'
+            buildConfigField "String", "restaurant_addon_categoryenable", '"restaurant/menu/item/sub-addon/enable/"'
+            buildConfigField "String", "restaurant_addon_categorydisable", '"restaurant/menu/item/sub-addon/disable/"'
+            buildConfigField "String", "restaurant_disable_subcategory", '"restaurant/menu/sub-category/disable/"'
+            buildConfigField "String", "restaurant_enable_subcategory", '"restaurant/menu/sub-category/enable/"'
+            buildConfigField "String", "restaurant_get_orders", '"restaurant/order"'
+            buildConfigField "String", "restaurant_order_accept", '"restaurant/order/accept/"'
+            buildConfigField "String", "restaurant_order_dispatch", '"restaurant/order/dispatch/"'
+            buildConfigField "String", "restaurant_order_clear", '"restaurant/order/clear/"'
+            buildConfigField "String", "restaurant_get_order_history", '"restaurant/order/history"'
+            buildConfigField "String", "restaurant_get_order_header", '"restaurant/header"'
+
+            //-----------End of Restaurant--------------------------------------//
 
 
             minifyEnabled false
@@ -215,6 +241,8 @@ android {
 
             //----------------Spa-------------------------------------//
             buildConfigField "String", "spa_menu", '"sanitarium/spa"'
+            buildConfigField "String", "spa_menu_enable", '"sanitarium/spa/enable/"'
+            buildConfigField "String", "spa_menu_disable", '"sanitarium/spa/disable/"'
             buildConfigField "String", "Spa_item_enable", '"sanitarium/spa/item/enable/"'
             buildConfigField "String", "spa_disable_item", '"sanitarium/spa/item/disable/"'
             buildConfigField "String", "spa_disable_category", '"sanitarium/spa/category/disable/"'
@@ -244,6 +272,28 @@ android {
             buildConfigField "String", "connect_get_order_history", '"connect/order/history"'
             buildConfigField "String", "connect_get_order_header", '"connect/header"'
             //--------------End of Connect Services-------------------------------//
+            //----------------Restaurant ---------------------------------------//
+            buildConfigField "String", "restaurant_menu", '"restaurant/menu"'
+            buildConfigField "String", "restaurant_menu_enable", '"restaurant/menu/enable/"'
+            buildConfigField "String", "restaurant_disable_menu", '"restaurant/menu/disable/"'
+            buildConfigField "String", "restaurant_item_enable", '"restaurant/menu/item/enable/"'
+            buildConfigField "String", "restaurant_disable_item", '"restaurant/menu/item/disable/"'
+            buildConfigField "String", "restaurant_disable_category", '"restaurant/menu/category/disable/"'
+            buildConfigField "String", "restaurant_enable_category", '"restaurant/menu/category/enable/"'
+            buildConfigField "String", "restaurant_addon_itemenable", '"restaurant/menu/item/addon/enable/"'
+            buildConfigField "String", "restaurant_addon_itemdisable", '"restaurant/menu/item/addon/disable/"'
+            buildConfigField "String", "restaurant_addon_categoryenable", '"restaurant/menu/item/sub-addon/enable/"'
+            buildConfigField "String", "restaurant_addon_categorydisable", '"restaurant/menu/item/sub-addon/disable/"'
+            buildConfigField "String", "restaurant_disable_subcategory", '"restaurant/menu/sub-category/disable/"'
+            buildConfigField "String", "restaurant_enable_subcategory", '"restaurant/menu/sub-category/enable/"'
+            buildConfigField "String", "restaurant_get_orders", '"restaurant/order"'
+            buildConfigField "String", "restaurant_order_accept", '"restaurant/order/accept/"'
+            buildConfigField "String", "restaurant_order_dispatch", '"restaurant/order/dispatch/"'
+            buildConfigField "String", "restaurant_order_clear", '"restaurant/order/clear/"'
+            buildConfigField "String", "restaurant_get_order_history", '"restaurant/order/history"'
+            buildConfigField "String", "restaurant_get_order_header", '"restaurant/header"'
+
+            //-----------End of Restaurant--------------------------------------//
 
 
         }    }
@@ -276,6 +326,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+    implementation 'com.matthew-tamlin:sliding-intro-screen:3.2.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

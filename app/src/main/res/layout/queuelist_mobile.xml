@@ -252,9 +252,18 @@
             android:layout_width="match_parent"
             android:id="@+id/bottom"
             android:layout_alignParentBottom="true"
-            android:gravity="center"
             android:orientation="vertical"
             android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:id="@+id/complimentary"
+                android:textColor="@color/redblood"
+                android:text="Complimentary"
+                android:textSize="13sp"
+                android:layout_height="wrap_content">
+
+            </CheckBox>
+
             <View
                 android:layout_width="match_parent"
                 android:background="#F1F1F1"
@@ -262,6 +271,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="100dp"
                 android:orientation="vertical"
+                android:layout_gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:gravity="center"

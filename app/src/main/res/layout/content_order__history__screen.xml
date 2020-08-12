@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabIndicatorHeight="1dp"
+        app:tabTextColor="@android:color/darker_gray"
+        app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:tabSelectedTextColor="#ffffff"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabIndicatorColor="@color/lightgrey"
+        />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/tab_layout"/>
+    <com.matthewtamlin.sliding_intro_screen_library.indicators.DotIndicator
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/dot"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        app:unselectedDotColor="@color/colorPrimary"
+        app:unselectedDotDiameter="10dp"
+        app:selectedDotDiameter="15dp"
+        app:spacingBetweenDots="15dp"
+        app:selectedDotColor="@color/colorPrimary"
+        app:numberOfDots="5"
+        app:selectedDotIndex="0"/>
+
+</RelativeLayout>

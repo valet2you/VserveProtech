@@ -19,12 +19,52 @@
             </intent-filter>
         </activity>
         <activity android:name=".Acitities.Login_Activity"/>
-        <activity android:name=".Mobile.MainActivity_Mobile"
+        <activity android:name=".Mobile.IRD.MainActivity_Mobile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Tablet.IRdMainActivity"
+        <activity android:name=".Tablet.IRD.IRdMainActivity"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".MainActivity"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Mobile.Restaurant.RestaurantMain"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Tablet.Restaurant.Resturant_Tablet_MainActivity"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Mobile.AYS.AYSMain_Mobile"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Tablet.AYS.AYSMainActivity"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Mobile.Spa.Spa_Mobile"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Tablet.Spa.SpaMainActivitytablet"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Tablet.Laundry.LaundryMainActivity"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Mobile.Laundry.Laundry_Main_Mobile"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <receiver android:name=".database.AlarmReceiver" android:exported="true" android:enabled="true"> </receiver>
+        <service
+            android:name=".FCM.FirebaseMessagingService"
+            android:exported="false"
+            android:permission="valley2you.ird.FCM"
+            tools:ignore="InnerclassSeparator">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!--<receiver android:name=".NotificationManager2" android:exported="true" android:enabled="true"> </receiver>-->
+
+        <activity android:theme="@android:style/Theme.Dialog" android:name=".database.Alert"> </activity>
     </application>
 
 </manifest>

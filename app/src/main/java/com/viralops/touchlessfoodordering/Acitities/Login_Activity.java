@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,13 +19,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.MainActivity;
-import com.viralops.touchlessfoodordering.Mobile.MainActivity_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
+import com.viralops.touchlessfoodordering.Mobile.Spa.Spa_Mobile;
 import com.viralops.touchlessfoodordering.Model.Login;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
-import com.viralops.touchlessfoodordering.Tablet.IRdMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.AYS.AYSMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.Laundry.LaundryMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.Restaurant.Resturant_Tablet_MainActivity;
+import com.viralops.touchlessfoodordering.Tablet.Spa.SpaMainActivitytablet;
 
 
 import java.util.Arrays;
@@ -138,13 +145,59 @@ SessionManagerFCM sessionManagerFCM;
                         if(sessionManager.getNAME().equals("ird_manager")){
                             Intent intent = new Intent(Login_Activity.this, IRdMainActivity.class);
                             startActivity(intent);
+                        }else if(sessionManager.getNAME().equals("restaurant_manager")){
+                            Intent intent = new Intent(Login_Activity.this, Resturant_Tablet_MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else if(sessionManager.getNAME().equals("hotel_admin")){
+                            Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                            startActivity(intent);
+                        } else if(sessionManager.getNAME().equals("laundry_manager")){
+                            Intent intent = new Intent(Login_Activity.this, LaundryMainActivity.class);
+                            startActivity(intent);
+                        } else if(sessionManager.getNAME().equals("spa_manager")){
+                            Intent intent = new Intent(Login_Activity.this, SpaMainActivitytablet.class);
+                            startActivity(intent);
+                        } else if(sessionManager.getNAME().equals("connect_manager")){
+                            Intent intent = new Intent(Login_Activity.this, AYSMainActivity.class);
+                            startActivity(intent);
                         }
 
-                    }
+                        else if(sessionManager.getNAME().equals("mini_bar_manager")){
+                          //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                          //  startActivity(intent);
+                        }
+
+
+                   }
                     else{
-                        Intent intent = new Intent(Login_Activity.this, MainActivity_Mobile.class);
-                        startActivity(intent);
-                    }
+                        if(sessionManager.getNAME().equals("restaurant_manager")){
+                            Intent intent = new Intent(Login_Activity.this, RestaurantMain.class);
+                            startActivity(intent);
+                        }else if(sessionManager.getNAME().equals("ird_manager")) {
+                            Intent intent = new Intent(Login_Activity.this, MainActivity_Mobile.class);
+                            startActivity(intent);
+                        }
+                        else if(sessionManager.getNAME().equals("hotel_admin")){
+                      //      Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                        //    startActivity(intent);
+                        } else if(sessionManager.getNAME().equals("laundry_manager")){
+                            Intent intent = new Intent(Login_Activity.this, Laundry_Main_Mobile.class);
+                            startActivity(intent);
+                        } else if(sessionManager.getNAME().equals("spa_manager")){
+                           Intent intent = new Intent(Login_Activity.this, Spa_Mobile.class);
+                           startActivity(intent);
+                        } else if(sessionManager.getNAME().equals("connect_manager")){
+                            Intent intent = new Intent(Login_Activity.this, AYSMain_Mobile.class);
+                            startActivity(intent);
+                        }
+
+                        else if(sessionManager.getNAME().equals("mini_bar_manager")){
+                          //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                          //  startActivity(intent);
+                        }
+
+                   }
 
 
                     progressDialog.dismiss();

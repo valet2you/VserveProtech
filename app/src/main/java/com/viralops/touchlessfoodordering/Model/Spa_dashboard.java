@@ -34,15 +34,17 @@ public class Spa_dashboard {
         return "ClassPojo [data = "+data+", message = "+message+"]";
     }
 
-    public class Data
+    public static class Data
     {
         private String hotel_id;
 
         private String payment_status;
 
         private ArrayList<Order_spa_items> order_spa_items;
+        private Order_stage order_stage;
 
         private String created_at;
+        private Guest guest;
 
         private String description;
 
@@ -55,7 +57,6 @@ public class Spa_dashboard {
         private String updated_at;
 
         private Primises primises;
-        private Guest guest;
 
         private String primises_id;
 
@@ -73,6 +74,14 @@ public class Spa_dashboard {
             this.hotel_id = hotel_id;
         }
 
+        public Guest getGuest() {
+            return guest;
+        }
+
+        public void setGuest(Guest guest) {
+            this.guest = guest;
+        }
+
         public String getPayment_status ()
         {
             return payment_status;
@@ -86,6 +95,14 @@ public class Spa_dashboard {
         public ArrayList<Order_spa_items> getOrder_spa_items ()
         {
             return order_spa_items;
+        }
+
+        public Order_stage getOrder_stage() {
+            return order_stage;
+        }
+
+        public void setOrder_stage(Order_stage order_stage) {
+            this.order_stage = order_stage;
         }
 
         public void setOrder_spa_items (ArrayList<Order_spa_items> order_spa_items)
@@ -104,9 +121,9 @@ public class Spa_dashboard {
         }
 
         public String getDescription ()
-    {
-        return description;
-    }
+        {
+            return description;
+        }
 
         public void setDescription (String description)
         {
@@ -163,14 +180,6 @@ public class Spa_dashboard {
             this.primises = primises;
         }
 
-        public Guest getGuest() {
-            return guest;
-        }
-
-        public void setGuest(Guest guest) {
-            this.guest = guest;
-        }
-
         public String getPrimises_id ()
         {
             return primises_id;
@@ -204,7 +213,7 @@ public class Spa_dashboard {
         @Override
         public String toString()
         {
-            return "ClassPojo [hotel_id = "+hotel_id+", payment_status = "+payment_status+", order_spa_items = "+order_spa_items+", created_at = "+created_at+", guest = "+guest+", description = "+description+", type = "+type+", order_detail = "+order_detail+", no_of_guest = "+no_of_guest+", updated_at = "+updated_at+", primises = "+primises+", primises_id = "+primises_id+", id = "+id+", status = "+status+"]";
+            return "ClassPojo [hotel_id = "+hotel_id+", payment_status = "+payment_status+", order_spa_items = "+order_spa_items+", created_at = "+created_at+", description = "+description+", type = "+type+", order_detail = "+order_detail+", order_stage = "+order_stage+", no_of_guest = "+no_of_guest+", updated_at = "+updated_at+", primises = "+primises+", guest = "+guest+", primises_id = "+primises_id+", id = "+id+", status = "+status+"]";
         }
     }
 
@@ -342,9 +351,9 @@ public class Spa_dashboard {
         }
 
         public String getDispatched_at ()
-    {
-        return dispatched_at;
-    }
+        {
+            return dispatched_at;
+        }
 
         public void setDispatched_at (String dispatched_at)
         {
@@ -362,9 +371,9 @@ public class Spa_dashboard {
         }
 
         public String getCleared_at ()
-    {
-        return cleared_at;
-    }
+        {
+            return cleared_at;
+        }
 
         public void setCleared_at (String cleared_at)
         {
@@ -372,9 +381,9 @@ public class Spa_dashboard {
         }
 
         public String getCanceled_on ()
-    {
-        return canceled_on;
-    }
+        {
+            return canceled_on;
+        }
 
         public void setCanceled_on (String canceled_on)
         {
@@ -402,9 +411,9 @@ public class Spa_dashboard {
         }
 
         public String getAccepted_at ()
-    {
-        return accepted_at;
-    }
+        {
+            return accepted_at;
+        }
 
         public void setAccepted_at (String accepted_at)
         {
@@ -447,9 +456,9 @@ public class Spa_dashboard {
         private String id;
 
         public String getThumbnail ()
-    {
-        return thumbnail;
-    }
+        {
+            return thumbnail;
+        }
 
         public void setThumbnail (String thumbnail)
         {
@@ -467,9 +476,9 @@ public class Spa_dashboard {
         }
 
         public String getSpa_sub_category_id ()
-    {
-        return spa_sub_category_id;
-    }
+        {
+            return spa_sub_category_id;
+        }
 
         public void setSpa_sub_category_id (String spa_sub_category_id)
         {
@@ -477,9 +486,9 @@ public class Spa_dashboard {
         }
 
         public String getDescription ()
-    {
-        return description;
-    }
+        {
+            return description;
+        }
 
         public void setDescription (String description)
         {
@@ -517,9 +526,9 @@ public class Spa_dashboard {
         }
 
         public String getTags ()
-    {
-        return tags;
-    }
+        {
+            return tags;
+        }
 
         public void setTags (String tags)
         {
@@ -631,9 +640,9 @@ public class Spa_dashboard {
         }
 
         public String getDescription ()
-    {
-        return description;
-    }
+        {
+            return description;
+        }
 
         public void setDescription (String description)
         {
@@ -671,9 +680,9 @@ public class Spa_dashboard {
         }
 
         public String getTags ()
-    {
-        return tags;
-    }
+        {
+            return tags;
+        }
 
         public void setTags (String tags)
         {
@@ -746,9 +755,9 @@ public class Spa_dashboard {
         }
 
         public String getDescription ()
-    {
-        return description;
-    }
+        {
+            return description;
+        }
 
         public void setDescription (String description)
         {
@@ -987,5 +996,84 @@ public class Spa_dashboard {
             return "ClassPojo [zip = "+zip+", thumbnail = "+thumbnail+", address = "+address+", mobile_verified_at = "+mobile_verified_at+", city = "+city+", mobile = "+mobile+", created_at = "+created_at+", email_verified_at = "+email_verified_at+", type = "+type+", updated_at = "+updated_at+", name = "+name+", state = "+state+", email = "+email+", country_id = "+country_id+", username = "+username+"]";
         }
     }
+    public class Order_stage
+    {
+        private String stage_text;
 
+        private String stage;
+
+        private String updated_at;
+
+        private String created_at;
+
+        private String id;
+
+        private String order_id;
+
+        public String getStage_text ()
+        {
+            return stage_text;
+        }
+
+        public void setStage_text (String stage_text)
+        {
+            this.stage_text = stage_text;
+        }
+
+        public String getStage ()
+        {
+            return stage;
+        }
+
+        public void setStage (String stage)
+        {
+            this.stage = stage;
+        }
+
+        public String getUpdated_at ()
+        {
+            return updated_at;
+        }
+
+        public void setUpdated_at (String updated_at)
+        {
+            this.updated_at = updated_at;
+        }
+
+        public String getCreated_at ()
+        {
+            return created_at;
+        }
+
+        public void setCreated_at (String created_at)
+        {
+            this.created_at = created_at;
+        }
+
+        public String getId ()
+        {
+            return id;
+        }
+
+        public void setId (String id)
+        {
+            this.id = id;
+        }
+
+        public String getOrder_id ()
+        {
+            return order_id;
+        }
+
+        public void setOrder_id (String order_id)
+        {
+            this.order_id = order_id;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "ClassPojo [stage_text = "+stage_text+", stage = "+stage+", updated_at = "+updated_at+", created_at = "+created_at+", id = "+id+", order_id = "+order_id+"]";
+        }
+    }
 }

@@ -28,6 +28,8 @@
     <color name="lightblue">#789FF1</color>
     <color name="white">#FFFFFF</color>
     <color name="graybuttton">#EEEEEE</color>
+    <color name="bluelight">#CCE5FF</color>
+    <color name="bluetest">#0084D0</color>
     <integer-array name="androidcolors">
         <item>@color/bluetext</item>
         <item>@color/pink</item>

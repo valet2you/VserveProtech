@@ -289,6 +289,7 @@ public class Order_laundry_items
         private Guest guest;
 
         private String type;
+        private Order_stage order_stage;
 
         private Order_detail order_detail;
 
@@ -344,6 +345,14 @@ public class Order_laundry_items
         public void setDescription (String description)
         {
             this.description = description;
+        }
+
+        public Order_stage getOrder_stage() {
+            return order_stage;
+        }
+
+        public void setOrder_stage(Order_stage order_stage) {
+            this.order_stage = order_stage;
         }
 
         public String getType ()
@@ -447,7 +456,7 @@ public class Order_laundry_items
         @Override
         public String toString()
         {
-            return "ClassPojo [hotel_id = "+hotel_id+", payment_status = "+payment_status+", created_at = "+created_at+", guest = "+guest+", description = "+description+", type = "+type+", order_detail = "+order_detail+", no_of_guest = "+no_of_guest+", updated_at = "+updated_at+", order_laundry_items = "+order_laundry_items+", primises = "+primises+", primises_id = "+primises_id+", id = "+id+", status = "+status+"]";
+            return "ClassPojo [hotel_id = "+hotel_id+", payment_status = "+payment_status+", created_at = "+created_at+", guest = "+guest+", description = "+description+", order_stage = "+order_stage+", type = "+type+", order_detail = "+order_detail+", no_of_guest = "+no_of_guest+", updated_at = "+updated_at+", order_laundry_items = "+order_laundry_items+", primises = "+primises+", primises_id = "+primises_id+", id = "+id+", status = "+status+"]";
         }
     }
 
@@ -1374,6 +1383,86 @@ public class Order_laundry_items
         public String toString()
         {
             return "ClassPojo [zip = "+zip+", thumbnail = "+thumbnail+", address = "+address+", mobile_verified_at = "+mobile_verified_at+", city = "+city+", mobile = "+mobile+", created_at = "+created_at+", email_verified_at = "+email_verified_at+", type = "+type+", updated_at = "+updated_at+", name = "+name+", state = "+state+", email = "+email+", country_id = "+country_id+", username = "+username+"]";
+        }
+    }
+    public class Order_stage
+    {
+        private String stage_text;
+
+        private String stage;
+
+        private String updated_at;
+
+        private String created_at;
+
+        private String id;
+
+        private String order_id;
+
+        public String getStage_text ()
+        {
+            return stage_text;
+        }
+
+        public void setStage_text (String stage_text)
+        {
+            this.stage_text = stage_text;
+        }
+
+        public String getStage ()
+        {
+            return stage;
+        }
+
+        public void setStage (String stage)
+        {
+            this.stage = stage;
+        }
+
+        public String getUpdated_at ()
+        {
+            return updated_at;
+        }
+
+        public void setUpdated_at (String updated_at)
+        {
+            this.updated_at = updated_at;
+        }
+
+        public String getCreated_at ()
+        {
+            return created_at;
+        }
+
+        public void setCreated_at (String created_at)
+        {
+            this.created_at = created_at;
+        }
+
+        public String getId ()
+        {
+            return id;
+        }
+
+        public void setId (String id)
+        {
+            this.id = id;
+        }
+
+        public String getOrder_id ()
+        {
+            return order_id;
+        }
+
+        public void setOrder_id (String order_id)
+        {
+            this.order_id = order_id;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "ClassPojo [stage_text = "+stage_text+", stage = "+stage+", updated_at = "+updated_at+", created_at = "+created_at+", id = "+id+", order_id = "+order_id+"]";
         }
     }
 

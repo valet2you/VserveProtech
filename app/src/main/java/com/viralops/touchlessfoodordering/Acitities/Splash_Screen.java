@@ -12,10 +12,19 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.viralops.touchlessfoodordering.MainActivity;
-import com.viralops.touchlessfoodordering.Mobile.MainActivity_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
+import com.viralops.touchlessfoodordering.Mobile.Spa.Spa_Mobile;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
-import com.viralops.touchlessfoodordering.Tablet.IRdMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.AYS.AYSMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.Laundry.LaundryMainActivity;
+import com.viralops.touchlessfoodordering.Tablet.Restaurant.Resturant_Tablet_MainActivity;
+import com.viralops.touchlessfoodordering.Tablet.Spa.SpaMainActivitytablet;
+import com.viralops.touchlessfoodordering.Tablet.combine.MainFragmentcombine;
 
 public class Splash_Screen extends AppCompatActivity {
     private TextView v;
@@ -65,14 +74,85 @@ public class Splash_Screen extends AppCompatActivity {
                                     intent.putExtra("openvalue","dashboard");
                                     startActivity(intent);
                                     finish();
+                                }  else if(sessionManager.getNAME().equals("hotel_admin")){
+                                    Intent intent = new Intent(Splash_Screen.this, MainActivity.class);
+                                    intent.putExtra("openvalue","dashboard");
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+
+                                else if(sessionManager.getNAME().equals("restaurant_manager")){
+                                   Intent intent = new Intent(Splash_Screen.this, Resturant_Tablet_MainActivity.class);
+                                    intent.putExtra("openvalue", "dashboard");
+                                    startActivity(intent);
+                                    finish();
+                                    //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                                    //  startActivity(intent);
+                                } else if(sessionManager.getNAME().equals("laundry_manager")){
+                                      Intent intent = new Intent(Splash_Screen.this, LaundryMainActivity.class);
+                                    intent.putExtra("openvalue","dashboard");
+
+                                    startActivity(intent);
+                                    finish();
+                                } else if(sessionManager.getNAME().equals("spa_manager")){
+                                     Intent intent = new Intent(Splash_Screen.this, SpaMainActivitytablet.class);
+                                    intent.putExtra("openvalue","dashboard");
+
+                                    startActivity(intent);
+                                    finish();
+                                } else if(sessionManager.getNAME().equals("connect_manager")){
+                                    Intent intent = new Intent(Splash_Screen.this, AYSMainActivity.class);
+                                    intent.putExtra("openvalue","dashboard");
+
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                                else if(sessionManager.getNAME().equals("mini_bar_manager")){
+                                    // Intent intent = new Intent(Splash_Screen.this, MainActivity.class);
+                                    //  startActivity(intent);
                                 }
 
                             }
                             else{
-                                Intent intent=new Intent(Splash_Screen.this, MainActivity_Mobile.class);
-                                intent.putExtra("openvalue","dashboard");
-                                startActivity(intent);
-                                finish();
+                                if(sessionManager.getNAME().equals("restaurant_manager")){
+                                    Intent intent = new Intent(Splash_Screen.this, RestaurantMain.class);
+                                    intent.putExtra("openvalue", "dashboard");
+                                    startActivity(intent);
+                                    finish();
+                                }else if(sessionManager.getNAME().equals("ird_manager")) {
+                                    Intent intent = new Intent(Splash_Screen.this, MainActivity_Mobile.class);
+                                    intent.putExtra("openvalue", "dashboard");
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                                //  startActivity(intent);
+                             else if(sessionManager.getNAME().equals("laundry_manager")){
+                                 Intent intent = new Intent(Splash_Screen.this, Laundry_Main_Mobile.class);
+                                    intent.putExtra("openvalue","dashboard");
+
+                                    startActivity(intent);
+                                    finish();
+                            } else if(sessionManager.getNAME().equals("spa_manager")){
+                                 Intent intent = new Intent(Splash_Screen.this, Spa_Mobile.class);
+                                    intent.putExtra("openvalue","dashboard");
+
+                                    startActivity(intent);
+                                    finish();
+                            } else if(sessionManager.getNAME().equals("connect_manager")){
+                                Intent intent = new Intent(Splash_Screen.this, AYSMain_Mobile.class);
+                                    intent.putExtra("openvalue","dashboard");
+
+                                    startActivity(intent);
+                                    finish();
+                            }
+
+                            else if(sessionManager.getNAME().equals("mini_bar_manager")){
+                                //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                                //  startActivity(intent);
+                            }
                             }
 
                         }

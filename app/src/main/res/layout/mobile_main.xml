@@ -135,7 +135,7 @@
                    ></ImageView>
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="In Kitchen Orders"
+                    android:text="In Kitchen"
                     android:textSize="14sp"
                     android:id="@+id/event"
                     android:textStyle="bold"
@@ -158,6 +158,61 @@
                 android:layout_width="match_parent"
                 android:layout_height="4sp"
                 android:id="@+id/tab1"
+                android:background="@color/white"
+                ></View>
+        </LinearLayout>
+ <View
+            android:layout_width="1dp"
+            android:background="@color/lightgrey"
+            android:layout_height="match_parent"></View>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/eventlayout1"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="5dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_gravity="center"
+                    android:visibility="invisible"
+                    android:id="@+id/df1"
+
+                    android:layout_height="20dp"
+                   ></ImageView>
+
+                <TextView
+                    android:id="@+id/event1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dispatched"
+                    android:textSize="14sp"
+
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="(16)"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+
+                android:textColor="@color/green"
+                android:id="@+id/newcountevent1"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4sp"
+                android:id="@+id/tab3"
                 android:background="@color/white"
                 ></View>
         </LinearLayout>
