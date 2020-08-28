@@ -42,7 +42,7 @@ public class LaundryHistoryAdapter extends RecyclerView.Adapter<LaundryHistoryAd
     @Override
     public viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_historylits, parent, false);
+                .inflate(R.layout.laundr_order_historylits, parent, false);
 
         return new viewholder(view);
     }
@@ -55,7 +55,19 @@ public class LaundryHistoryAdapter extends RecyclerView.Adapter<LaundryHistoryAd
         holder.orderrecived.setText(getDate1(holder.mitem.getOrder_detail().getCreated_at()));
         holder.orderstatus.setText(getDate1(holder.mitem.getOrder_detail().getCleared_at()));
         holder.acceptedat.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
+        if(holder.mitem.getOrder_stage()!=null){
 
+            if(holder.mitem.getOrder_stage().getStage().equals("other")){
+                holder.guests.setText(capitailizeWord(holder.mitem.getOrder_stage().getStage().replaceAll("_"," ")));
+            }
+            else {
+                holder.guests.setText(capitailizeWord(holder.mitem.getOrder_stage().getStage().replaceAll("_"," ")));
+            }
+        }
+        else{
+            holder.guests.setText("-");
+
+        }
 
 
             holder.colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
@@ -157,7 +169,7 @@ public class LaundryHistoryAdapter extends RecyclerView.Adapter<LaundryHistoryAd
                      TextView dispatcg=dialog.findViewById(R.id.dispactch);
                      RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
                      orderitemsdetail.setLayoutManager(new GridLayoutManager(context,2));
-                     name.setText(homeViewModels.get(getAdapterPosition()).getGuest().getName());
+                     name.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getGuest().getName()));
                      roomno.setText(homeViewModels.get(getAdapterPosition()).getPrimises().getPremise_no());
                      guests.setText("Cleared");
                      if(homeViewModels.get(getAdapterPosition()).getOrder_stage()!=null){
@@ -165,12 +177,12 @@ public class LaundryHistoryAdapter extends RecyclerView.Adapter<LaundryHistoryAd
                          status.setVisibility(View.VISIBLE);
                          if(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().equals("other")){
                              reason.setVisibility(View.VISIBLE);
-                             status.setText(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," "));
-                              reason.setText(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage_text());
+                             status.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," ")));
+                              reason.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage_text()));
                          }
                          else {
                              reason.setVisibility(View.GONE);
-                             status.setText(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," "));
+                             status.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," ")));
                          }
                      }
                      else{
@@ -362,6 +374,28 @@ public class LaundryHistoryAdapter extends RecyclerView.Adapter<LaundryHistoryAd
 //If you need time just put specific format for time like 'HH:mm:ss'
         String dateStr = formatter.format(date);
         return dateStr;
+    }
+    static String capitailizeWord(String str) {
+        StringBuffer s = new StringBuffer();
+
+        // Declare a character of space
+        // To identify that the next character is the starting
+        // of a new word
+        char ch = ' ';
+        for (int i = 0; i < str.length(); i++) {
+
+            // If previous character is space and current
+            // character is not space then it shows that
+            // current letter is the starting of the word
+            if (ch == ' ' && str.charAt(i) != ' ')
+                s.append(Character.toUpperCase(str.charAt(i)));
+            else
+                s.append(str.charAt(i));
+            ch = str.charAt(i);
+        }
+
+        // Return the string with trimming
+        return s.toString().trim();
     }
 
 }

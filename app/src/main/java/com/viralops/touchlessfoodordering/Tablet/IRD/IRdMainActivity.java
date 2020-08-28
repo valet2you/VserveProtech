@@ -36,13 +36,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.BuildConfig;
+import com.viralops.touchlessfoodordering.MainActivity;
+import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Model.Action;
+import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.Model.IRD_Addons;
 import com.viralops.touchlessfoodordering.Model.IRD_AddonsItem;
 import com.viralops.touchlessfoodordering.Model.IRD_Category;
@@ -56,6 +62,7 @@ import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.Restaurant.Resturant_Tablet_MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,7 +114,7 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
     ShimmerRecyclerView shimmerRecyclerView;
     ShimmerRecyclerView shimmerRecyclerView1;
 
-    static public boolean isvisisble=true;
+    static public int isvisisble=1;
     static  public ImageView imgBell;
 
 
@@ -118,11 +125,12 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
      LinearLayout irdlayout;
      LinearLayout layout;
     public static  LinearLayout neworderss;
-
-
+     Typeface font;
+    Typeface font1;
 
 
     IRDCAtegoryAdapter   irdcAtegoryAdapter;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,12 +138,21 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
         }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
         setContentView(R.layout.ird_activity);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); StrictMode.setThreadPolicy(policy);
         sessionManager=new SessionManager(IRdMainActivity.this);
         sessionManagerFCM=new SessionManagerFCM(IRdMainActivity.this);
         sessionManager.setIsINternet("false");
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
 
         irdlayout=  findViewById(R.id.irdlayout);
         layout=  findViewById(R.id.layout);
@@ -145,11 +162,10 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
          imgBell.setImageResource(R.mipmap.calling);
          imgBell.setVisibility(View.INVISIBLE);
 
-
-        final Typeface font = Typeface.createFromAsset(
+         font = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Regular.ttf");
-        Typeface font1 = Typeface.createFromAsset(
+         font1 = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Thin.ttf");
 
@@ -254,7 +270,7 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
 
 
 
-                isvisisble=false;
+                isvisisble=4;
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.content_view, OrderHistory.newInstance())
                             .commitNow();
@@ -266,68 +282,28 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(View v) {
 
                 if(word.equals("IRD")) {
-                    final Dialog dialog = new Dialog(IRdMainActivity.this);
-                    // Include dialog.xml file
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    if (Network.isNetworkAvailable(IRdMainActivity.this)) {
+                        new  IRDDatamenu().execute();
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.menu_popuplist);
-                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
-                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog.getWindow().setLayout(width1, height1);
 
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
-                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(IRdMainActivity.this, LinearLayoutManager.VERTICAL, false));
-                    TextView title = dialog.findViewById(R.id.hotel);
-                    title.setTypeface(font);
-                    title.setText("MENU");
-                    irdAdapter = new IRDAdapter(irddataenulist, IRdMainActivity.this);
-                    shimmerRecyclerView.setAdapter(irdAdapter);
-                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
-                    searchtext.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    } else if (Network.isNetworkAvailable2(IRdMainActivity.this)) {
+                        new IRDDatamenu().execute();
+
+                    }
+                    else{
+                        if (sessionManager.getIsINternet().equals("false")) {
+                            Intent intent = new Intent(IRdMainActivity.this, Internetconnection.class);
+                            startActivity(intent);
+
+                            sessionManager.setIsINternet("true");
+                            finish();
+
+                        } else {
 
                         }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                            filter1(s.toString());
-                        }
-                    });*/
-                    //  registerForContextMenu(menubutton);
-                    ImageView close = dialog.findViewById(R.id.close);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-
-                            if (Network.isNetworkAvailable(IRdMainActivity.this)) {
-                                //  new IRDDatamenu().execute();
-
-                            } else if (Network.isNetworkAvailable2(IRdMainActivity.this)) {
-                                // new IRDDatamenu().execute();
-                                dialog.dismiss();
-
-                            } else {
-
-                            }
-                        }
-                    });
-
+                    }
 
                 }
 
@@ -352,27 +328,7 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
               word="IRD";
 
         }
-        if (Network.isNetworkAvailable(IRdMainActivity.this)) {
-          new  IRDDatamenu().execute();
 
-
-
-        } else if (Network.isNetworkAvailable2(IRdMainActivity.this)) {
-            new IRDDatamenu().execute();
-
-        }
-        else{
-            if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(IRdMainActivity.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }
-        }
 
     }
 
@@ -380,26 +336,8 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
 
          if(v.getId()== R.id.irdlayout){
-            isvisisble=true;
-            if (Network.isNetworkAvailable(IRdMainActivity.this)) {
-                new  IRDDatamenu().execute();
-
-            } else if (Network.isNetworkAvailable2(IRdMainActivity.this)) {
-                new IRDDatamenu().execute();
-
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(IRdMainActivity.this, Internetconnection.class);
-                    startActivity(intent);
-
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
+            isvisisble=1;
+             imgBell.setVisibility(View.GONE);
 
             word="IRD";
 
@@ -2026,11 +1964,158 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
 
 
     public class IRDDatamenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(IRdMainActivity.this);
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+
+
+            try {
+                String credentials = Credentials.basic("admin", "LetsValet2You");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.BASE_URL + BuildConfig.ird_menu)
+                        .addHeader("Authorization", "Bearer " + sessionManager.getACCESSTOKEN())
+                        .get()
+                        .build();
+                okhttp3.Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+                return response.body().string();
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            irdmenuslist.clear();
+            irddataenulist.clear();
+       if(progressDialog!=null){
+           progressDialog.dismiss();
+       }
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result.replaceAll("\t", "").trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        IRD_Data_data ird_data = new IRD_Data_data();
+                        ird_data.setId(data.getString("id"));
+                        ird_data.setName(data.getString("name"));
+                        ird_data.setHotel_id(data.getString("hotel_id"));
+                        ird_data.setDescription(data.getString("description"));
+                        ird_data.setEnabled(data.getString("enabled"));
+                        ird_data.setCreated_at(data.getString("created_at"));
+                        ird_data.setUpdated_at(data.getString("updated_at"));
+                        JSONArray jsonArray1 = data.getJSONArray("categories");
+                        ird_data.setCategories(jsonArray1);
+
+
+                        irddataenulist.add(ird_data);
+
+
+                    }
+                    final Dialog dialog = new Dialog(IRdMainActivity.this);
+                    // Include dialog.xml file
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.menu_popuplist);
+                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog.getWindow().setLayout(width1, height1);
+
+                    dialog.setCancelable(false);
+                    // Set dialog title
+                    dialog.setTitle("");
+                    dialog.show();
+                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(IRdMainActivity.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    irdAdapter = new IRDAdapter(irddataenulist, IRdMainActivity.this);
+                    shimmerRecyclerView.setAdapter(irdAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+
+                            if (Network.isNetworkAvailable(IRdMainActivity.this)) {
+                                //  new IRDDatamenu().execute();
+
+                            } else if (Network.isNetworkAvailable2(IRdMainActivity.this)) {
+                                // new IRDDatamenu().execute();
+                                dialog.dismiss();
+
+                            } else {
+
+                            }
+                        }
+                    });
+
+
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+    public class IRDDatamenu1 extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
 
         }
 
@@ -2088,28 +2173,12 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
                         JSONArray jsonArray1 = data.getJSONArray("categories");
                         ird_data.setCategories(jsonArray1);
 
-                       /* for (int j = 0; j < jsonArray1.length(); j++) {
-                            JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
-                            IRD_Category ird_category = new IRD_Category();
-                            ird_category.setId(jsonObject1.getString("id"));
-                            ird_category.setCreated_at(jsonObject1.getString("created_at"));
-                            ird_category.setUpdated_at(jsonObject1.getString("updated_at"));
-                            ird_category.setMenu_id(jsonObject1.getString("menu_id"));
-                            ird_category.setDescription(jsonObject1.getString("description"));
-                            ird_category.setEnabled(jsonObject1.getString("enabled"));
-                            ird_category.setName(jsonObject1.getString("name"));
-                            ird_category.setTags(jsonObject1.getString("tags"));
-                            ird_category.setWithout_sub_category_items(jsonObject1.getJSONArray("without_sub_category_items"));
-                            ird_category.setSub_categories(jsonObject1.getJSONArray("sub_categories"));
-                            irdmenuslist.add(ird_category);
-                            ird_data.setCategories(irdmenuslist);
 
-                        }*/
                         irddataenulist.add(ird_data);
 
 
                     }
-
+                   irdAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -2284,8 +2353,7 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
                                 irdmenuslist.add(ird_category);
                                 irdcategorylist.add(ird_category);
                             }
-                            irdcAtegoryAdapter =new IRdMainActivity.IRDCAtegoryAdapter(irdcategorylist,IRdMainActivity.this,id);
-                            shimmerRecyclerViewcategory.setAdapter(irdcAtegoryAdapter);
+                            irdcAtegoryAdapter.notifyDataSetChanged();
 
                         }
 
@@ -2524,11 +2592,11 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
                     Action  login = response.body();
                     Toast.makeText(IRdMainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(IRdMainActivity.this)){
-                        new IRdMainActivity.IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(IRdMainActivity.this)){
-                        new IRdMainActivity.IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{
@@ -2584,11 +2652,11 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
                     Action  login = response.body();
                     Toast.makeText(IRdMainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(IRdMainActivity.this)){
-                        new IRdMainActivity.IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(IRdMainActivity.this)){
-                        new IRdMainActivity.IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{
@@ -3201,7 +3269,7 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        shimmerRecyclerView.smoothScrollToPosition(getAdapterPosition());
+                        shimmerRecyclerViewcategory.smoothScrollToPosition(getAdapterPosition());
                         menudialog.dismiss();
 
                     }
@@ -3220,7 +3288,7 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(isvisisble==true) {
+            if(isvisisble==1) {
                 imgBell.setVisibility(View.VISIBLE);
                 AnimateBell();
                 word="IRD";
@@ -3228,10 +3296,36 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
                 Fragment fragment1 = new IRdFreagment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_view, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
             }
-            else {
-                isvisisble=false;
+             else if(isvisisble==2) {
                 imgBell.setVisibility(View.VISIBLE);
                 AnimateBell();
+                word="IRD";
+
+                Fragment fragment1 = new AcceptedMainFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_view, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+            }  else if(isvisisble==3) {
+                imgBell.setVisibility(View.VISIBLE);
+                AnimateBell();
+                word="IRD";
+
+                Fragment fragment1 = new DispatchedMainFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_view, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+            }
+
+            else {
+                isvisisble=4;
+                imgBell.setVisibility(View.VISIBLE);
+                AnimateBell();
+                if(Network.isNetworkAvailable(IRdMainActivity.this)){
+                    GetHeader();
+                }
+                else if(Network.isNetworkAvailable2(IRdMainActivity.this)){
+                    GetHeader();
+
+                }
+                else{
+
+                }
             }
 
 
@@ -3245,5 +3339,49 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
 
         }
     };
+    private void GetHeader() {
+        // display a progress dialog
+/*
+        String credentials = Credentials.basic("admin", "LetsValet2You");
+*/
+
+        (RetrofitClientInstance.getApiService().getHeader("Bearer "+sessionManager.getACCESSTOKEN())).enqueue(new Callback<Header>() {
+            @Override
+            public void onResponse(@NonNull Call<Header> call, @NonNull Response<Header> response) {
+
+                if(response.code()==202||response.code()==200){
+                    Header login = response.body();
+                    availabletrolley.setText(String.valueOf(login.getData().getNew_order()));
+                    availabletray.setText(String.valueOf(login.getData().getAccepted_order()));
+                    availableassciate.setText(String.valueOf(login.getData().getDispatched_order()));
+                    totalorders.setText(String.valueOf(login.getData().getNew_order()+login.getData().getAccepted_order()+login.getData().getCleared_order()));
+
+                }
+                else if(response.code()==401){
+                    Header login = response.body();
+                    Toast.makeText(IRdMainActivity.this, "Unauthorised", Toast.LENGTH_SHORT).show();
+                    sessionManager.logoutsession();
+                }
+                else if(response.code()==500){
+                    Toast.makeText(IRdMainActivity.this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Header> call, @NonNull Throwable t) {
+                Log.d("response", Arrays.toString(t.getStackTrace()));
+
+            }
+        });
+
+    }
 
 }

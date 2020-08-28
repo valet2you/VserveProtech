@@ -104,7 +104,7 @@ public class RestuartAppMainFragment extends Fragment {
         searchView =  view.findViewById(R.id.searchView);
         sessionManager=new SessionManager(getActivity());
         sessionManager.setIsINternet("false");
-searchView.setText("Search for Table No. or Order No.");
+searchView.setHint("Search for Table No. or Order No.");
         shimmerRecyclerView=view.findViewById(R.id.recyclerview);
         shimmerRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),5));
         norecord=view.findViewById(R.id.norecord);
@@ -162,6 +162,10 @@ searchView.setText("Search for Table No. or Order No.");
                         } catch (Exception e) {
 
                         }
+                    }
+                    else{
+                        Resturant_Tablet_MainActivity.imgBell.setVisibility(View.GONE);
+
                     }
                 }
             });
@@ -482,6 +486,9 @@ searchView.setText("Search for Table No. or Order No.");
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    Resturant_Tablet_MainActivity.imgBell.setVisibility(View.GONE);
+                    searchView.setText("");
+
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -533,15 +540,7 @@ searchView.setText("Search for Table No. or Order No.");
                 if(response.code()==202||response.code()==200||response.code()==201){
                     Action  login = response.body();
                   //  Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                    if(Network.isNetworkAvailable(getActivity())){
-                        GetMenu();
-                    }
-                    else if(Network.isNetworkAvailable2(getActivity())){
-                        GetMenu();
-                    }
-                    else{
 
-                    }
 
                 }
                 else if(response.code()==401){
@@ -584,9 +583,16 @@ searchView.setText("Search for Table No. or Order No.");
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                    queuelist.remove(position);
-                    // homeAdapter.notifyItemRemoved(getAdapterPosition());
-                    homeAdapter.notifyDataSetChanged();
+                   searchView.setText("");
+                    if(Network.isNetworkAvailable(getActivity())){
+                        GetMenu();
+                    }
+                    else if(Network.isNetworkAvailable2(getActivity())){
+                        GetMenu();
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(response.code()==401){

@@ -482,6 +482,7 @@ HomeAdapter homeAdapter;
             private Animation anim;
             public TextView orderrecived;
             public TextView since;
+            public TextView sincetext;
             private TextView dispatch;
             private TextView orderid;
            // private TextView orderidtext;
@@ -498,6 +499,9 @@ HomeAdapter homeAdapter;
                 orderrecived=itemView.findViewById(R.id.orderreceived);
                 anim = AnimationUtils.loadAnimation(context, R.anim.fade_anim);
                 since=itemView.findViewById(R.id.since);
+                sincetext=itemView.findViewById(R.id.sincetext);
+                sincetext.setText("ORDER CLEARED AT");
+
                 colorimage=itemView.findViewById(R.id.colorimage);
                 dispatch=itemView.findViewById(R.id.dispatch);
                 orderid=itemView.findViewById(R.id.orderid);

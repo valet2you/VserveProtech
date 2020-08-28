@@ -343,6 +343,9 @@ public class Connect_Fragmentcombine extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+                    MainActivity.bellconnect.setVisibility(View.GONE);
+
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -437,9 +440,16 @@ public class Connect_Fragmentcombine extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                    queuelist.remove(position);
-                    // homeAdapter.notifyItemRemoved(getAdapterPosition());
-                    homeAdapter.notifyDataSetChanged();
+                    searchView.setText("");
+                    if(Network.isNetworkAvailable(getActivity())){
+                        GetMenu();
+                    }
+                    else if(Network.isNetworkAvailable2(getActivity())){
+                        GetMenu();
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(response.code()==401){

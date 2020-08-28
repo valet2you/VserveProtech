@@ -412,7 +412,9 @@ HomeAdapter homeAdapter;
 
                 if(response.code()==202||response.code()==200||response.code()==201){
                     Action login = response.body();
-                    //  Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                      Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }

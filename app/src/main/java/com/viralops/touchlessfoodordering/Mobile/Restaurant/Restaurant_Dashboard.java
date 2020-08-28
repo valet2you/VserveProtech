@@ -391,6 +391,7 @@ HomeAdapter homeAdapter;
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
                     if(RestaurantMain.homeicon.getVisibility()==View.VISIBLE){
                         try {
                             if (RestaurantMain.shake != null) {
@@ -494,6 +495,7 @@ HomeAdapter homeAdapter;
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+
                     queuelistnew.remove(position);
                     // homeAdapter.notifyItemRemoved(getAdapterPosition());
                     homeAdapter.notifyDataSetChanged();

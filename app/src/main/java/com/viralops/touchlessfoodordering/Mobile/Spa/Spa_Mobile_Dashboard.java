@@ -1,8 +1,13 @@
 package com.viralops.touchlessfoodordering.Mobile.Spa;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -36,12 +41,15 @@ import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.BuildConfig;
 import com.viralops.touchlessfoodordering.Mobile.IRD.Associate_Dashboard;
+
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.Model.Spa_dashboard;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.database.AlarmReceiver1;
+import com.viralops.touchlessfoodordering.database.DbHelper1;
 
 
 import java.text.ParseException;
@@ -72,7 +80,10 @@ HomeAdapter homeAdapter;
     private Dialog dialognew;
     ArrayList<Spa_dashboard.Data> queuelist=new ArrayList<>();
     ArrayList<Spa_dashboard.Data> queuelistnew=new ArrayList<>();
+    ArrayList<Spa_dashboard.Data> localarray=new ArrayList<>();
     AutoCompleteTextView searchView;
+    DbHelper1 mDbHelper;
+    SQLiteDatabase db;
     public static Associate_Dashboard newInstance() {
         return new Associate_Dashboard();
     }
@@ -87,6 +98,9 @@ HomeAdapter homeAdapter;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.assciate_dashboard, container, false);
+        mDbHelper = new DbHelper1(getActivity());
+
+
         final Typeface font = Typeface.createFromAsset(
                 getActivity().getAssets(),
                 "font/Roboto-Regular.ttf");
@@ -188,6 +202,10 @@ HomeAdapter homeAdapter;
                     Spa_dashboard  login = response.body();
                     queuelist=new ArrayList<>();
                     queuelistnew=new ArrayList<>();
+                    localarray.clear();
+                    db= mDbHelper.getWritableDatabase();
+                    localarray=mDbHelper.getAllCotacts();
+                    System.out.println("this is a local array"+localarray.size());
 
                     queuelist=login.getData();
                     if(queuelist.size()!=0){
@@ -211,6 +229,177 @@ HomeAdapter homeAdapter;
                                 queuelistnew.add(data);
                             }
                         }
+
+
+                        if(localarray.size()==0) {
+                            for (int i = 0; i < queuelist.size(); i++) {
+
+                                long timeDiff = 0;
+                                Date date1 = null;
+                                Date date2 = null;
+                                final Calendar calendar = Calendar.getInstance();
+                                String timeStamp = new SimpleDateFormat("dd MMM yyyy hh:mm a").format(new Date());
+                                System.out.println("current date" + timeStamp + " " + queuelist.get(i).getOrder_detail().getRequest_schedule_at());
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
+                                long epoch = 0;
+
+                                try {
+                                    dt = dateFormat.parse(queuelist.get(i).getOrder_detail().getRequest_schedule_at());
+                                    epoch = dt.getTime();
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+                                cal.setTimeInMillis(epoch);
+                                String date23 = DateFormat.format("dd MMM yyyy hh:mm a", dt).toString();
+                                try {
+                                    date1 = formatter.parse(timeStamp);
+                                    date2 = formatter.parse(date23);
+                                    System.out.println("current datem 2 " + date1 + " " + date2);
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    System.out.println("current datem 2 " + e.toString());
+
+                                }  //  timeDiff = date1.getTime() - date2.getTime();
+
+                                timeDiff = (date2.getTime() - date1.getTime());
+                                System.out.println(" time diff"
+                                        + timeDiff);
+
+                                Calendar cal1 = Calendar.getInstance();
+                                cal1.setTime(date2);
+                                int hour = cal1.get(Calendar.HOUR);
+                                int min = cal1.get(Calendar.MINUTE);
+                                int date = cal1.get(Calendar.DAY_OF_MONTH);
+                                int month = cal1.get(Calendar.MONTH);
+                                int year = cal1.get(Calendar.YEAR);
+                                Spa_dashboard.Data alarm = new Spa_dashboard.Data();
+                                alarm.setDate(date);
+                                alarm.setMonth(month);
+                                alarm.setYear(year);
+                                alarm.setHour(hour);
+                                alarm.setMinute(min);
+                                alarm.setDatestring(date23);
+                                alarm.setO_id(queuelist.get(i).getOrder_detail().getOrder_id());
+                                alarm.setCreated_at(queuelist.get(i).getCreated_at());
+                                alarm.setGuest(queuelist.get(i).getGuest());
+                                alarm.setDescription(queuelist.get(i).getDescription());
+                                alarm.setHotel_id(queuelist.get(i).getHotel_id());
+                                alarm.setId(queuelist.get(i).getId());
+                                alarm.setNo_of_guest(queuelist.get(i).getNo_of_guest());
+                                alarm.setOrder_detail(queuelist.get(i).getOrder_detail());
+                                alarm.setOrder_spa_items(queuelist.get(i).getOrder_spa_items());
+                                alarm.setPayment_status(queuelist.get(i).getPayment_status());
+                                alarm.setPrimises_id(queuelist.get(i).getPrimises_id());
+                                alarm.setStatus(queuelist.get(i).getStatus());
+                                alarm.setType(queuelist.get(i).getType());
+                                alarm.setUpdated_at(queuelist.get(i).getUpdated_at());
+                                alarm.setPrimises(queuelist.get(i).getPrimises());
+                                setAlarm1(alarm);
+
+                            }
+                        }
+                        else{
+                            ArrayList<Spa_dashboard.Data> datalist=new ArrayList<>();
+                            for(int j=0;j<localarray.size();j++){
+                                for(int i=0;i<queuelist.size();i++){
+                                    if(localarray.get(j).getO_id().contains(queuelist.get(i).getOrder_detail().getOrder_id())){
+                                        queuelist.remove(i);
+
+
+                                    }
+
+                                }
+                            }
+
+                            datalist=queuelist;
+
+                            System.out.println("data "+datalist.size());
+                            for(int i=0;i<datalist.size();i++){
+                                long timeDiff = 0;
+                                Date date1 = null;
+                                Date date2 = null;
+                                final Calendar calendar = Calendar.getInstance();
+                                String timeStamp = new SimpleDateFormat("dd MMM yyyy hh:mm a").format(new Date());
+                                System.out.println("current date" + timeStamp + " " + datalist.get(i).getOrder_detail().getRequest_schedule_at());
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
+                                long epoch = 0;
+
+                                try {
+                                    dt = dateFormat.parse(datalist.get(i).getOrder_detail().getRequest_schedule_at());
+                                    epoch = dt.getTime();
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+                                cal.setTimeInMillis(epoch);
+                                String date23 = DateFormat.format("dd MMM yyyy hh:mm a", dt).toString();
+                                try {
+                                    date1 = formatter.parse(timeStamp);
+                                    date2 = formatter.parse(date23);
+                                    System.out.println("current datem 2 " + date1 + " " + date2);
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    System.out.println("current datem 2 " + e.toString());
+
+                                }  //  timeDiff = date1.getTime() - date2.getTime();
+
+                                timeDiff = (date2.getTime() - date1.getTime());
+                                System.out.println(" time diff"
+                                        + timeDiff);
+                                String[] dateformat=date23.split(" ");
+                                Calendar cal1 = Calendar.getInstance();
+                                cal1.setTime(date2);
+                                int hour = cal1.get(Calendar.HOUR);
+                                int min = cal1.get(Calendar.MINUTE);
+                                int date = cal1.get(Calendar.DAY_OF_MONTH);
+                                int month = cal1.get(Calendar.MONTH+1);
+                                int year = cal1.get(Calendar.YEAR);
+                                Spa_dashboard.Data alarm = new Spa_dashboard.Data();
+                                alarm.setDate(date);
+                                alarm.setMonth(month);
+                                alarm.setYear(year);
+                                alarm.setHour(hour);
+                                alarm.setMinute(min);
+                                alarm.setDatestring(date23);
+                                alarm.setO_id(datalist.get(i).getOrder_detail().getOrder_id());
+                                alarm.setCreated_at(datalist.get(i).getCreated_at());
+                                alarm.setGuest(datalist.get(i).getGuest());
+                                alarm.setDescription(datalist.get(i).getDescription());
+                                alarm.setHotel_id(datalist.get(i).getHotel_id());
+                                alarm.setId(datalist.get(i).getId());
+                                alarm.setNo_of_guest(datalist.get(i).getNo_of_guest());
+                                alarm.setOrder_detail(datalist.get(i).getOrder_detail());
+                                alarm.setOrder_spa_items(datalist.get(i).getOrder_spa_items());
+                                alarm.setPayment_status(datalist.get(i).getPayment_status());
+                                alarm.setPrimises_id(datalist.get(i).getPrimises_id());
+                                alarm.setStatus(datalist.get(i).getStatus());
+                                alarm.setType(datalist.get(i).getType());
+                                alarm.setUpdated_at(datalist.get(i).getUpdated_at());
+                                alarm.setPrimises(datalist.get(i).getPrimises());
+                                setAlarm1(alarm);
+                            }
+
+
+
+
+
+                        }
+
                         if(queuelistnew.size()!=0) {
                             homeAdapter = new HomeAdapter(getActivity(), queuelistnew);
                             recyclerView.setAdapter(homeAdapter);
@@ -2355,7 +2544,7 @@ HomeAdapter homeAdapter;
         }
         private String getDatenew(String time) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
             try {
                 date = dateFormat.parse(time);
@@ -2363,7 +2552,7 @@ HomeAdapter homeAdapter;
                 e.printStackTrace();
             }
             SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, hh:mm a");
-           // dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //If you need time just put specific format for time like 'HH:mm:ss'
             String dateStr = formatter.format(date);
             return dateStr;
@@ -2395,6 +2584,60 @@ HomeAdapter homeAdapter;
 
 
 
+    private void setAlarm1(Spa_dashboard.Data laundry_dashboard) {
+        mDbHelper = new DbHelper1(getActivity());
+
+        db = mDbHelper.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(mDbHelper.TITLE, laundry_dashboard.getPrimises().getPremise_no());
+        cv.put(mDbHelper.O_ID,laundry_dashboard.getOrder_detail().getOrder_id());
+        cv.put(mDbHelper.DETAIL, laundry_dashboard.getOrder_spa_items().toString());
+        cv.put(mDbHelper.TYPE, "Urgent");
+        try {
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd MMM yyyy hh:mm a");
+            Date date=formatter1.parse(laundry_dashboard.getDatestring());
+
+            Calendar calender = Calendar.getInstance();
+            calender.clear();
+            calender.setTime(date);
+
+            System.out.println("time"+String.valueOf(laundry_dashboard.getMonth())+" "+String.valueOf(laundry_dashboard.getYear())+" "+laundry_dashboard.getDate());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+            String timeString = formatter.format(new Date(calender.getTimeInMillis()));
+            SimpleDateFormat dateformatter = new SimpleDateFormat("dd/MM/yyyy");
+            String dateString = dateformatter.format(new Date(calender.getTimeInMillis()));
+            System.out.println("time1 "+timeString+" "+dateString);
+            int alarmid=0;
+            try{
+                alarmid=Integer.parseInt(laundry_dashboard.getOrder_detail().getOrder_id());
+            }catch (Exception e){
+
+            }
+
+            AlarmManager alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(getActivity(), AlarmReceiver1.class);
+            long time=60*1000;
+
+            //String alertTitle = mTitleText.getText().toString();
+            intent.putExtra("title", laundry_dashboard.getPrimises().getPremise_no());
+            intent.putExtra("time", timeString);
+            intent.putExtra("alramid",String.valueOf(alarmid));
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), alarmid, intent, 0);
+
+            alarmMgr.set(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+
+            cv.put(mDbHelper.TIME, timeString);
+            cv.put(mDbHelper.DATE, dateString);
+            db.insert(mDbHelper.TABLE_NAME, null, cv);
+
+        }catch (Exception e){
+
+        }
+
+    }
 
 
 

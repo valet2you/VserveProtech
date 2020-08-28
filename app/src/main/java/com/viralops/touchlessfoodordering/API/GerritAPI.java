@@ -8,6 +8,8 @@ import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Dashboard1;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantApp_Dashboard;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.Restaurant_Dashboard;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.ResturantOrderHistory;
+import com.viralops.touchlessfoodordering.Mobile.Supervisor.Supervior_Model;
+import com.viralops.touchlessfoodordering.Mobile.Supervisor.Supervisor_Managers;
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.ConnectHistory;
 import com.viralops.touchlessfoodordering.Model.Connect_Header;
@@ -311,6 +313,15 @@ public interface GerritAPI {
 
     //--------------------End of Restaurant App------------------------//
 
+//----------------------Suopervisor App------------------------------//
+
+    @GET(BuildConfig.supervisor_get_orders)
+    Call<Supervior_Model> Supervisor_getorders(@Header("Authorization") String Authorization);
+
+    @GET(BuildConfig.get_managers)
+    Call<Supervisor_Managers> Supervisor_getManagers(@Header("Authorization") String Authorization);
+
+    //------------Supervisor App end-----------------------------//
 
 
 }

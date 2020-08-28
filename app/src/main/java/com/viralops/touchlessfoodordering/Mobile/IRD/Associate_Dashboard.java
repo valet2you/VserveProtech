@@ -395,6 +395,8 @@ HomeAdapter homeAdapter;
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+
                     if(MainActivity_Mobile.homeicon.getVisibility()==View.VISIBLE){
                         try {
                             if (MainActivity_Mobile.shake != null) {

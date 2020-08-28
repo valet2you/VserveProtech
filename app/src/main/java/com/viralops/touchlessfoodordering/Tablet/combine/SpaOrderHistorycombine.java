@@ -52,6 +52,8 @@ public class SpaOrderHistorycombine extends Fragment {
     TextView deliveredat;
     TextView orderacceptedtext;
     TextView norecord;
+    TextView reason;
+
     ArrayList<Spa_dashboard.Data> orderslist;
     SessionManager sessionManager;
     AutoCompleteTextView searchView;
@@ -79,6 +81,8 @@ public class SpaOrderHistorycombine extends Fragment {
         deliveredat=view.findViewById(R.id.deliveredat);
         orderacceptedtext=view.findViewById(R.id.orderacceptedtext);
         norecord=view.findViewById(R.id.norecord);
+        reason=view.findViewById(R.id.reason);
+
         final Typeface font = Typeface.createFromAsset(
                 getActivity().getAssets(),
                 "font/Roboto-Regular.ttf");
@@ -87,6 +91,7 @@ public class SpaOrderHistorycombine extends Fragment {
         orderreceivedtext.setTypeface(font);
         deliveredat.setTypeface(font);
         orderacceptedtext.setTypeface(font);
+        reason.setTypeface(font);
 
         Typeface font1 = Typeface.createFromAsset(
                 getActivity().getAssets(),

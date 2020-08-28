@@ -2,13 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.viralops.touchlessfoodordering">
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <permission
+        android:name="com.viralops.touchlessfoodordering.FCM"
+        android:label="FCM"
+        android:protectionLevel="dangerous" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcherbluebig"
         android:label="@string/app_name"
         android:name=".Support.CustomFontApp"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/launcherbluebig"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Acitities.Splash_Screen">
@@ -52,7 +57,14 @@
         <activity android:name=".Mobile.Laundry.Laundry_Main_Mobile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Mobile.Supervisor.Supervisor_mainactivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Support.Internetconnection"
+             />
+
         <receiver android:name=".database.AlarmReceiver" android:exported="true" android:enabled="true"> </receiver>
+        <receiver android:name=".database.AlarmReceiver1" android:exported="true" android:enabled="true"> </receiver>
         <service
             android:name=".FCM.FirebaseMessagingService"
             android:exported="false"
@@ -63,8 +75,11 @@
             </intent-filter>
         </service>
         <!--<receiver android:name=".NotificationManager2" android:exported="true" android:enabled="true"> </receiver>-->
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
 
+            android:resource="@drawable/logotransparent" />
         <activity android:theme="@android:style/Theme.Dialog" android:name=".database.Alert"> </activity>
+        <activity android:theme="@android:style/Theme.Dialog" android:name=".database.Alert1"> </activity>
     </application>
 
 </manifest>

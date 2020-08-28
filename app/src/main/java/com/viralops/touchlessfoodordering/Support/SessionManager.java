@@ -1,5 +1,6 @@
 package com.viralops.touchlessfoodordering.Support;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -319,12 +320,14 @@ public class SessionManager {
 
     }
     public void logoutsession(){
-
+       // ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).clearApplicationUserData();
         Intent  intent=new Intent(context, Login_Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         editor.clear();
         editor.commit();
+       //
+
     }
 
 

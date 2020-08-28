@@ -59,6 +59,7 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.Tablet.Laundry.LaundryMainActivity;
 
 
 import java.text.ParseException;
@@ -351,6 +352,9 @@ public class Laundry_fragment_combine extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+                    MainActivity.belllaundry.setVisibility(View.GONE);
+
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -454,9 +458,16 @@ public class Laundry_fragment_combine extends Fragment {
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
                     text="";
-                    queuelist.remove(position);
-                    // homeAdapter.notifyItemRemoved(getAdapterPosition());
-                    homeAdapter.notifyDataSetChanged();
+                    searchView.setText("");
+                    if(Network.isNetworkAvailable(getActivity())){
+                        GetMenu();
+                    }
+                    else if(Network.isNetworkAvailable2(getActivity())){
+                        GetMenu();
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(response.code()==401){
@@ -847,7 +858,7 @@ public class Laundry_fragment_combine extends Fragment {
 
                                 dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                                 dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);
+                                 dialog1.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);
                                  //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog1.setContentView(R.layout.actionpopup);
                                 int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.45);
@@ -1244,7 +1255,7 @@ public class Laundry_fragment_combine extends Fragment {
 
                                         dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                                         dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);
+                                         dialog1.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);
                                         // dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                         dialog1.setContentView(R.layout.actionpopup);
                                         int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.45);

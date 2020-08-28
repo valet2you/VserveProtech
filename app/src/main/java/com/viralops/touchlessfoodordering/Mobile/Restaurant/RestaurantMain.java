@@ -42,8 +42,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
@@ -55,6 +58,7 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 
 
 import org.json.JSONArray;
@@ -106,6 +110,8 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
     Typeface font1;
     ArrayList<RestaurantApp_Dashboard.Data> queuelist=new ArrayList<>();
     ArrayList<RestaurantApp_Dashboard.Data> queuelistnew=new ArrayList<>();
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +121,7 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
 
         }
         // Set up the login form.
-        setContentView(R.layout.mobile_main);
+        setContentView(R.layout.associate_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(Color.parseColor("#091F42"));
@@ -125,6 +131,14 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
         toolbar.setOverflowIcon(drawable);
         sessionManager=new SessionManager(RestaurantMain.this);
         sessionManagerFCM=new SessionManagerFCM(RestaurantMain.this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
+
         porchname=findViewById(R.id.porchname);
         porchname.setText(sessionManager.getPorchName());
          font = Typeface.createFromAsset(
@@ -160,29 +174,6 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
         newcount.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         orders=findViewById(R.id.event);
         orders.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        if (Network.isNetworkAvailable(RestaurantMain.this)) {
-            new  IRDDatamenu().execute();
-
-//
-
-        } else if (Network.isNetworkAvailable2(RestaurantMain.this)) {
-            new IRDDatamenu().execute();
-
-
-
-        }
-        else{
-           /* if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(RestaurantMain.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }*/
-        }
 
 
         if (savedInstanceState == null) {
@@ -255,67 +246,30 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
         int id=item.getItemId() ;
         switch (id){
             case R.id.menu:
-                final Dialog dialog1 = new Dialog(RestaurantMain.this);
-                // Include dialog.xml file
+                if (Network.isNetworkAvailable(RestaurantMain.this)) {
+                    new  IRDDatamenu().execute();
 
-                dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
 
-                // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog1.setContentView(R.layout.menu_popuplist);
-                int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
-                int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
-                dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                } else if (Network.isNetworkAvailable2(RestaurantMain.this)) {
+                    new IRDDatamenu().execute();
 
-                dialog1.getWindow().setLayout(width, height);
 
-                dialog1.setCancelable(false);
-                // Set dialog title
-                dialog1.setTitle("");
-                dialog1.show();
-                shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
-                shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(RestaurantMain.this, LinearLayoutManager.VERTICAL, false));
-                TextView title = dialog1.findViewById(R.id.hotel);
-                title.setTypeface(font);
-                title.setText("MENU");
-                irdAdapter = new IRDAdapter(irddataenulist, RestaurantMain.this);
-                shimmerRecyclerView.setAdapter(irdAdapter);
-                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
-                    searchtext.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                        }
+                }
+                else{
+           /* if (sessionManager.getIsINternet().equals("false")) {
+                Intent intent = new Intent(RestaurantMain.this, Internetconnection.class);
+                startActivity(intent);
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sessionManager.setIsINternet("true");
+                finish();
 
-                        }
+            } else {
 
-                        @Override
-                        public void afterTextChanged(Editable s) {
+            }*/
+                }
 
-                            filter1(s.toString());
-                        }
-                    });*/
-                //  registerForContextMenu(menubutton);
-                ImageView close = dialog1.findViewById(R.id.close);
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog1.dismiss();
-
-                        if (Network.isNetworkAvailable(RestaurantMain.this)) {
-                            //  new IRDDatamenu().execute();
-
-                        } else if (Network.isNetworkAvailable2(RestaurantMain.this)) {
-                            // new IRDDatamenu().execute();
-                            dialog1.dismiss();
-
-                        } else {
-
-                        }
-                    }
-                });
 
 
                 break;
@@ -481,7 +435,16 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
     protected void onPause() {
         super.onPause();
 
+        try {
 
+            registerReceiver(mMessageReceiver, new IntentFilter("com.viralops.touchlessfoodordering"));
+
+            //unregisterReceiver(mMessageReceiver);
+
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     @Override
@@ -1972,6 +1935,167 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
     }
 
     public class IRDDatamenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(RestaurantMain.this);
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+
+
+            try {
+                String credentials = Credentials.basic("admin", "LetsValet2You");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.BASE_URL + BuildConfig.restaurant_menu)
+                        .addHeader("Authorization", "Bearer " + sessionManager.getACCESSTOKEN())
+                        .get()
+                        .build();
+                okhttp3.Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+                return response.body().string();
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            irdmenuslist.clear();
+            irddataenulist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result.replaceAll("\t", "").trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        Resturant_Data_data ird_data = new Resturant_Data_data();
+                        ird_data.setId(data.getString("id"));
+                        ird_data.setName(data.getString("name"));
+                        ird_data.setHotel_id(data.getString("hotel_id"));
+                        ird_data.setDescription(data.getString("description"));
+                        ird_data.setEnabled(data.getString("enabled"));
+                        ird_data.setCreated_at(data.getString("created_at"));
+                        ird_data.setUpdated_at(data.getString("updated_at"));
+                        JSONArray jsonArray1 = data.getJSONArray("categories");
+                        ird_data.setCategories(jsonArray1);
+
+                       /* for (int j = 0; j < jsonArray1.length(); j++) {
+                            JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                            Restaurant_Category ird_category = new Restaurant_Category();
+                            ird_category.setId(jsonObject1.getString("id"));
+                            ird_category.setCreated_at(jsonObject1.getString("created_at"));
+                            ird_category.setUpdated_at(jsonObject1.getString("updated_at"));
+                            ird_category.setMenu_id(jsonObject1.getString("menu_id"));
+                            ird_category.setDescription(jsonObject1.getString("description"));
+                            ird_category.setEnabled(jsonObject1.getString("enabled"));
+                            ird_category.setName(jsonObject1.getString("name"));
+                            ird_category.setTags(jsonObject1.getString("tags"));
+                            ird_category.setWithout_sub_category_items(jsonObject1.getJSONArray("without_sub_category_items"));
+                            ird_category.setSub_categories(jsonObject1.getJSONArray("sub_categories"));
+                            irdmenuslist.add(ird_category);
+                            ird_data.setCategories(irdmenuslist);
+
+                        }*/
+                        irddataenulist.add(ird_data);
+
+
+                    }
+                    final Dialog dialog1 = new Dialog(RestaurantMain.this);
+                    // Include dialog.xml file
+
+                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setContentView(R.layout.menu_popuplist);
+                    int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                    int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog1.getWindow().setLayout(width, height);
+
+                    dialog1.setCancelable(false);
+                    // Set dialog title
+                    dialog1.setTitle("");
+                    dialog1.show();
+                    shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(RestaurantMain.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog1.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    irdAdapter = new IRDAdapter(irddataenulist, RestaurantMain.this);
+                    shimmerRecyclerView.setAdapter(irdAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog1.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+
+                            if (Network.isNetworkAvailable(RestaurantMain.this)) {
+                                //  new IRDDatamenu().execute();
+
+                            } else if (Network.isNetworkAvailable2(RestaurantMain.this)) {
+                                // new IRDDatamenu().execute();
+                                dialog1.dismiss();
+
+                            } else {
+
+                            }
+                        }
+                    });
+
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+    public class IRDDatamenu1 extends AsyncTask<String, String, String> {
 
 
         @Override
@@ -2055,7 +2179,7 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
 
 
                     }
-
+                   irdAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -2230,8 +2354,7 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
                                 irdmenuslist.add(ird_category);
                                 irdcategorylist.add(ird_category);
                             }
-                            irdcAtegoryAdapter =new IRDCAtegoryAdapter(irdcategorylist,RestaurantMain.this,id);
-                            shimmerRecyclerViewcategory.setAdapter(irdcAtegoryAdapter);
+                            irdcAtegoryAdapter.notifyDataSetChanged();
 
                         }
 
@@ -2470,11 +2593,11 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
                     Action  login = response.body();
                     Toast.makeText(RestaurantMain.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(RestaurantMain.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(RestaurantMain.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{
@@ -2530,11 +2653,11 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
                     Action  login = response.body();
                     Toast.makeText(RestaurantMain.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(RestaurantMain.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(RestaurantMain.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{

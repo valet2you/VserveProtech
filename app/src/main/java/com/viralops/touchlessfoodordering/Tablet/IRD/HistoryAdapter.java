@@ -45,7 +45,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.viewhold
     @Override
     public viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_historylits, parent, false);
+                .inflate(R.layout.order_historylitsnew, parent, false);
 
         return new viewholder(view);
     }
@@ -58,6 +58,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.viewhold
         holder.orderrecived.setText(getDate1(holder.mitem.getOrder_detail().getCreated_at()));
         holder.orderstatus.setText(getDate1(holder.mitem.getOrder_detail().getCleared_at()));
         holder.acceptedat.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
+        holder.dispachedat.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
         if(holder.mitem.getIs_complementary().equals("1")){
             holder.gift.setVisibility(View.VISIBLE);
         }
@@ -96,6 +97,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.viewhold
          public TextView orderrecived;
          public  TextView orderstatus;
          public  TextView acceptedat;
+         public  TextView dispachedat;
          public ImageView gift;
 
         LinearLayout colorimage;
@@ -108,6 +110,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.viewhold
              roomno=itemView.findViewById(R.id.roomno);
              guests=itemView.findViewById(R.id.guest);
              orderrecived=itemView.findViewById(R.id.orderreceivedtext);
+             dispachedat=itemView.findViewById(R.id.dispachedat);
              orderstatus=itemView.findViewById(R.id.deliveredat);
              gift=itemView.findViewById(R.id.filter);
              acceptedat=itemView.findViewById(R.id.acceptedat);
@@ -161,8 +164,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.viewhold
                      acceptedat.setTypeface(font);
                      TextView accepted=dialog.findViewById(R.id.accepted);
                      TextView distpatchtext=dialog.findViewById(R.id.distpatchtext);
+                     TextView deliveredtext=dialog.findViewById(R.id.deliveredtext);
                      distpatchtext.setTypeface(font);
+                     deliveredtext.setTypeface(font);
                      TextView dispatcg=dialog.findViewById(R.id.dispactch);
+                     TextView delivered=dialog.findViewById(R.id.delivered);
                      TextView statustext=dialog.findViewById(R.id.statustext);
                      statustext.setTypeface(font);
                      TextView status=dialog.findViewById(R.id.status);
@@ -250,8 +256,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.viewhold
                      guests.setText(homeViewModels.get(getAdapterPosition()).getNo_of_guest());
 
                          accepted.setText(getDate1(homeViewModels.get(getAdapterPosition()).getOrder_detail().getAccepted_at()));
-                         dispatcg.setText(getDate1(homeViewModels.get(getAdapterPosition()).getOrder_detail().getCleared_at()));
-
+                         dispatcg.setText(getDate1(homeViewModels.get(getAdapterPosition()).getOrder_detail().getDispatched_at()));
+                         delivered.setText(getDate1(homeViewModels.get(getAdapterPosition()).getOrder_detail().getCleared_at()));
 
 
 

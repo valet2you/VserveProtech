@@ -50,6 +50,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.BuildConfig;
+import com.viralops.touchlessfoodordering.Mobile.Spa.Spa_Mobile;
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.Model.Order_Item;
@@ -115,6 +116,7 @@ public class Spa_fragment extends Fragment {
         searchView =  view.findViewById(R.id.searchView);
         sessionManager=new SessionManager(getActivity());
         sessionManager.setIsINternet("false");
+
 
         shimmerRecyclerView=view.findViewById(R.id.recyclerview);
         shimmerRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),5));
@@ -248,11 +250,14 @@ public class Spa_fragment extends Fragment {
                     if(queuelist.size()!=0){
                         homeAdapter=new HomeAdapter(getActivity(),queuelist);
                         shimmerRecyclerView.setAdapter(homeAdapter);
+                      // homeAdapter.notifyDataSetChanged();
                         norecord.setVisibility(View.GONE);
                     }
                     else{
                         homeAdapter=new HomeAdapter(getActivity(),queuelist);
                         shimmerRecyclerView.setAdapter(homeAdapter);
+                       // homeAdapter.notifyDataSetChanged();
+
                         norecord.setVisibility(View.VISIBLE);
                     }
 
@@ -355,6 +360,11 @@ public class Spa_fragment extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+
+
+                        SpaMainActivitytablet.bellspa.setVisibility(View.GONE);
+
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -458,10 +468,16 @@ public class Spa_fragment extends Fragment {
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
                     text="";
-                    queuelist.remove(position);
-                    // homeAdapter.notifyItemRemoved(getAdapterPosition());
-                    homeAdapter.notifyDataSetChanged();
 
+                    if(Network.isNetworkAvailable(getActivity())){
+                        GetMenu();
+                    }
+                    else if(Network.isNetworkAvailable2(getActivity())){
+                        GetMenu();
+                    }
+                    else{
+
+                    }
                 }
                 else if(response.code()==401){
                     Action login = response.body();
@@ -765,7 +781,7 @@ public class Spa_fragment extends Fragment {
 
                     }
                     guests.setText(holder.mitem.getNo_of_guest());
-                    name.setText(holder.mitem.getGuest().getName());
+                    name.setText(capitailizeWord(holder.mitem.getGuest().getName()));
 
 
                     RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
@@ -1132,7 +1148,7 @@ public class Spa_fragment extends Fragment {
                             acceptedat.setTypeface(font);
                             TextView accepted=dialog.findViewById(R.id.accepted);
                             TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
-                            name.setText(guestname);
+                            name.setText(capitailizeWord(guestname));
                             if(status.equals("new_order")){
                                 dispatchbutton.setText("ACCEPT");
 
@@ -1466,4 +1482,27 @@ public class Spa_fragment extends Fragment {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
+    static String capitailizeWord(String str) {
+        StringBuffer s = new StringBuffer();
+
+        // Declare a character of space
+        // To identify that the next character is the starting
+        // of a new word
+        char ch = ' ';
+        for (int i = 0; i < str.length(); i++) {
+
+            // If previous character is space and current
+            // character is not space then it shows that
+            // current letter is the starting of the word
+            if (ch == ' ' && str.charAt(i) != ' ')
+                s.append(Character.toUpperCase(str.charAt(i)));
+            else
+                s.append(str.charAt(i));
+            ch = str.charAt(i);
+        }
+
+        // Return the string with trimming
+        return s.toString().trim();
+    }
+
 }

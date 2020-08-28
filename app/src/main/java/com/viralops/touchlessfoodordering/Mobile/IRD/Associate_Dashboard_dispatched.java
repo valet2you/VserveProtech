@@ -362,6 +362,7 @@ HomeAdapter homeAdapter;
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -413,7 +414,9 @@ HomeAdapter homeAdapter;
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                   if(Network.isNetworkAvailable(getActivity())){
+                    searchView.setText("");
+
+                    if(Network.isNetworkAvailable(getActivity())){
                        GetMenu();
                    }
                    else if(Network.isNetworkAvailable2(getActivity())){

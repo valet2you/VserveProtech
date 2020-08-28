@@ -160,7 +160,6 @@
                             android:layout_width="wrap_content"
                             android:gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:visibility="gone"
                             android:background="@drawable/border"
                             android:orientation="horizontal"
                             android:layout_height="40dp">
@@ -171,7 +170,7 @@
                                 android:layout_height="wrap_content">
                                 <TextView
                                     android:layout_width="wrap_content"
-                                    android:text="In Kitchen"
+                                    android:text="Dispatched"
                                     android:layout_weight="1"
                                     android:textColor="@color/mogiya"
                                     android:id="@+id/busyassociate"

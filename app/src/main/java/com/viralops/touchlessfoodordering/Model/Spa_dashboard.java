@@ -46,6 +46,18 @@ public class Spa_dashboard {
         private String created_at;
         private Guest guest;
 
+        private String roomno;
+        private String detail;
+        private String O_id;
+        private String timestring;
+        private String datenew;
+        private int date;
+        private int month;
+        private int year;
+        private int hour;
+        private int minute;
+        private String datestring;
+        private String typenotify;
         private String description;
 
         private String type;
@@ -103,6 +115,102 @@ public class Spa_dashboard {
 
         public void setOrder_stage(Order_stage order_stage) {
             this.order_stage = order_stage;
+        }
+
+        public String getRoomno() {
+            return roomno;
+        }
+
+        public void setRoomno(String roomno) {
+            this.roomno = roomno;
+        }
+
+        public String getDetail() {
+            return detail;
+        }
+
+        public void setDetail(String detail) {
+            this.detail = detail;
+        }
+
+        public String getO_id() {
+            return O_id;
+        }
+
+        public void setO_id(String o_id) {
+            O_id = o_id;
+        }
+
+        public String getTimestring() {
+            return timestring;
+        }
+
+        public void setTimestring(String timestring) {
+            this.timestring = timestring;
+        }
+
+        public String getDatenew() {
+            return datenew;
+        }
+
+        public void setDatenew(String datenew) {
+            this.datenew = datenew;
+        }
+
+        public int getDate() {
+            return date;
+        }
+
+        public void setDate(int date) {
+            this.date = date;
+        }
+
+        public int getMonth() {
+            return month;
+        }
+
+        public void setMonth(int month) {
+            this.month = month;
+        }
+
+        public int getYear() {
+            return year;
+        }
+
+        public void setYear(int year) {
+            this.year = year;
+        }
+
+        public int getHour() {
+            return hour;
+        }
+
+        public void setHour(int hour) {
+            this.hour = hour;
+        }
+
+        public int getMinute() {
+            return minute;
+        }
+
+        public void setMinute(int minute) {
+            this.minute = minute;
+        }
+
+        public String getDatestring() {
+            return datestring;
+        }
+
+        public void setDatestring(String datestring) {
+            this.datestring = datestring;
+        }
+
+        public String getTypenotify() {
+            return typenotify;
+        }
+
+        public void setTypenotify(String typenotify) {
+            this.typenotify = typenotify;
         }
 
         public void setOrder_spa_items (ArrayList<Order_spa_items> order_spa_items)

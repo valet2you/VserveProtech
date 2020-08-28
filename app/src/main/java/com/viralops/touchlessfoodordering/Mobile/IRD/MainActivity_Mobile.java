@@ -40,8 +40,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
@@ -60,6 +63,7 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,6 +106,7 @@ public class MainActivity_Mobile extends AppCompatActivity implements View.OnCli
     RecyclerView recyclerView;
     Typeface font;
     Typeface font1;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +127,14 @@ public class MainActivity_Mobile extends AppCompatActivity implements View.OnCli
         toolbar.setOverflowIcon(drawable);
         sessionManager=new SessionManager(MainActivity_Mobile.this);
         sessionManagerFCM=new SessionManagerFCM(MainActivity_Mobile.this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
+
         porchname=findViewById(R.id.porchname);
         porchname.setText(sessionManager.getPorchName());
          font = Typeface.createFromAsset(
@@ -166,29 +179,7 @@ dispachedlayout=findViewById(R.id.eventlayout1);
         orders1=findViewById(R.id.event1);
         orders.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         orders1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        if (Network.isNetworkAvailable(MainActivity_Mobile.this)) {
-            new  IRDDatamenu().execute();
 
-//
-
-        } else if (Network.isNetworkAvailable2(MainActivity_Mobile.this)) {
-            new IRDDatamenu().execute();
-
-
-
-        }
-        else{
-           /* if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(MainActivity_Mobile.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }*/
-        }
 
 
         if (savedInstanceState == null) {
@@ -232,7 +223,7 @@ dispachedlayout=findViewById(R.id.eventlayout1);
             tab2.setBackgroundColor(getResources().getColor(R.color.white));
             Fragment fragmentmanager = new Associate_Dashboard();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commit();
+                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
 
         }
         if(view.getId()== R.id.eventlayout){
@@ -240,7 +231,7 @@ dispachedlayout=findViewById(R.id.eventlayout1);
 
             Fragment fragmentmanager = new Associate_Dashboard_Clearance();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commit();
+                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
 
             orders.setTextColor(MainActivity_Mobile.this.getResources().getColor(R.color.darkblue));
             home.setTextColor(Color.parseColor("#6E7E7E"));
@@ -288,67 +279,21 @@ dispachedlayout=findViewById(R.id.eventlayout1);
         int id=item.getItemId() ;
         switch (id){
             case R.id.menu:
-                final Dialog dialog1 = new Dialog(MainActivity_Mobile.this);
-                // Include dialog.xml file
+                if (Network.isNetworkAvailable(MainActivity_Mobile.this)) {
+                    new  IRDDatamenu().execute();
 
-                dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
 
-                // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog1.setContentView(R.layout.menu_popuplist);
-                int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
-                int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
-                dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                } else if (Network.isNetworkAvailable2(MainActivity_Mobile.this)) {
+                    new IRDDatamenu().execute();
 
-                dialog1.getWindow().setLayout(width, height);
 
-                dialog1.setCancelable(false);
-                // Set dialog title
-                dialog1.setTitle("");
-                dialog1.show();
-                shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
-                shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity_Mobile.this, LinearLayoutManager.VERTICAL, false));
-                TextView title = dialog1.findViewById(R.id.hotel);
-                title.setTypeface(font);
-                title.setText("MENU");
-                irdAdapter = new IRDAdapter(irddataenulist, MainActivity_Mobile.this);
-                shimmerRecyclerView.setAdapter(irdAdapter);
-                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
-                    searchtext.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                        }
+                }
+                else{
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
 
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                            filter1(s.toString());
-                        }
-                    });*/
-                //  registerForContextMenu(menubutton);
-                ImageView close = dialog1.findViewById(R.id.close);
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog1.dismiss();
-
-                        if (Network.isNetworkAvailable(MainActivity_Mobile.this)) {
-                            //  new IRDDatamenu().execute();
-
-                        } else if (Network.isNetworkAvailable2(MainActivity_Mobile.this)) {
-                            // new IRDDatamenu().execute();
-                            dialog1.dismiss();
-
-                        } else {
-
-                        }
-                    }
-                });
 
 
                 break;
@@ -520,13 +465,27 @@ dispachedlayout=findViewById(R.id.eventlayout1);
 
             registerReceiver(mMessageReceiver, new IntentFilter("com.viralops.touchlessfoodordering"));
 
-            unregisterReceiver(mMessageReceiver);
 
         }
         catch (Exception e)
         {
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+
+            registerReceiver(mMessageReceiver, new IntentFilter("com.viralops.touchlessfoodordering"));
+
+            unregisterReceiver(mMessageReceiver);
+
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -538,7 +497,7 @@ dispachedlayout=findViewById(R.id.eventlayout1);
                 Fragment fragment1 = new Associate_Dashboard();
 
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.rootLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.rootLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
             }
             else {
                 AnimateBell();
@@ -2015,12 +1974,15 @@ dispachedlayout=findViewById(R.id.eventlayout1);
     }
 
     public class IRDDatamenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity_Mobile.this);
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
         }
 
 
@@ -2055,8 +2017,10 @@ dispachedlayout=findViewById(R.id.eventlayout1);
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            irdmenuslist.clear();
             irddataenulist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
 
             if (result != null) {
 
@@ -2098,7 +2062,161 @@ dispachedlayout=findViewById(R.id.eventlayout1);
 
 
                     }
+                    final Dialog dialog1 = new Dialog(MainActivity_Mobile.this);
+                    // Include dialog.xml file
 
+                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setContentView(R.layout.menu_popuplist);
+                    int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                    int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog1.getWindow().setLayout(width, height);
+
+                    dialog1.setCancelable(false);
+                    // Set dialog title
+                    dialog1.setTitle("");
+                    dialog1.show();
+                    shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity_Mobile.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog1.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    irdAdapter = new IRDAdapter(irddataenulist, MainActivity_Mobile.this);
+                    shimmerRecyclerView.setAdapter(irdAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog1.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+
+                            if (Network.isNetworkAvailable(MainActivity_Mobile.this)) {
+                                //  new IRDDatamenu().execute();
+
+                            } else if (Network.isNetworkAvailable2(MainActivity_Mobile.this)) {
+                                // new IRDDatamenu().execute();
+                                dialog1.dismiss();
+
+                            } else {
+
+                            }
+                        }
+                    });
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+    public class IRDDatamenu1 extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+
+
+            try {
+                String credentials = Credentials.basic("admin", "LetsValet2You");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.BASE_URL + BuildConfig.ird_menu)
+                        .addHeader("Authorization", "Bearer " + sessionManager.getACCESSTOKEN())
+                        .get()
+                        .build();
+                okhttp3.Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+                return response.body().string();
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            irddataenulist.clear();
+
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result.replaceAll("\t", "").trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        IRD_Data_data ird_data = new IRD_Data_data();
+                        ird_data.setId(data.getString("id"));
+                        ird_data.setName(data.getString("name"));
+                        ird_data.setHotel_id(data.getString("hotel_id"));
+                        ird_data.setDescription(data.getString("description"));
+                        ird_data.setEnabled(data.getString("enabled"));
+                        ird_data.setCreated_at(data.getString("created_at"));
+                        ird_data.setUpdated_at(data.getString("updated_at"));
+                        JSONArray jsonArray1 = data.getJSONArray("categories");
+                        ird_data.setCategories(jsonArray1);
+
+                       /* for (int j = 0; j < jsonArray1.length(); j++) {
+                            JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                            IRD_Category ird_category = new IRD_Category();
+                            ird_category.setId(jsonObject1.getString("id"));
+                            ird_category.setCreated_at(jsonObject1.getString("created_at"));
+                            ird_category.setUpdated_at(jsonObject1.getString("updated_at"));
+                            ird_category.setMenu_id(jsonObject1.getString("menu_id"));
+                            ird_category.setDescription(jsonObject1.getString("description"));
+                            ird_category.setEnabled(jsonObject1.getString("enabled"));
+                            ird_category.setName(jsonObject1.getString("name"));
+                            ird_category.setTags(jsonObject1.getString("tags"));
+                            ird_category.setWithout_sub_category_items(jsonObject1.getJSONArray("without_sub_category_items"));
+                            ird_category.setSub_categories(jsonObject1.getJSONArray("sub_categories"));
+                            irdmenuslist.add(ird_category);
+                            ird_data.setCategories(irdmenuslist);
+
+                        }*/
+                        irddataenulist.add(ird_data);
+
+
+                    }
+                  irdAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -2273,8 +2391,7 @@ dispachedlayout=findViewById(R.id.eventlayout1);
                                 irdmenuslist.add(ird_category);
                                 irdcategorylist.add(ird_category);
                             }
-                            irdcAtegoryAdapter =new IRDCAtegoryAdapter(irdcategorylist,MainActivity_Mobile.this,id);
-                            shimmerRecyclerViewcategory.setAdapter(irdcAtegoryAdapter);
+                            irdcAtegoryAdapter.notifyDataSetChanged();
 
                         }
 
@@ -2513,11 +2630,11 @@ dispachedlayout=findViewById(R.id.eventlayout1);
                     Action  login = response.body();
                     Toast.makeText(MainActivity_Mobile.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity_Mobile.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity_Mobile.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{
@@ -2573,11 +2690,11 @@ dispachedlayout=findViewById(R.id.eventlayout1);
                     Action  login = response.body();
                     Toast.makeText(MainActivity_Mobile.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity_Mobile.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity_Mobile.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{

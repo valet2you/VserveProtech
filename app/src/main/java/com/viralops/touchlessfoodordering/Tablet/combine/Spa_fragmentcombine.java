@@ -60,6 +60,7 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.Tablet.Spa.SpaMainActivitytablet;
 
 
 import java.text.ParseException;
@@ -352,6 +353,9 @@ public class Spa_fragmentcombine extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+                    MainActivity.bellspa.setVisibility(View.GONE);
+
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -455,9 +459,16 @@ public class Spa_fragmentcombine extends Fragment {
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
                     text="";
-                    queuelist.remove(position);
-                    // homeAdapter.notifyItemRemoved(getAdapterPosition());
-                    homeAdapter.notifyDataSetChanged();
+                    searchView.setText("");
+                    if(Network.isNetworkAvailable(getActivity())){
+                        GetMenu();
+                    }
+                    else if(Network.isNetworkAvailable2(getActivity())){
+                        GetMenu();
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(response.code()==401){

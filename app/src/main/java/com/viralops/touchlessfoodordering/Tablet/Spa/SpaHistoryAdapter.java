@@ -43,7 +43,7 @@ public class SpaHistoryAdapter extends RecyclerView.Adapter<SpaHistoryAdapter.vi
     @Override
     public viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_historylits, parent, false);
+                .inflate(R.layout.order_historylitsspa, parent, false);
 
         return new viewholder(view);
     }
@@ -57,6 +57,19 @@ public class SpaHistoryAdapter extends RecyclerView.Adapter<SpaHistoryAdapter.vi
         holder.orderstatus.setText(getDate1(holder.mitem.getOrder_detail().getCleared_at()));
         holder.acceptedat.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
 
+        if(holder.mitem.getOrder_stage()!=null){
+
+            if(holder.mitem.getOrder_stage().getStage().equals("other")){
+                holder.reason.setText(capitailizeWord(holder.mitem.getOrder_stage().getStage().replaceAll("_"," ")));
+            }
+            else {
+                holder.reason.setText(capitailizeWord(holder.mitem.getOrder_stage().getStage().replaceAll("_"," ")));
+            }
+        }
+        else{
+            holder.reason.setText("-");
+
+        }
 
 
             holder.colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
@@ -84,6 +97,7 @@ public class SpaHistoryAdapter extends RecyclerView.Adapter<SpaHistoryAdapter.vi
          public TextView roomno;
          public TextView guests;
          public TextView orderrecived;
+         public TextView reason;
          public  TextView orderstatus;
          public  TextView acceptedat;
 
@@ -96,6 +110,7 @@ public class SpaHistoryAdapter extends RecyclerView.Adapter<SpaHistoryAdapter.vi
              super(itemView);
              roomno=itemView.findViewById(R.id.roomno);
              guests=itemView.findViewById(R.id.guest);
+             reason=itemView.findViewById(R.id.reason);
              orderrecived=itemView.findViewById(R.id.orderreceivedtext);
              orderstatus=itemView.findViewById(R.id.deliveredat);
              acceptedat=itemView.findViewById(R.id.acceptedat);
@@ -164,7 +179,7 @@ public class SpaHistoryAdapter extends RecyclerView.Adapter<SpaHistoryAdapter.vi
 
                          orderinsdetails.setText(getDatenew(homeViewModels.get(getAdapterPosition()).getOrder_detail().getRequest_schedule_at()));
 
-name.setText(homeViewModels.get(getAdapterPosition()).getGuest().getName());
+name.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getGuest().getName()));
                      Order_ItemAdapterdetail order_itemAdapterdetail=new Order_ItemAdapterdetail(homeViewModels.get(getAdapterPosition()).getOrder_spa_items(),context);
                      orderitemsdetail.setAdapter(order_itemAdapterdetail);
                      LinearLayout colorimage=dialog.findViewById(R.id.colorimage);
@@ -177,12 +192,12 @@ name.setText(homeViewModels.get(getAdapterPosition()).getGuest().getName());
                          status.setVisibility(View.VISIBLE);
                          if(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().equals("other")){
                              reason.setVisibility(View.VISIBLE);
-                             status.setText(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," "));
-                             reason.setText(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage_text());
+                             status.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," ")));
+                             reason.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage_text()));
                          }
                          else {
                              reason.setVisibility(View.GONE);
-                             status.setText(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," "));
+                             status.setText(capitailizeWord(homeViewModels.get(getAdapterPosition()).getOrder_stage().getStage().replaceAll("_"," ")));
                          }
                      }
                      else{
@@ -297,6 +312,28 @@ name.setText(homeViewModels.get(getAdapterPosition()).getGuest().getName());
 //If you need time just put specific format for time like 'HH:mm:ss'
         String dateStr = formatter.format(date);
         return dateStr;
+    }
+    static String capitailizeWord(String str) {
+        StringBuffer s = new StringBuffer();
+
+        // Declare a character of space
+        // To identify that the next character is the starting
+        // of a new word
+        char ch = ' ';
+        for (int i = 0; i < str.length(); i++) {
+
+            // If previous character is space and current
+            // character is not space then it shows that
+            // current letter is the starting of the word
+            if (ch == ' ' && str.charAt(i) != ' ')
+                s.append(Character.toUpperCase(str.charAt(i)));
+            else
+                s.append(str.charAt(i));
+            ch = str.charAt(i);
+        }
+
+        // Return the string with trimming
+        return s.toString().trim();
     }
 
 }

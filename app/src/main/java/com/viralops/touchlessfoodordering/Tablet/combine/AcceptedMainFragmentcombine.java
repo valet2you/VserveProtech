@@ -56,6 +56,7 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.Tablet.IRD.AcceptedMainFragment;
 
 
 import java.text.ParseException;
@@ -468,7 +469,9 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
                     if(response.code()==202||response.code()==200||response.code()==201){
                         Action login = response.body();
                           Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                          if(Network.isNetworkAvailable(getActivity())){
+                        searchView.setText("");
+
+                        if(Network.isNetworkAvailable(getActivity())){
                               GetMenu();
                           }
                           else if(Network.isNetworkAvailable2(getActivity())){
@@ -720,11 +723,11 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
 
         }
         if(holder.mitem.getGuest()!=null) {
-            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context);
+            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context,holder.mitem.getOrder_detail().getDispatched_at());
             holder.recyclerView.setAdapter(order_itemAdapter1);
         }
         else{
-            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context);
+            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context,holder.mitem.getOrder_detail().getDispatched_at());
             holder.recyclerView.setAdapter(order_itemAdapter1);
         }
 
@@ -798,10 +801,18 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
                 status.setVisibility(View.VISIBLE);
                 TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
 
-                    dispatchbutton.setText("DISPATCHED");
+                dispatchbutton.setText("DISPATCHED");
 
 
-
+                TextView dispacthtext=dialog.findViewById(R.id.dispacthtext);
+                TextView dispachedatvaleue=dialog.findViewById(R.id.dispachedatvaleue);
+                dispacthtext.setTypeface(holder.font);
+                if(holder.mitem.getOrder_detail().getDispatched_at()!=null){
+                    dispachedatvaleue.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
+                }
+                else{
+                    dispachedatvaleue.setText("-");
+                }
                 RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
                 orderitemsdetail.setLayoutManager(new GridLayoutManager(context,2));
                 roomno.setText(holder.mitem.getPrimises().getPremise_no());
@@ -881,14 +892,14 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
                 LinearLayout colorimage=dialog.findViewById(R.id.colorimage);
                 guests.setText(holder.mitem.getNo_of_guest());
 
-                    accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
+                accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
 
 
 
 
-                    colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
-                    since.setTextColor(context.getResources().getColor(R.color.gray));
-                    roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
+                colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
+                since.setTextColor(context.getResources().getColor(R.color.gray));
+                roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
 
 
 
@@ -903,24 +914,24 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
                 dispatchbutton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                            if(Network.isNetworkAvailable(getActivity())){
+                        if(Network.isNetworkAvailable(getActivity())){
 
-                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                //setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                            //setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                dialog.dismiss();
-                            }
-                            else if(Network.isNetworkAvailable2(getActivity())){
+                            dialog.dismiss();
+                        }
+                        else if(Network.isNetworkAvailable2(getActivity())){
 
-                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                            // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                dialog.dismiss();
+                            dialog.dismiss();
 
-                            }
-                            else{
+                        }
+                        else{
 
-                            }
+                        }
 
 
                     }
@@ -1224,8 +1235,9 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
         String status;
         String signature;
         String guestname;
+        String dispactchedString;
         int position1;
-        public Order_ItemAdapter1(String statuspayemnt, String room, String guests1, String ordercreated, String description, String orderaccepted, String id, int position1, String status, ArrayList<Dashboard.Order_menu_items> order_items, String name, Context context) {
+        public Order_ItemAdapter1(String statuspayemnt, String room, String guests1, String ordercreated, String description, String orderaccepted, String id, int position1, String status, ArrayList<Dashboard.Order_menu_items> order_items, String name, Context context,String dispactchedString) {
             this.order_items = order_items;
             this.context = context;
             this.room=room;
@@ -1233,6 +1245,8 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
             this.ordercreated=ordercreated;
             this.orderaccepted=orderaccepted;
             this.description=description;
+            this.dispactchedString=dispactchedString;
+
             this.guestname=name;
             this.status=status;
             this.position1=position1;
@@ -1315,7 +1329,15 @@ public class AcceptedMainFragmentcombine extends Fragment implements View.OnClic
                         statustext.setVisibility(View.VISIBLE);
                         TextView status1=dialog.findViewById(R.id.status);
                         status1.setVisibility(View.VISIBLE);
-
+                        TextView dispacthtext=dialog.findViewById(R.id.dispacthtext);
+                        TextView dispachedatvaleue=dialog.findViewById(R.id.dispachedatvaleue);
+                        dispacthtext.setTypeface(font);
+                        if(dispactchedString!=null){
+                            dispachedatvaleue.setText(getDate1(dispactchedString));
+                        }
+                        else{
+                            dispachedatvaleue.setText("-");
+                        }
                         TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
                         TextView name=dialog.findViewById(R.id.name);
                         LinearLayout signature=dialog.findViewById(R.id.signature);

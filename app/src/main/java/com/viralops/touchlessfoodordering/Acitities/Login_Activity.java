@@ -24,6 +24,7 @@ import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
 import com.viralops.touchlessfoodordering.Mobile.Spa.Spa_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Supervisor.Supervisor_mainactivity;
 import com.viralops.touchlessfoodordering.Model.Login;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
@@ -137,34 +138,63 @@ SessionManagerFCM sessionManagerFCM;
                 if(response.code()==201||response.code()==200){
                     Login login = response.body();
                     Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
-                        sessionManager.setPorchName(login.getHotel().getName());
                     sessionManager.setNAME(login.getUser_type());
+
+
+
 
                     sessionManager.setACCESSTOKEN(login.getAccess_token());
                    if(isTablet(Login_Activity.this)){
-                        if(sessionManager.getNAME().equals("ird_manager")){
-                            Intent intent = new Intent(Login_Activity.this, IRdMainActivity.class);
+
+                       if(sessionManager.getNAME().equals("ird_manager")){
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                           Intent intent = new Intent(Login_Activity.this, IRdMainActivity.class);
                             startActivity(intent);
+                            finish();
                         }else if(sessionManager.getNAME().equals("restaurant_manager")){
-                            Intent intent = new Intent(Login_Activity.this, Resturant_Tablet_MainActivity.class);
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                           Intent intent = new Intent(Login_Activity.this, Resturant_Tablet_MainActivity.class);
                             startActivity(intent);
+                            finish();
+
                         }
                         else if(sessionManager.getNAME().equals("hotel_admin")){
-                            Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                           Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                             startActivity(intent);
+                            finish();
+
                         } else if(sessionManager.getNAME().equals("laundry_manager")){
-                            Intent intent = new Intent(Login_Activity.this, LaundryMainActivity.class);
+                            sessionManager.setPorchName(login.getHotel().getName());
+
+
+                           Intent intent = new Intent(Login_Activity.this, LaundryMainActivity.class);
                             startActivity(intent);
+                            finish();
+
                         } else if(sessionManager.getNAME().equals("spa_manager")){
-                            Intent intent = new Intent(Login_Activity.this, SpaMainActivitytablet.class);
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                           Intent intent = new Intent(Login_Activity.this, SpaMainActivitytablet.class);
                             startActivity(intent);
+                            finish();
+
                         } else if(sessionManager.getNAME().equals("connect_manager")){
-                            Intent intent = new Intent(Login_Activity.this, AYSMainActivity.class);
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                           Intent intent = new Intent(Login_Activity.this, AYSMainActivity.class);
                             startActivity(intent);
+                            finish();
+
                         }
 
                         else if(sessionManager.getNAME().equals("mini_bar_manager")){
-                          //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                           //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                           //  startActivity(intent);
                         }
 
@@ -172,28 +202,59 @@ SessionManagerFCM sessionManagerFCM;
                    }
                     else{
                         if(sessionManager.getNAME().equals("restaurant_manager")){
+                            sessionManager.setPorchName(login.getHotel().getName());
+
                             Intent intent = new Intent(Login_Activity.this, RestaurantMain.class);
                             startActivity(intent);
+                            finish();
+
+                        } else if(sessionManager.getNAME().equals("global_supervisor")){
+                            sessionManager.setPorchName("none");
+
+                            Intent intent = new Intent(Login_Activity.this, Supervisor_mainactivity.class);
+                            startActivity(intent);
+                            finish();
+
                         }else if(sessionManager.getNAME().equals("ird_manager")) {
+                            sessionManager.setPorchName(login.getHotel().getName());
+
                             Intent intent = new Intent(Login_Activity.this, MainActivity_Mobile.class);
                             startActivity(intent);
+                            finish();
+
                         }
                         else if(sessionManager.getNAME().equals("hotel_admin")){
-                      //      Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                            sessionManager.setPorchName(login.getHotel().getName());
+
+                            //      Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                         //    startActivity(intent);
                         } else if(sessionManager.getNAME().equals("laundry_manager")){
+                            sessionManager.setPorchName(login.getHotel().getName());
+
                             Intent intent = new Intent(Login_Activity.this, Laundry_Main_Mobile.class);
                             startActivity(intent);
+                            finish();
+
                         } else if(sessionManager.getNAME().equals("spa_manager")){
-                           Intent intent = new Intent(Login_Activity.this, Spa_Mobile.class);
+                            sessionManager.setPorchName(login.getHotel().getName());
+
+                            Intent intent = new Intent(Login_Activity.this, Spa_Mobile.class);
                            startActivity(intent);
+                            finish();
+
                         } else if(sessionManager.getNAME().equals("connect_manager")){
+                            sessionManager.setPorchName(login.getHotel().getName());
+
                             Intent intent = new Intent(Login_Activity.this, AYSMain_Mobile.class);
                             startActivity(intent);
+                            finish();
+
                         }
 
                         else if(sessionManager.getNAME().equals("mini_bar_manager")){
-                          //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                            sessionManager.setPorchName(login.getHotel().getName());
+
+                            //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                           //  startActivity(intent);
                         }
 

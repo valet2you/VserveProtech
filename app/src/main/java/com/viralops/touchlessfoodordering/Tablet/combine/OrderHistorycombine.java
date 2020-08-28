@@ -50,6 +50,7 @@ public class OrderHistorycombine extends Fragment {
     TextView orderreceivedtext;
     TextView deliveredat;
     TextView orderacceptedtext;
+    TextView dispatcheddat;
     TextView norecord;
     ArrayList<OrderHistory.Data> orderslist;
     SessionManager sessionManager;
@@ -75,6 +76,7 @@ public class OrderHistorycombine extends Fragment {
         roomno=view.findViewById(R.id.roomno);
         guest=view.findViewById(R.id.guest);
         orderreceivedtext=view.findViewById(R.id.orderreceivedtext);
+        dispatcheddat=view.findViewById(R.id.dispatcheddat);
         deliveredat=view.findViewById(R.id.deliveredat);
         orderacceptedtext=view.findViewById(R.id.orderacceptedtext);
         norecord=view.findViewById(R.id.norecord);
@@ -86,6 +88,7 @@ public class OrderHistorycombine extends Fragment {
         orderreceivedtext.setTypeface(font);
         deliveredat.setTypeface(font);
         orderacceptedtext.setTypeface(font);
+        dispatcheddat.setTypeface(font);
 
         Typeface font1 = Typeface.createFromAsset(
                 getActivity().getAssets(),

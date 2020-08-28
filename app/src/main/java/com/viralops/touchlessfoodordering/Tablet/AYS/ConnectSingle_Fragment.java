@@ -300,7 +300,7 @@ public class ConnectSingle_Fragment extends Fragment {
                     Connect_Header  login = response.body();
                     AYSMainActivity.newtotalconnect.setText(String.valueOf(login.getData().getNew_order()));
                     AYSMainActivity.totalorderconnect.setText(String.valueOf(login.getData().getToday_order()));
-                    AYSMainActivity.inprogresstotal.setText(String.valueOf(login.getData().getToday_order()));
+                    AYSMainActivity.inprogresstotal.setText(String.valueOf(login.getData().getAccepted_order()));
 
 
                 }
@@ -343,6 +343,8 @@ public class ConnectSingle_Fragment extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+                    AYSMainActivity.bellconnect.setVisibility(View.GONE);
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -437,9 +439,16 @@ public class ConnectSingle_Fragment extends Fragment {
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                    queuelist.remove(position);
-                    // homeAdapter.notifyItemRemoved(getAdapterPosition());
-                    homeAdapter.notifyDataSetChanged();
+                    searchView.setText("");
+                    if(Network.isNetworkAvailable(getActivity())){
+                        GetMenu();
+                    }
+                    else if(Network.isNetworkAvailable2(getActivity())){
+                        GetMenu();
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(response.code()==401){

@@ -659,7 +659,7 @@ HomeAdapter homeAdapter;
         }
         private String getDatenew(String time) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-           // dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
             try {
                 date = dateFormat.parse(time);
@@ -667,7 +667,7 @@ HomeAdapter homeAdapter;
                 e.printStackTrace();
             }
             SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, hh:mm a");
-           // dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //If you need time just put specific format for time like 'HH:mm:ss'
             String dateStr = formatter.format(date);
             return dateStr;

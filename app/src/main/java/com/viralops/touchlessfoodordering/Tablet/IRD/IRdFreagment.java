@@ -56,6 +56,7 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.Tablet.Spa.SpaMainActivitytablet;
 ;
 
 import java.text.ParseException;
@@ -468,6 +469,8 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                 if(response.code()==202||response.code()==200){
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    searchView.setText("");
+                    IRdMainActivity.imgBell.setVisibility(View.GONE);
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -599,7 +602,7 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v.getId()== R.id.neworder){
-            IRdMainActivity.isvisisble=true;
+            IRdMainActivity.isvisisble=1;
             neworder.setBackgroundResource(R.drawable.bluebackgroudblack);
             newordertext.setTextColor(getResources().getColor(R.color.white));
             newcount.setTextColor(getResources().getColor(R.color.white));
@@ -625,7 +628,7 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                         .commitNow();*/
         }
         if(v.getId()== R.id.acceptedorder){
-            IRdMainActivity.isvisisble=false;
+            IRdMainActivity.isvisisble=2;
             neworder.setBackgroundResource(R.drawable.whitebackgroudblack1);
             newordertext.setTextColor(getResources().getColor(R.color.gray));
             newcount.setTextColor(getResources().getColor(R.color.gray));
@@ -642,7 +645,7 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                     .commitNow();
         }
         if(v.getId()== R.id.diaptachedorders){
-            IRdMainActivity.isvisisble=false;
+            IRdMainActivity.isvisisble=3;
 
             neworder.setBackgroundResource(R.drawable.whitebackgroudblack1);
             newordertext.setTextColor(getResources().getColor(R.color.gray));
@@ -802,11 +805,11 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
 
             }
             if(holder.mitem.getGuest()!=null) {
-                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context);
+                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context,holder.mitem.getOrder_detail().getDispatched_at());
                 holder.recyclerView.setAdapter(order_itemAdapter1);
             }
             else{
-                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context);
+                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context,holder.mitem.getOrder_detail().getDispatched_at());
                 holder.recyclerView.setAdapter(order_itemAdapter1);
             }
 
@@ -865,6 +868,15 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                     orderins.setTypeface(holder.font);
                     TextView orderinsdetails=dialog.findViewById(R.id.orderinsdetails);
                     TextView acceptedat=dialog.findViewById(R.id.accepttext);
+                    TextView dispacthtext=dialog.findViewById(R.id.dispacthtext);
+                    TextView dispachedatvaleue=dialog.findViewById(R.id.dispachedatvaleue);
+                    dispacthtext.setTypeface(holder.font);
+                    if(holder.mitem.getOrder_detail().getDispatched_at()!=null){
+                        dispachedatvaleue.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
+                    }
+                    else{
+                        dispachedatvaleue.setText("-");
+                    }
                     acceptedat.setTypeface(holder.font);
                     TextView accepted=dialog.findViewById(R.id.accepted);
                     TextView status=dialog.findViewById(R.id.status);
@@ -1293,8 +1305,9 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
             String status;
             String signature;
             String guestname;
+            String dispactchedString;
             int position1;
-            public Order_ItemAdapter1(String statuspayemnt, String room, String guests1, String ordercreated, String description, String orderaccepted, String id, int position1, String status, ArrayList<Dashboard.Order_menu_items> order_items, String name, Context context) {
+            public Order_ItemAdapter1(String statuspayemnt, String room, String guests1, String ordercreated, String description, String orderaccepted, String id, int position1, String status, ArrayList<Dashboard.Order_menu_items> order_items, String name, Context context,String dispactchedString) {
                 this.order_items = order_items;
                 this.context = context;
                 this.room=room;
@@ -1302,6 +1315,8 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                 this.ordercreated=ordercreated;
                 this.orderaccepted=orderaccepted;
                 this.description=description;
+                this.dispactchedString=dispactchedString;
+
                 this.guestname=name;
                 this.status=status;
                 this.position1=position1;
@@ -1396,7 +1411,15 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                             else{
 
                             }
-
+                            TextView dispacthtext=dialog.findViewById(R.id.dispacthtext);
+                            TextView dispachedatvaleue=dialog.findViewById(R.id.dispachedatvaleue);
+                            dispacthtext.setTypeface(font);
+                            if(dispactchedString!=null){
+                                dispachedatvaleue.setText(getDate1(dispactchedString));
+                            }
+                            else{
+                                dispachedatvaleue.setText("-");
+                            }
                          /*   signature.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

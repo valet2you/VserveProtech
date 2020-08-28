@@ -32,6 +32,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.Model.Action;
@@ -68,6 +71,7 @@ public class AYSMain_Mobile extends AppCompatActivity implements View.OnClickLis
   
     Typeface font;
     Typeface font1;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,14 @@ public class AYSMain_Mobile extends AppCompatActivity implements View.OnClickLis
         toolbar.setOverflowIcon(drawable);
         sessionManager=new SessionManager(AYSMain_Mobile.this);
         sessionManagerFCM=new SessionManagerFCM(AYSMain_Mobile.this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
+
         porchname=findViewById(R.id.porchname);
         porchname.setText(sessionManager.getPorchName());
          font = Typeface.createFromAsset(
@@ -161,7 +173,7 @@ public class AYSMain_Mobile extends AppCompatActivity implements View.OnClickLis
             tab1.setBackgroundColor(getResources().getColor(R.color.white));
             Fragment fragmentmanager = new AYS_Dashboard();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commit();
+                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
 
         }
         if(view.getId()== R.id.eventlayout){
@@ -361,13 +373,27 @@ public class AYSMain_Mobile extends AppCompatActivity implements View.OnClickLis
 
             registerReceiver(mMessageReceiver, new IntentFilter("com.viralops.touchlessfoodordering"));
 
-            unregisterReceiver(mMessageReceiver);
 
         }
         catch (Exception e)
         {
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+
+            registerReceiver(mMessageReceiver, new IntentFilter("com.viralops.touchlessfoodordering"));
+
+            unregisterReceiver(mMessageReceiver);
+
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -379,7 +405,7 @@ public class AYSMain_Mobile extends AppCompatActivity implements View.OnClickLis
                 Fragment fragment1 = new AYS_Dashboard();
 
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.rootLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.rootLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
             }
             else {
                 AnimateBell();

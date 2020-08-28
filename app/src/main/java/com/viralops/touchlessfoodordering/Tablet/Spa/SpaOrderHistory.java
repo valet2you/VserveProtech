@@ -55,6 +55,8 @@ public class SpaOrderHistory extends Fragment {
     AutoCompleteTextView searchView;
     SpaHistoryAdapter homeAdapter;
     ImageView filter;
+    TextView reason;
+
     public static SpaOrderHistory newInstance() {
         return new SpaOrderHistory();
     }
@@ -77,6 +79,9 @@ public class SpaOrderHistory extends Fragment {
         deliveredat=view.findViewById(R.id.deliveredat);
         orderacceptedtext=view.findViewById(R.id.orderacceptedtext);
         norecord=view.findViewById(R.id.norecord);
+        reason=view.findViewById(R.id.reason);
+
+
         final Typeface font = Typeface.createFromAsset(
                 getActivity().getAssets(),
                 "font/Roboto-Regular.ttf");
@@ -84,6 +89,7 @@ public class SpaOrderHistory extends Fragment {
         guest.setTypeface(font);
         orderreceivedtext.setTypeface(font);
         deliveredat.setTypeface(font);
+        reason.setTypeface(font);
         orderacceptedtext.setTypeface(font);
 
         Typeface font1 = Typeface.createFromAsset(

@@ -1,8 +1,11 @@
 package com.viralops.touchlessfoodordering.Mobile.Laundry;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -45,6 +48,7 @@ import com.viralops.touchlessfoodordering.Model.Laundry_Header;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.database.AlarmReceiver;
 import com.viralops.touchlessfoodordering.database.DbHelper;
 
 
@@ -455,13 +459,13 @@ HomeAdapter homeAdapter;
                         if(localarray.get(i).getO_id().equals(id)){
                             localarray.remove(i);
                             db.delete(DbHelper.TABLE_NAME, DbHelper.O_ID + "=" + id, null);
-                          /*  Intent intent  = new Intent(getActivity(), AlarmReceiver.class);
-                            intent.setAction("SomeAction");
+                           Intent intent  = new Intent(getActivity(), AlarmReceiver.class);
+
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), alarmid, intent, 0);
                             AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
                             if(pendingIntent != null) {
                                 alarmManager.cancel(pendingIntent);
-                            }*/
+                            }
                            // db.close();
                         }
                     }
@@ -2701,7 +2705,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
     }
     private String getDatenew(String time) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
         try {
             date = dateFormat.parse(time);
@@ -2709,7 +2713,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
             e.printStackTrace();
         }
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, hh:mm a");
-      //  dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //If you need time just put specific format for time like 'HH:mm:ss'
         String dateStr = formatter.format(date);
         return dateStr;

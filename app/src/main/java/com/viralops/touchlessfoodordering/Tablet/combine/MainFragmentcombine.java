@@ -195,6 +195,10 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
 
                             }
                         }
+                        else{
+                            MainActivity.imgBell.setVisibility(View.GONE);
+
+                        }
                     }
                 });
             }
@@ -468,6 +472,9 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
                     if(response.code()==202||response.code()==200){
                         Action login = response.body();
                         Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                        searchView.setText("");
+                        MainActivity.imgBell.setVisibility(View.GONE);
+
                         if(Network.isNetworkAvailable(getActivity())){
                             GetMenu();
                         }
@@ -477,6 +484,7 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
                         else{
 
                         }
+                        MainActivity.imgBell.setVisibility(View.GONE);
 
                     }
                     else if(response.code()==401){
@@ -802,11 +810,11 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
 
         }
         if(holder.mitem.getGuest()!=null) {
-            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context);
+            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context,holder.mitem.getOrder_detail().getDispatched_at());
             holder.recyclerView.setAdapter(order_itemAdapter1);
         }
         else{
-            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context);
+            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context,holder.mitem.getOrder_detail().getDispatched_at());
             holder.recyclerView.setAdapter(order_itemAdapter1);
         }
 
@@ -886,6 +894,15 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
                 else{
                     status.setText(holder.mitem.getPayment_status());
 
+                }
+                TextView dispacthtext=dialog.findViewById(R.id.dispacthtext);
+                TextView dispachedatvaleue=dialog.findViewById(R.id.dispachedatvaleue);
+                dispacthtext.setTypeface(holder.font);
+                if(holder.mitem.getOrder_detail().getDispatched_at()!=null){
+                    dispachedatvaleue.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
+                }
+                else{
+                    dispachedatvaleue.setText("-");
                 }
                 guests.setText(holder.mitem.getNo_of_guest());
                 since.setText(getDate1(holder.mitem.getCreated_at()));
@@ -1293,8 +1310,10 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
         String status;
         String signature;
         String guestname;
+        String dispactchedString;
+
         int position1;
-        public Order_ItemAdapter1(String statuspayemnt, String room, String guests1, String ordercreated, String description, String orderaccepted, String id, int position1, String status, ArrayList<Dashboard.Order_menu_items> order_items, String name, Context context) {
+        public Order_ItemAdapter1(String statuspayemnt, String room, String guests1, String ordercreated, String description, String orderaccepted, String id, int position1, String status, ArrayList<Dashboard.Order_menu_items> order_items, String name, Context context,String dispactchedString) {
             this.order_items = order_items;
             this.context = context;
             this.room=room;
@@ -1302,6 +1321,7 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
             this.ordercreated=ordercreated;
             this.orderaccepted=orderaccepted;
             this.description=description;
+            this.dispactchedString=dispactchedString;
             this.guestname=name;
             this.status=status;
             this.position1=position1;
@@ -1396,7 +1416,15 @@ public class MainFragmentcombine extends Fragment implements View.OnClickListene
                         else{
 
                         }
-
+                        TextView dispacthtext=dialog.findViewById(R.id.dispacthtext);
+                        TextView dispachedatvaleue=dialog.findViewById(R.id.dispachedatvaleue);
+                        dispacthtext.setTypeface(font);
+                        if(dispactchedString!=null){
+                            dispachedatvaleue.setText(getDate1(dispactchedString));
+                        }
+                        else{
+                            dispachedatvaleue.setText("-");
+                        }
                          /*   signature.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

@@ -38,6 +38,8 @@ public class Laundry_Dashboard1 {
 
         private String payment_status;
         private String orderid;
+
+        private Order_stage order_stage;
         private String roomno;
         private String detail;
         private String O_id;
@@ -46,8 +48,6 @@ public class Laundry_Dashboard1 {
         private int date;
         private int month;
         private int year;
-        private Order_stage order_stage;
-
         private int hour;
         private int minute;
         private String datestring;

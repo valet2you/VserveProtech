@@ -110,10 +110,6 @@ HomeAdapter homeAdapter;
         searchView =  view.findViewById(R.id.searchView);
      /*   mDbHelper = new DbHelper(getActivity());
         db = mDbHelper.getWritableDatabase();*/
-          localarray.clear();
-        db= mDbHelper.getWritableDatabase();
-        localarray=mDbHelper.getAllCotacts();
-        System.out.println("this is a local array"+localarray.size());
 
 
         recyclerView=view.findViewById(R.id.recycler);
@@ -209,6 +205,10 @@ HomeAdapter homeAdapter;
                     Laundry_Dashboard1  login = response.body();
                     queuelist=new ArrayList<>();
                     queuelistnew=new ArrayList<>();
+                    localarray.clear();
+                    db= mDbHelper.getWritableDatabase();
+                    localarray=mDbHelper.getAllCotacts();
+                    System.out.println("this is a local array"+localarray.size());
 
                     queuelist=login.getData();
                     if(queuelist.size()!=0){
@@ -253,7 +253,7 @@ HomeAdapter homeAdapter;
                                 System.out.println("current date" + timeStamp + " " + queuelist.get(i).getOrder_detail().getRequested_pickup_at());
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                                //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                                 Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
                                 long epoch = 0;
 
@@ -342,7 +342,7 @@ HomeAdapter homeAdapter;
                                 System.out.println("current date" + timeStamp + " " + datalist.get(i).getOrder_detail().getRequested_pickup_at());
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                                //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                                 Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
                                 long epoch = 0;
 
@@ -408,89 +408,6 @@ HomeAdapter homeAdapter;
 
 
 
-                   /*         ArrayList<Laundry_Dashboard1.Data> union = new ArrayList(localarray);
-                            union.addAll(queuelist);
-// Intersection is only those in both.
-                            ArrayList<Laundry_Dashboard1.Data> intersection = new ArrayList(localarray);
-                            intersection.retainAll(queuelist);
-// Symmetric difference is all except those in both.
-                            ArrayList<Laundry_Dashboard1.Data> symmetricDifference = new ArrayList(union);
-                            symmetricDifference.removeAll(intersection);
-                            System.out.println("union: " + union);
-                            System.out.println("intersection: " + intersection);
-                            System.out.println("**symmetricDifference: " + symmetricDifference.size()+"**");
-*/
-
-
-                                   /* else{
-                                        long timeDiff = 0;
-                                        Date date1 = null;
-                                        Date date2 = null;
-                                        final Calendar calendar = Calendar.getInstance();
-                                        String timeStamp = new SimpleDateFormat("dd MMM yyyy hh:mm a").format(new Date());
-                                        System.out.println("current date" + timeStamp + " " + queuelist.get(i).getOrder_detail().getRequested_pickup_at());
-                                        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                                        //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                                        Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
-                                        long epoch = 0;
-
-                                        try {
-                                            dt = dateFormat.parse(queuelist.get(i).getOrder_detail().getRequested_pickup_at());
-                                            epoch = dt.getTime();
-
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-
-
-                                        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-                                        cal.setTimeInMillis(epoch);
-                                        String date23 = android.text.format.DateFormat.format("dd MMM yyyy hh:mm a", dt).toString();
-                                        try {
-                                            date1 = formatter.parse(timeStamp);
-                                            date2 = formatter.parse(date23);
-                                            System.out.println("current datem 2 " + date1 + " " + date2);
-
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                            System.out.println("current datem 2 " + e.toString());
-
-                                        }  //  timeDiff = date1.getTime() - date2.getTime();
-
-                                        timeDiff = (date2.getTime() - date1.getTime());
-                                        System.out.println(" time diff"
-                                                + timeDiff);
-
-                                        int hour = date2.getHours();
-                                        int min = date2.getMinutes();
-                                        int date = date2.getDay();
-                                        int month = date2.getMonth();
-                                        int year = date2.getYear();
-                                        Laundry_Dashboard1.Data alarm = new Laundry_Dashboard1.Data();
-                                        alarm.setDate(date);
-                                        alarm.setMonth(month);
-                                        alarm.setYear(year);
-                                        alarm.setHour(hour);
-                                        alarm.setMinute(min);
-                                        alarm.setDatestring(date23);
-                                        alarm.setO_id(queuelist.get(i).getOrder_detail().getOrder_id());
-                                        alarm.setCreated_at(queuelist.get(i).getCreated_at());
-                                        alarm.setGuest(queuelist.get(i).getGuest());
-                                        alarm.setDescription(queuelist.get(i).getDescription());
-                                        alarm.setHotel_id(queuelist.get(i).getHotel_id());
-                                        alarm.setId(queuelist.get(i).getId());
-                                        alarm.setNo_of_guest(queuelist.get(i).getNo_of_guest());
-                                        alarm.setOrder_detail(queuelist.get(i).getOrder_detail());
-                                        alarm.setOrder_laundry_items(queuelist.get(i).getOrder_laundry_items());
-                                        alarm.setPayment_status(queuelist.get(i).getPayment_status());
-                                        alarm.setPrimises_id(queuelist.get(i).getPrimises_id());
-                                        alarm.setStatus(queuelist.get(i).getStatus());
-                                        alarm.setType(queuelist.get(i).getType());
-                                        alarm.setUpdated_at(queuelist.get(i).getUpdated_at());
-                                        alarm.setPrimises(queuelist.get(i).getPrimises());
-                                        setAlarm1(alarm);
-                                    }*/
 
 
                         }
@@ -2675,7 +2592,7 @@ HomeAdapter homeAdapter;
         }
         private String getDatenew(String time) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
             try {
                 date = dateFormat.parse(time);
@@ -2683,7 +2600,7 @@ HomeAdapter homeAdapter;
                 e.printStackTrace();
             }
             SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, hh:mm a");
-           // dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //If you need time just put specific format for time like 'HH:mm:ss'
             String dateStr = formatter.format(date);
             return dateStr;
@@ -2764,7 +2681,7 @@ HomeAdapter homeAdapter;
             //String alertTitle = mTitleText.getText().toString();
             intent.putExtra("title", laundry_dashboard.getPrimises().getPremise_no());
             intent.putExtra("time", timeString);
-            intent.putExtra("alramid",alarmid);
+            intent.putExtra("alramid",String.valueOf(alarmid));
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), alarmid, intent, 0);
 

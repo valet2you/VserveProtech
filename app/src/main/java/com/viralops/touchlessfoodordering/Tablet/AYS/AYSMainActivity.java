@@ -28,9 +28,14 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
+import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
 import com.viralops.touchlessfoodordering.Model.Action;
+import com.viralops.touchlessfoodordering.Model.Connect_Header;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
@@ -81,12 +86,7 @@ public class AYSMainActivity extends AppCompatActivity implements View.OnClickLi
 
      LinearLayout ayslayout;
      LinearLayout layout;
-
-
-
-
-
-
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -94,14 +94,23 @@ public class AYSMainActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
-        }
 
+
+        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.ays_activity);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); StrictMode.setThreadPolicy(policy);
         sessionManager=new SessionManager(AYSMainActivity.this);
         sessionManagerFCM=new SessionManagerFCM(AYSMainActivity.this);
         sessionManager.setIsINternet("false");
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
 
 
         ayslayout=  findViewById(R.id.ayslayout);
@@ -214,7 +223,7 @@ public class AYSMainActivity extends AppCompatActivity implements View.OnClickLi
                 connect.setTextColor(getResources().getColor(R.color.gray));
                 layout.setBackgroundColor(getResources().getColor(R.color.blue));
                 history.setTextColor(getResources().getColor(R.color.white));
-                isvisisble=true;
+                isvisisble=false;
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.content_view, ConnectHistoryOrderHistory.newInstance())
                             .commitNow();
@@ -249,10 +258,10 @@ public class AYSMainActivity extends AppCompatActivity implements View.OnClickLi
             if(v.getId()== R.id.ayslayout){
                 isvisisble=true;
             word="connect";
-
+            bellconnect.setVisibility(View.GONE);
             ayslayout.setBackgroundColor(getResources().getColor(R.color.blue));
             connect.setTextColor(getResources().getColor(R.color.white));
-    layout.setBackgroundColor(getResources().getColor(R.color.white));
+            layout.setBackgroundColor(getResources().getColor(R.color.white));
             history.setTextColor(getResources().getColor(R.color.gray));
 
             getSupportFragmentManager().beginTransaction()
@@ -451,6 +460,17 @@ public class AYSMainActivity extends AppCompatActivity implements View.OnClickLi
                 isvisisble=false;
                 bellconnect.setVisibility(View.VISIBLE);
                 AnimateBell();
+                if(Network.isNetworkAvailable(AYSMainActivity.this)){
+                    GetHeader();
+                }
+                else if(Network.isNetworkAvailable2(AYSMainActivity.this)){
+                    GetHeader();
+
+                }
+                else{
+
+                }
+
             }
 
 
@@ -458,5 +478,49 @@ public class AYSMainActivity extends AppCompatActivity implements View.OnClickLi
 
         }
     };
+    private void GetHeader() {
+        // display a progress dialog
+/*
+        String credentials = Credentials.basic("admin", "LetsValet2You");
+*/
+
+        (RetrofitClientInstance.getApiService().Connect_getHeader("Bearer "+sessionManager.getACCESSTOKEN())).enqueue(new Callback<Connect_Header>() {
+            @Override
+            public void onResponse(@NonNull Call<Connect_Header> call, @NonNull Response<Connect_Header> response) {
+
+                if(response.code()==202||response.code()==200){
+                    Connect_Header  login = response.body();
+                    newtotalconnect.setText(String.valueOf(login.getData().getNew_order()));
+                    totalorderconnect.setText(String.valueOf(login.getData().getToday_order()));
+                    inprogresstotal.setText(String.valueOf(login.getData().getAccepted_order()));
+
+
+                }
+                else if(response.code()==401){
+                    Connect_Header login = response.body();
+                    Toast.makeText(AYSMainActivity.this, "Unauthorised", Toast.LENGTH_SHORT).show();
+                    sessionManager.logoutsession();
+                }
+                else if(response.code()==500){
+                    Toast.makeText(AYSMainActivity.this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Connect_Header> call, @NonNull Throwable t) {
+                Log.d("response", Arrays.toString(t.getStackTrace()));
+
+            }
+        });
+
+    }
 
 }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
@@ -17,7 +18,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -27,6 +30,7 @@ import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
 import com.viralops.touchlessfoodordering.Mobile.Spa.Spa_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Supervisor.Supervisor_mainactivity;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
@@ -50,7 +54,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     SessionManager sessionManager;
     public static Ringtone r;
 
-
+    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
+    private final static String default_notification_channel_id = "default" ;
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
@@ -64,17 +69,29 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         Map<String, String> params = remoteMessage.getData();
         JSONObject object = new JSONObject(params);
-        updateMyActivity(this,"df");
-        String target="";
-        String message="";
-        sessionManager=new SessionManager(this);
+        updateMyActivity(this, "df");
+        String target = "";
+        String message = "";
+        sessionManager = new SessionManager(this);
         try {
-            message=object.getString("message");
-            target=object.getString("target");
+            message = object.getString("message");
+            target = object.getString("target");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-         sessionManager.setDesignStyle(target);
+        if (message.equals("New delayed order for acceptance")) {
+            sessionManager.setDesignStyle(message);
+
+        } else if (message.equals("New delayed order for dispatch")) {
+            sessionManager.setDesignStyle(message);
+        }
+
+    else
+
+    {
+        sessionManager.setDesignStyle(target);
+
+    }
 
 
 
@@ -86,281 +103,489 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         Bitmap logo = null;
         try {
 
-            Drawable myDrawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
+            Drawable myDrawable = ContextCompat.getDrawable(this, R.mipmap.launcherbluebig);
             logo = ((BitmapDrawable) myDrawable).getBitmap();
         } catch (Exception ignored) {
         }
         PendingIntent pendingIntent = null;
+        if(sessionManager.getNAME()!=null) {
 
-        if(isTablet(FirebaseMessagingService.this)){
-            if(sessionManager.getNAME().equals("ird_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, IRdMainActivity.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            if (isTablet(FirebaseMessagingService.this)) {
+                if (sessionManager.getNAME().equals("ird_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, IRdMainActivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-            
-            }  else if(sessionManager.getNAME().equals("hotel_admin")){
-                Intent intent = new Intent(FirebaseMessagingService.this, MainActivity.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-               
-
-            }
-
-            else if(sessionManager.getNAME().equals("restaurant_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, Resturant_Tablet_MainActivity.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-               
-                //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
-                //  startActivity(intent);
-            } else if(sessionManager.getNAME().equals("laundry_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, LaundryMainActivity.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-             
-            } else if(sessionManager.getNAME().equals("spa_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, SpaMainActivitytablet.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            } else if(sessionManager.getNAME().equals("connect_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, AYSMainActivity.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            }
-
-            else if(sessionManager.getNAME().equals("mini_bar_manager")){
-            
-         
-            }
-
-        }
-        else{
-            if(sessionManager.getNAME().equals("restaurant_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, RestaurantMain.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-           
-            }else if(sessionManager.getNAME().equals("ird_manager")) {
-                Intent intent = new Intent(FirebaseMessagingService.this, MainActivity_Mobile.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-              
-            }
-            //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
-            //  startActivity(intent);
-            else if(sessionManager.getNAME().equals("laundry_manager")){
-
-                Intent intent = new Intent(FirebaseMessagingService.this, Laundry_Main_Mobile.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-              
-            } else if(sessionManager.getNAME().equals("spa_manager")){
-
-                Intent intent = new Intent(FirebaseMessagingService.this, Spa_Mobile.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-              
-            } else if(sessionManager.getNAME().equals("connect_manager")){
-                Intent intent = new Intent(FirebaseMessagingService.this, AYSMain_Mobile.class);
-                intent.putExtra("key", target);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            }
-
-            else if(sessionManager.getNAME().equals("mini_bar_manager")){
-                //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
-                //  startActivity(intent);
-            }
-        }
-
-
-        try {
-            if (target.equals("ird")) {
-                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                if(r.isPlaying()){
-                    r.stop();
-                }
-                else{
-                    r.play();
 
                 }
-                Handler handler = new Handler(Looper.getMainLooper());
+                else if (sessionManager.getNAME().equals("hotel_admin")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, MainActivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Run your task here
+
+                } else if (sessionManager.getNAME().equals("global_supervisor")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, Supervisor_mainactivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                    //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                    //  startActivity(intent);
+                } else if (sessionManager.getNAME().equals("laundry_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, LaundryMainActivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                } else if (sessionManager.getNAME().equals("spa_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, SpaMainActivitytablet.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                } else if (sessionManager.getNAME().equals("connect_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, AYSMainActivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                } else if (sessionManager.getNAME().equals("mini_bar_manager")) {
+
+
+                }
+
+            }
+            else {
+                if (sessionManager.getNAME().equals("restaurant_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, RestaurantMain.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                } else if (sessionManager.getNAME().equals("ird_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, MainActivity_Mobile.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                } else if (sessionManager.getNAME().equals("ird_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, MainActivity_Mobile.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                } else if (sessionManager.getNAME().equals("global_supervisor")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, Supervisor_mainactivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                    //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                    //  startActivity(intent);
+                }
+                //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                //  startActivity(intent);
+                else if (sessionManager.getNAME().equals("laundry_manager")) {
+
+                    Intent intent = new Intent(FirebaseMessagingService.this, Laundry_Main_Mobile.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                } else if (sessionManager.getNAME().equals("spa_manager")) {
+
+                    Intent intent = new Intent(FirebaseMessagingService.this, Spa_Mobile.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                } else if (sessionManager.getNAME().equals("connect_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, AYSMain_Mobile.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                } else if (sessionManager.getNAME().equals("mini_bar_manager")) {
+                    //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
+                    //  startActivity(intent);
+                }
+            }
+
+
+            try {
+
+                if (target.equals("ird")) {
+                    if (isTablet(FirebaseMessagingService.this)) {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                        r = RingtoneManager.getRingtone(getApplicationContext(), notification);
                         if (r.isPlaying()) {
                             r.stop();
+                        } else {
+                            r.play();
+
                         }
+                        Handler handler = new Handler(Looper.getMainLooper());
+
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Run your task here
+                                if (r.isPlaying()) {
+                                    r.stop();
+                                }
+                            }
+                        }, 10000);
+                        String message = "";
+                        if (target.equals("ird")) {
+                            message = "New Food Order Request";
+                        } else if (target.equals("laundry")) {
+                            message = "New Pickup Request For Laundry";
+
+                        } else if (target.equals("spa")) {
+                            message = "New Service Request For Spa";
+
+                        } else if (target.equals("connect")) {
+                            message = "New Service Request";
+
+                        } else if (target.equals("global_supervisor")) {
+                            if (messageBody.equals("New delayed order for acceptance")) {
+                                message = "Alert! Delay is accepting order";
+                            } else {
+                                message = "Alert! Delay in dispatching order";
+
+                            }
+                        } else {
+                            message = "New Food Order Request";
+
+                        }
+                        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, default_notification_channel_id)
+
+                                .setSmallIcon(R.mipmap.launcherbluesmall)
+                                .setLargeIcon(logo)
+                                .setContentTitle(message).
+                                        setContentIntent(pendingIntent)
+
+                                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                                //LED
+                                //Sound
+
+                                ;
+                       if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mBuilder.setSmallIcon(R.drawable.logotransparent);
+                          //  mBuilder.setColor(Color.parseColor("#00FFFFFF"));
+                        } else {
+                            mBuilder.setSmallIcon(R.drawable.launcherbluebig);
+                        }
+                /*.setTicker("this is a item2")
+                .setSubText("due date "+screen )
+                .setContentInfo("this is a item1")
+                .setContentText("this is a item1" );*/
+                        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                        bigText.setBigContentTitle(message);
+                        mBuilder.setStyle(bigText);
+                        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+                        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                        int importance = NotificationManager.IMPORTANCE_HIGH;
+                        NotificationChannel notificationChannel = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            notificationChannel = new
+                                    NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+                            mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
+                            assert mNotificationManager != null;
+                            mNotificationManager.createNotificationChannel(notificationChannel);
+                        }
+
+                        assert mNotificationManager != null;
+                        mNotificationManager.notify((int) System.currentTimeMillis(),
+                                mBuilder.build());
+
+                    } else {
+                        try {
+                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                            r.play();
+                            String message = "";
+                            if (target.equals("ird")) {
+                                message = "New Food Order Request";
+                            } else if (target.equals("laundry")) {
+                                message = "New Pickup Request For Laundry";
+
+                            } else if (target.equals("spa")) {
+                                message = "New Service Request For Spa";
+
+                            } else if (target.equals("connect")) {
+                                message = "New Service Request";
+
+                            } else if (target.equals("global_supervisor")) {
+                                if (messageBody.equals("New delayed order for acceptance")) {
+                                    message = "Alert! Delay is accepting order";
+                                } else {
+                                    message = "Alert! Delay in dispatching order";
+
+                                }
+                            } else {
+                                message = "New Food Order Request";
+
+                            }
+                            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, default_notification_channel_id)
+                                    .setSmallIcon(R.mipmap.launcherbluesmall)
+                                    .setLargeIcon(logo)
+                                    .setContentTitle(message).
+                                            setContentIntent(pendingIntent)
+
+                                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+                                    //LED
+                                   // .setLights(Color.RED, 3000, 3000);
+                            //Sound
+                            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                mBuilder.setSmallIcon(R.drawable.logotransparent);
+                                //  mBuilder.setColor(Color.parseColor("#00FFFFFF"));
+                            } else {
+                                mBuilder.setSmallIcon(R.drawable.launcherbluebig);
+                            }
+                /*.setTicker("this is a item2")
+                .setSubText("due date "+screen )
+                .setContentInfo("this is a item1")
+                .setContentText("this is a item1" );*/
+                            NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                            bigText.setBigContentTitle(message);
+                            mBuilder.setStyle(bigText);
+                            mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+                            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                            int importance = NotificationManager.IMPORTANCE_HIGH;
+                            NotificationChannel notificationChannel = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                notificationChannel = new
+                                        NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+                                mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
+                                assert mNotificationManager != null;
+                                mNotificationManager.createNotificationChannel(notificationChannel);
+                            }
+
+                            assert mNotificationManager != null;
+                            mNotificationManager.notify((int) System.currentTimeMillis(),
+                                    mBuilder.build());
+
+                        }
+                        catch (Exception e) {
+                            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                            Notification n = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                n = new Notification.Builder(this)
+                                        .setSmallIcon(R.mipmap.ic_launcher)
+                                        .setSound(uri)
+                                        .setChannelId("channel")
+                                        .setAutoCancel(true).build();
+                            } else {
+                                n = new Notification.Builder(this)
+                                        .setSmallIcon(R.mipmap.ic_launcher)
+                                        .setSound(uri)
+                                        .setAutoCancel(true).build();
+                            }
+                            NotificationManager notificationManager =
+                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            notificationManager.notify((int) System.currentTimeMillis(), n);
+
+                            e.printStackTrace();
+                        }
+
                     }
-                }, 10000);
-            } else {
-                int notifyID = 1;
-                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                String CHANNEL_ID = "my_channel_01";// The id of the channel.
-                CharSequence name = "VServe";// The user-visible name of the channel.
-                Notification notification;
-                int importance = NotificationManager.IMPORTANCE_HIGH;
-                // Create a notification and set the notification channel.
-                //Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher).copy(Bitmap.Config.ARGB_8888, true);
-                NotificationChannel mChannel = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
 
-                    notification = new Notification.Builder(FirebaseMessagingService.this)
-                            .setContentTitle("VServe ++ - New Request Found upar!!!")
-                            .setContentText(messageBody)
-                            .setLargeIcon(logo)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-
-                            .setAutoCancel(true)
-                            .setChannelId(CHANNEL_ID).setContentIntent(pendingIntent).build();
-                }
-                else
-                {
-                    notification = new Notification.Builder(FirebaseMessagingService.this)
-                            .setContentTitle("VServe ++ - New Request Found !!!")
-                            .setContentText(messageBody)
-                            .setLargeIcon(logo)
-
-                            .setSmallIcon(R.mipmap.ic_launcher).setAutoCancel(true)
-                            .setContentIntent(pendingIntent).build();
 
                 }
-                NotificationManager mNotificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    mNotificationManager.createNotificationChannel(mChannel);
-                    mNotificationManager.notify(notifyID , notification);
-                    mNotificationManager.cancel(notifyID);
-                    // startForeground(1,notification);
+                else {
+                    if (isTablet(FirebaseMessagingService.this)) {
+                        String message = "";
+                        if (target.equals("ird")) {
+                            message = "New Food Order Request";
+                        } 
+                        else if (target.equals("laundry")) {
+                            message = "New Pickup Request For Laundry";
 
-                }
-                else{
-                    mNotificationManager.notify(notifyID, notification);
-                    mNotificationManager.cancel(notifyID);
-                    //startForeground(1,notification);
+                        } 
+                        else if (target.equals("spa")) {
+                            message = "New Service Request For Spa";
 
-                    //   mNotificationManager.cancelAll()
+                        } 
+                        else if (target.equals("connect")) {
+                            message = "New Service Request";
+
+                        } 
+                        else if (target.equals("global_supervisor")) {
+                            if (messageBody.equals("New delayed order for acceptance")) {
+                                message = "Alert! Delay is accepting order";
+                            } else {
+                                message = "Alert! Delay in dispatching order";
+
+                            }
+                        } else {
+                            message = "New Food Order Request";
+
+                        }
+                        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, default_notification_channel_id)
+                                .setSmallIcon(R.mipmap.launcherbluesmall)
+                                .setLargeIcon(logo)
+                                .setContentTitle(message).
+                                        setContentIntent(pendingIntent)
+
+                                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                                //LED
+                                //Sound
+                                .setSound(uri);
+                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mBuilder.setSmallIcon(R.drawable.logotransparent);
+                            //  mBuilder.setColor(Color.parseColor("#00FFFFFF"));
+                        } else {
+                            mBuilder.setSmallIcon(R.drawable.launcherbluebig);
+                        }
+                /*.setTicker("this is a item2")
+                .setSubText("due date "+screen )
+                .setContentInfo("this is a item1")
+                .setContentText("this is a item1" );*/
+                        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                        bigText.setBigContentTitle(message);
+                        mBuilder.setStyle(bigText);
+                        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+                        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                        int importance = NotificationManager.IMPORTANCE_HIGH;
+                        NotificationChannel notificationChannel = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            notificationChannel = new
+                                    NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+                            mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
+                            assert mNotificationManager != null;
+                            mNotificationManager.createNotificationChannel(notificationChannel);
+                        }
+
+                        assert mNotificationManager != null;
+                        mNotificationManager.notify((int) System.currentTimeMillis(),
+                                mBuilder.build());
+
+
+                    } else {
+                        String message = "";
+
+                        if (target.equals("ird")) {
+                            message = "New Food Order Request";
+                        }
+                        else if (target.equals("laundry")) {
+                            message = "New Pickup Request For Laundry";
+
+                        }
+                        else if (target.equals("spa")) {
+                            message = "New Service Request For Spa";
+
+                        }
+                        else if (target.equals("connect")) {
+                            message = "New Service Request";
+
+                        }
+                        else if (target.equals("global_supervisor"))
+                        {
+                            if (messageBody.equals("New delayed order for acceptance")) {
+                                message = "Alert! Delay is accepting order";
+                            } else {
+                                message = "Alert! Delay in dispatching order";
+
+                            }
+                        }
+                        else {
+                            message = "New Food Order Request";
+
+                        }
+                        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, default_notification_channel_id)
+                                .setSmallIcon(R.mipmap.launcherbluesmall)
+                                .setLargeIcon(logo)
+                                .setContentTitle(message).
+                                        setContentIntent(pendingIntent)
+
+                                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                                //LED
+                                //Sound
+                                .setSound(uri);
+                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mBuilder.setSmallIcon(R.drawable.logotransparent);
+                            //  mBuilder.setColor(Color.parseColor("#00FFFFFF"));
+                        } else {
+                            mBuilder.setSmallIcon(R.drawable.launcherbluebig);
+                        }
+                /*.setTicker("this is a item2")
+                .setSubText("due date "+screen )
+                .setContentInfo("this is a item1")
+                .setContentText("this is a item1" );*/
+                        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                        bigText.setBigContentTitle(message);
+                        mBuilder.setStyle(bigText);
+                        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+                        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                        int importance = NotificationManager.IMPORTANCE_HIGH;
+                        NotificationChannel notificationChannel = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            notificationChannel = new
+                                    NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+                            mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
+                            assert mNotificationManager != null;
+                            mNotificationManager.createNotificationChannel(notificationChannel);
+                        }
+
+                        assert mNotificationManager != null;
+                        mNotificationManager.notify((int) System.currentTimeMillis(),
+                                mBuilder.build());
+
+                  /*  try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                        r.play();
+                    }
+                    catch (Exception e) {
+                        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                        Notification n = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            n = new Notification.Builder(this)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setSound(uri)
+                                    .setChannelId("channel")
+                                    .setAutoCancel(true).build();
+                        }
+                        else{
+                            n = new Notification.Builder(this)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setSound(uri)
+                                    .setAutoCancel(true).build();
+                        }
+                        NotificationManager notificationManager =
+                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        notificationManager.notify((int) System.currentTimeMillis(), n);
+
+                        e.printStackTrace();
+                    }*/
+                    }
                 }
+
+            } catch (Exception e) {
+
 
             }
-
-
-        } catch (Exception e) {
-
-       /* Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        String CHANNEL_ID = "my_channel_01";// The id of the channel.
-        CharSequence name = "VServe";// The user-visible name of the channel.
-        Notification notification;
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-       // Create a notification and set the notification channel.
-        //Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher).copy(Bitmap.Config.ARGB_8888, true);
-        NotificationChannel mChannel = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-
-            notification = new Notification.Builder(FirebaseMessagingService.this)
-                    .setContentTitle("VServe ++ - New Request Found upar!!!")
-                    .setContentText(messageBody)
-                    .setLargeIcon(logo)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setSound(uri)
-                    .setAutoCancel(true)
-                    .setChannelId(CHANNEL_ID).setContentIntent(pendingIntent).build();
-        }
-        else
-        {
-            notification = new Notification.Builder(FirebaseMessagingService.this)
-                    .setContentTitle("VServe ++ - New Request Found !!!")
-                    .setContentText(messageBody)
-                    .setLargeIcon(logo)
-                    .setSound(uri)
-                    .setSmallIcon(R.mipmap.ic_launcher).setAutoCancel(true)
-                    .setContentIntent(pendingIntent).build();
-
-        }*/
-
-
         }
 
 
-/*
-
-        int notifyID = 1;
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        String CHANNEL_ID = "my_channel_01";// The id of the channel.
-        CharSequence name = "VServe";// The user-visible name of the channel.
-        Notification notification;
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-       // Create a notification and set the notification channel.
-        //Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher).copy(Bitmap.Config.ARGB_8888, true);
-        NotificationChannel mChannel = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-
-            notification = new Notification.Builder(FirebaseMessagingService.this)
-                    .setContentTitle("VServe ++ - New Request Found upar!!!")
-                    .setContentText(messageBody)
-                    .setLargeIcon(logo)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-
-                    .setAutoCancel(true)
-                    .setChannelId(CHANNEL_ID).setContentIntent(pendingIntent).build();
-        }
-        else
-        {
-            notification = new Notification.Builder(FirebaseMessagingService.this)
-                    .setContentTitle("VServe ++ - New Request Found !!!")
-                    .setContentText(messageBody)
-                    .setLargeIcon(logo)
-
-                    .setSmallIcon(R.mipmap.ic_launcher).setAutoCancel(true)
-                    .setContentIntent(pendingIntent).build();
-
-        }
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mNotificationManager.createNotificationChannel(mChannel);
-            mNotificationManager.notify(notifyID , notification);
-            mNotificationManager.cancel(notifyID);
-            // startForeground(1,notification);
-
-        }
-        else{
-            mNotificationManager.notify(notifyID, notification);
-            mNotificationManager.cancel(notifyID);
-            //startForeground(1,notification);
-
-            //   mNotificationManager.cancelAll()
-        }
-*/
 
     }
 

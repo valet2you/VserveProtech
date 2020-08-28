@@ -36,8 +36,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
@@ -45,12 +48,14 @@ import com.viralops.touchlessfoodordering.BuildConfig;
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.IRD_Data;
 import com.viralops.touchlessfoodordering.Model.Laundry_Category;
+import com.viralops.touchlessfoodordering.Model.Laundry_Header;
 import com.viralops.touchlessfoodordering.Model.Laundry_item;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 
 
 import org.json.JSONArray;
@@ -111,6 +116,9 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
      LinearLayout laundrylayout;
      LinearLayout layout;
     LaundryCAtegoryAdapter   laundryCartegoryAdapter;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    Typeface font;
+    Typeface font1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,12 +126,20 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
         }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         setContentView(R.layout.laundry_activity);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); StrictMode.setThreadPolicy(policy);
         sessionManager=new SessionManager(LaundryMainActivity.this);
         sessionManagerFCM=new SessionManagerFCM(LaundryMainActivity.this);
         sessionManager.setIsINternet("false");
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
 
         laundrylayout=  findViewById(R.id.laundrylayout);
 
@@ -132,10 +148,10 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
          belllaundry.setVisibility(View.INVISIBLE);
 
         startndard=findViewById(R.id.startndard);
-        final Typeface font = Typeface.createFromAsset(
+         font = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Regular.ttf");
-        Typeface font1 = Typeface.createFromAsset(
+         font1 = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Thin.ttf");
 
@@ -251,79 +267,25 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
 
 
                 if(word.equals("Laundry")) {
+                    if (Network.isNetworkAvailable(LaundryMainActivity.this)) {
+                        new LaundryIRDenu().execute();
 
-                    final Dialog dialog = new Dialog(LaundryMainActivity.this);
-                    // Include dialog.xml file
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    } else if (Network.isNetworkAvailable2(LaundryMainActivity.this)) {
+                        new LaundryIRDenu().execute();}
+                    else{
+                        if (sessionManager.getIsINternet().equals("false")) {
+                            Intent intent = new Intent(LaundryMainActivity.this, Internetconnection.class);
+                            startActivity(intent);
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.menulist);
-                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
-                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.95);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                            sessionManager.setIsINternet("true");
+                            finish();
 
-                    dialog.getWindow().setLayout(width1, height1);
-
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
-                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(LaundryMainActivity.this, LinearLayoutManager.VERTICAL, false));
-                    TextView title = dialog.findViewById(R.id.hotel);
-                    title.setTypeface(font);
-                    title.setText("Laundry Menu");
-                    final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
-                    final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
-                    laundryCartegoryAdapter = new LaundryCAtegoryAdapter(laundrymenulist, LaundryMainActivity.this);
-                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
-
-                    registerForContextMenu(menubutton);
-                    ImageView close = dialog.findViewById(R.id.close);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    menubutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            menudialog = new Dialog(LaundryMainActivity.this);
-                            // Include dialog.xml file
-                            menudialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                            menudialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-                            menudialog.setContentView(R.layout.categorypopup);
-                            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
-                            int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
-
-                            menudialog.getWindow().setLayout(width, height);
-                            menudialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
-
-                            // dialog.setCancelable(true);
-                            menudialog.setCanceledOnTouchOutside(true);
-                            // setFinishOnTouchOutside(true);
-                            // Set dialog title
-                            menudialog.setTitle("Select Category");
-                            menudialog.show();
-                            recyclerView = menudialog.findViewById(R.id.recycler);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(LaundryMainActivity.this, LinearLayoutManager.VERTICAL, false));
-                            LaundryCartegoryAdapter menupopupadapeter = new LaundryCartegoryAdapter(laundrycategorylistlist, LaundryMainActivity.this);
-                            recyclerView.setAdapter(menupopupadapeter);
-                            ImageView close = menudialog.findViewById(R.id.close);
-                            close.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    menudialog.dismiss();
-                                }
-                            });
+                        } else {
 
                         }
-                    });
+                    }
+
 
                 }
 
@@ -344,60 +306,22 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_view, Laundry_fragment.newInstance())
-                    .commitNow();
+                    .commitAllowingStateLoss();
             word="Laundry";
 
         }
-        if (Network.isNetworkAvailable(LaundryMainActivity.this)) {
-          new LaundryIRDenu().execute();
 
-
-        } else if (Network.isNetworkAvailable2(LaundryMainActivity.this)) {
-            new LaundryIRDenu().execute();}
-        else{
-            if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(LaundryMainActivity.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }
-        }
 
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId()== R.id.laundrylayout){
-            if (Network.isNetworkAvailable(LaundryMainActivity.this))
-            {
-                new LaundryIRDenu().execute();
 
-
-            }
-            else if (Network.isNetworkAvailable2(LaundryMainActivity.this)) {
-                new LaundryIRDenu().execute();
-
-
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(LaundryMainActivity.this, Internetconnection.class);
-                    startActivity(intent);
-
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
 
             word="Laundry";
             hearderforlaundry.setVisibility(View.VISIBLE);
+            LaundryMainActivity.belllaundry.setVisibility(View.GONE);
 
             menu.setVisibility(View.VISIBLE);
 
@@ -411,7 +335,7 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_view, Laundry_fragment.newInstance())
-                    .commitNow();
+                    .commitAllowingStateLoss();
         }
 
     }
@@ -590,11 +514,14 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
 
     public class LaundryIRDenu extends AsyncTask<String, String, String> {
 
+        final ProgressDialog progressDialog = new ProgressDialog(LaundryMainActivity.this);
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
         }
 
 
@@ -631,6 +558,9 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
             super.onPostExecute(result);
             laundrymenulist.clear();
             laundrycategorylistlist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
 
             if (result != null) {
 
@@ -662,7 +592,78 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
                         laundrymenulist.add(ird_category);
                         laundrycategorylistlist.add(ird_category);
                     }
+                    final Dialog dialog = new Dialog(LaundryMainActivity.this);
+                    // Include dialog.xml file
 
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.menulist);
+                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.95);
+                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog.getWindow().setLayout(width1, height1);
+
+                    dialog.setCancelable(false);
+                    // Set dialog title
+                    dialog.setTitle("");
+                    dialog.show();
+                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(LaundryMainActivity.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("Laundry Menu");
+                    final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
+                    final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
+                    laundryCartegoryAdapter = new LaundryCAtegoryAdapter(laundrymenulist, LaundryMainActivity.this);
+                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+
+                    registerForContextMenu(menubutton);
+                    ImageView close = dialog.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    menubutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            menudialog = new Dialog(LaundryMainActivity.this);
+                            // Include dialog.xml file
+                            menudialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            menudialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                            menudialog.setContentView(R.layout.categorypopup);
+                            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                            int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+
+                            menudialog.getWindow().setLayout(width, height);
+                            menudialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+
+                            // dialog.setCancelable(true);
+                            menudialog.setCanceledOnTouchOutside(true);
+                            // setFinishOnTouchOutside(true);
+                            // Set dialog title
+                            menudialog.setTitle("Select Category");
+                            menudialog.show();
+                            recyclerView = menudialog.findViewById(R.id.recycler);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(LaundryMainActivity.this, LinearLayoutManager.VERTICAL, false));
+                            LaundryCartegoryAdapter menupopupadapeter = new LaundryCartegoryAdapter(laundrycategorylistlist, LaundryMainActivity.this);
+                            recyclerView.setAdapter(menupopupadapeter);
+                            ImageView close = menudialog.findViewById(R.id.close);
+                            close.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    menudialog.dismiss();
+                                }
+                            });
+
+                        }
+                    });
 
                 }
                 catch (JSONException e) {
@@ -747,8 +748,7 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
                         laundrymenulist.add(ird_category);
                         laundrycategorylistlist.add(ird_category);
                     }
-                    laundryCartegoryAdapter =new LaundryCAtegoryAdapter(laundrymenulist, LaundryMainActivity.this);
-                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+                    laundryCartegoryAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -1573,7 +1573,7 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
         public void onBindViewHolder(@NonNull LaundryCartegoryAdapter.ViewHolder holder, final int position) {
             holder.mitem=order_items.get(position);
             holder.title.setText(holder.mitem.getName());
-            holder.category1.setText(String.valueOf(holder.mitem.getSub_categories().length()));
+           // holder.category1.setText(String.valueOf(holder.mitem.getSub_categories().length()));
 
 
         }
@@ -1632,12 +1632,21 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
                 word="Laundry";
 
                 Fragment fragment1 = new Laundry_fragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_view, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_view, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
             }
             else {
                 isvisisble=false;
                 belllaundry.setVisibility(View.VISIBLE);
                 AnimateBell();
+                if(Network.isNetworkAvailable(LaundryMainActivity.this)){
+                    GetHeader();
+                }
+                else if(Network.isNetworkAvailable2(LaundryMainActivity.this)){
+                    GetHeader();
+                }
+                else{
+
+                }
             }
 
 
@@ -1653,5 +1662,49 @@ public class LaundryMainActivity extends AppCompatActivity implements View.OnCli
 
 
     };
+    private void GetHeader() {
+        // display a progress dialog
+/*
+        String credentials = Credentials.basic("admin", "LetsValet2You");
+*/
+
+        (RetrofitClientInstance.getApiService().Laundry_getHeader("Bearer "+sessionManager.getACCESSTOKEN())).enqueue(new Callback<Laundry_Header>() {
+            @Override
+            public void onResponse(@NonNull Call<Laundry_Header> call, @NonNull Response<Laundry_Header> response) {
+
+                if(response.code()==202||response.code()==200){
+                    Laundry_Header  login = response.body();
+                    standtotal.setText(String.valueOf(login.getData().getStandard_order()));
+                    totalorderslaundry.setText(String.valueOf(login.getData().getToday_order()));
+                    totalexpress.setText(String.valueOf(login.getData().getExpress_order()));
+
+
+                }
+                else if(response.code()==401){
+                    Laundry_Header login = response.body();
+                    Toast.makeText(LaundryMainActivity.this, "Unauthorised", Toast.LENGTH_SHORT).show();
+                    sessionManager.logoutsession();
+                }
+                else if(response.code()==500){
+                    Toast.makeText(LaundryMainActivity.this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Laundry_Header> call, @NonNull Throwable t) {
+                Log.d("response", Arrays.toString(t.getStackTrace()));
+
+            }
+        });
+
+    }
 
 }

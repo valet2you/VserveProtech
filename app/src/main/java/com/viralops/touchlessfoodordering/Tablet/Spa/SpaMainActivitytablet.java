@@ -37,14 +37,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.BuildConfig;
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Model.Action;
+import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.Model.IRD_Item;
 import com.viralops.touchlessfoodordering.Model.Spa_Categories;
 import com.viralops.touchlessfoodordering.Model.Spa_Data;
@@ -54,6 +58,7 @@ import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 
 
 import org.json.JSONArray;
@@ -84,7 +89,7 @@ public class SpaMainActivitytablet extends AppCompatActivity implements View.OnC
     static public TextView totalspa;
     static public TextView totalorderspa;
 
-
+   static public Animation shake;
 
     ShimmerRecyclerView shimmerRecyclerViewcategory;
 
@@ -115,9 +120,11 @@ public class SpaMainActivitytablet extends AppCompatActivity implements View.OnC
      LinearLayout layout;
 
      LinearLayout spalayout;
-
+      Typeface font;
+      Typeface font1;
 SpaAdapter spaAdapter;
     SpaCAtegoryAdapter   spaCartegoryAdapter;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -126,13 +133,22 @@ SpaAdapter spaAdapter;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
         }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         setContentView(R.layout.spa_activity);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); StrictMode.setThreadPolicy(policy);
+
         sessionManager=new SessionManager(SpaMainActivitytablet.this);
         sessionManagerFCM=new SessionManagerFCM(SpaMainActivitytablet.this);
         sessionManager.setIsINternet("false");
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
 
 
         spalayout=  findViewById(R.id.spalayout);
@@ -145,10 +161,10 @@ SpaAdapter spaAdapter;
 
         newordersspa=findViewById(R.id.newordersspa);
 
-        final Typeface font = Typeface.createFromAsset(
+          font = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Regular.ttf");
-        Typeface font1 = Typeface.createFromAsset(
+         font1 = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Thin.ttf");
 
@@ -262,78 +278,30 @@ SpaAdapter spaAdapter;
 
 
                 if (word.equals("SPA")) {
-                    final Dialog dialog1 = new Dialog(SpaMainActivitytablet.this);
-                    // Include dialog.xml file
+                    if (Network.isNetworkAvailable(SpaMainActivitytablet.this)) {
 
-                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        new  SpaDatamenu().execute();
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog1.setContentView(R.layout.menu_popuplist);
-                    int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
-                    int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
-                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog1.getWindow().setLayout(width, height);
+                    } else if (Network.isNetworkAvailable2(SpaMainActivitytablet.this)) {
 
-                    dialog1.setCancelable(false);
-                    // Set dialog title
-                    dialog1.setTitle("");
-                    dialog1.show();
-                    shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
-                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(SpaMainActivitytablet.this, LinearLayoutManager.VERTICAL, false));
-                    TextView title = dialog1.findViewById(R.id.hotel);
-                    title.setTypeface(font);
-                    title.setText("MENU");
-                    spaAdapter = new SpaAdapter(spadataenulist, SpaMainActivitytablet.this);
-                    shimmerRecyclerView.setAdapter(spaAdapter);
-                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
-                    searchtext.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        new  SpaDatamenu().execute();
+
+
+                    }
+                    else{
+                        if (sessionManager.getIsINternet().equals("false")) {
+                            Intent intent = new Intent(SpaMainActivitytablet.this, Internetconnection.class);
+                            startActivity(intent);
+
+                            sessionManager.setIsINternet("true");
+                            finish();
+
+                        } else {
 
                         }
+                    }
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                            filter1(s.toString());
-                        }
-                    });*/
-                    //  registerForContextMenu(menubutton);
-                    ImageView close = dialog1.findViewById(R.id.close);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
-                            if (Network.isNetworkAvailable(SpaMainActivitytablet.this)) {
-                                new SpaDatamenu().execute();
-
-//
-
-                            } else if (Network.isNetworkAvailable2(SpaMainActivitytablet.this)) {
-                                new SpaDatamenu().execute();
-
-
-                            } else {
-           /* if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(SpaMainActivitytablet.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }*/
-                            }
-
-                        }
-                    });
 
 
                 }
@@ -356,29 +324,6 @@ SpaAdapter spaAdapter;
             word="SPA";
 
         }
-        if (Network.isNetworkAvailable(SpaMainActivitytablet.this)) {
-
-            new  SpaDatamenu().execute();
-
-
-        } else if (Network.isNetworkAvailable2(SpaMainActivitytablet.this)) {
-
-            new  SpaDatamenu().execute();
-
-
-        }
-        else{
-            if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(SpaMainActivitytablet.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }
-        }
 
     }
 
@@ -386,29 +331,6 @@ SpaAdapter spaAdapter;
     public void onClick(View v) {
 
          if(v.getId()== R.id.spalayout){
-            if (Network.isNetworkAvailable(SpaMainActivitytablet.this))
-            {
-                new SpaDatamenu().execute();
-
-
-            }
-            else if (Network.isNetworkAvailable2(SpaMainActivitytablet.this)) {
-                new SpaDatamenu().execute();
-
-
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(SpaMainActivitytablet.this, Internetconnection.class);
-                    startActivity(intent);
-
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
 
             isvisisble=true;
             word="SPA";
@@ -576,7 +498,7 @@ SpaAdapter spaAdapter;
         }
 
     public void AnimateBell() {
-        Animation shake = AnimationUtils.loadAnimation(SpaMainActivitytablet.this, R.anim.shakeanimation);
+         shake = AnimationUtils.loadAnimation(SpaMainActivitytablet.this, R.anim.shakeanimation);
 
         bellspa.setAnimation(shake);
 
@@ -625,6 +547,15 @@ SpaAdapter spaAdapter;
                 isvisisble=false;
                 bellspa.setVisibility(View.VISIBLE);
                 AnimateBell();
+                if(Network.isNetworkAvailable(SpaMainActivitytablet.this)){
+                    GetHeader();
+                }
+                else if(Network.isNetworkAvailable2(SpaMainActivitytablet.this)){
+                    GetHeader();
+                }
+                else{
+
+                }
             }
 
 
@@ -634,6 +565,177 @@ SpaAdapter spaAdapter;
     };
     // -------------Spa------------------------------//
     public class SpaDatamenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(SpaMainActivitytablet.this);
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+
+
+            try {
+                String credentials = okhttp3.Credentials.basic("admin", "LetsValet2You");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.BASE_URL + BuildConfig.spa_menu)
+                        .addHeader("Authorization", "Bearer " + sessionManager.getACCESSTOKEN())
+                        .get()
+                        .build();
+                okhttp3.Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+                return response.body().string();
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            spadataenulist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result.replaceAll("\t", "").trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        Spa_Data ird_data = new Spa_Data();
+                        ird_data.setId(data.getString("id"));
+                        ird_data.setName(data.getString("name"));
+                        ird_data.setHotel_id(data.getString("hotel_id"));
+                        ird_data.setDescription(data.getString("description"));
+                        ird_data.setEnabled(data.getString("enabled"));
+                        ird_data.setCreated_at(data.getString("created_at"));
+                        ird_data.setUpdated_at(data.getString("updated_at"));
+                        JSONArray jsonArray1 = data.getJSONArray("categories");
+                        ird_data.setCategories(jsonArray1);
+
+                       /* for (int j = 0; j < jsonArray1.length(); j++) {
+                            JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                            IRD_Category ird_category = new IRD_Category();
+                            ird_category.setId(jsonObject1.getString("id"));
+                            ird_category.setCreated_at(jsonObject1.getString("created_at"));
+                            ird_category.setUpdated_at(jsonObject1.getString("updated_at"));
+                            ird_category.setMenu_id(jsonObject1.getString("menu_id"));
+                            ird_category.setDescription(jsonObject1.getString("description"));
+                            ird_category.setEnabled(jsonObject1.getString("enabled"));
+                            ird_category.setName(jsonObject1.getString("name"));
+                            ird_category.setTags(jsonObject1.getString("tags"));
+                            ird_category.setWithout_sub_category_items(jsonObject1.getJSONArray("without_sub_category_items"));
+                            ird_category.setSub_categories(jsonObject1.getJSONArray("sub_categories"));
+                            irdmenuslist.add(ird_category);
+                            ird_data.setCategories(irdmenuslist);
+
+                        }*/
+                        spadataenulist.add(ird_data);
+
+
+                    }
+                    final Dialog dialog1 = new Dialog(SpaMainActivitytablet.this);
+                    // Include dialog.xml file
+
+                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setContentView(R.layout.menu_popuplist);
+                    int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog1.getWindow().setLayout(width, height);
+
+                    dialog1.setCancelable(false);
+                    // Set dialog title
+                    dialog1.setTitle("");
+                    dialog1.show();
+                    shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(SpaMainActivitytablet.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog1.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    spaAdapter = new SpaAdapter(spadataenulist, SpaMainActivitytablet.this);
+                    shimmerRecyclerView.setAdapter(spaAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog1.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+                            if (Network.isNetworkAvailable(SpaMainActivitytablet.this)) {
+                               // new SpaDatamenu().execute();
+
+//
+
+                            } else if (Network.isNetworkAvailable2(SpaMainActivitytablet.this)) {
+                              //  new SpaDatamenu().execute();
+
+
+                            } else {
+           /* if (sessionManager.getIsINternet().equals("false")) {
+                Intent intent = new Intent(SpaMainActivitytablet.this, Internetconnection.class);
+                startActivity(intent);
+
+                sessionManager.setIsINternet("true");
+                finish();
+
+            } else {
+
+            }*/
+                            }
+
+                        }
+                    });
+
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+    public class SpaDatamenu1 extends AsyncTask<String, String, String> {
 
 
         @Override
@@ -674,7 +776,6 @@ SpaAdapter spaAdapter;
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            spamenulist.clear();
             spadataenulist.clear();
 
             if (result != null) {
@@ -717,6 +818,7 @@ SpaAdapter spaAdapter;
 
 
                     }
+                   spaAdapter.notifyDataSetChanged();
 
                 }
                 catch (JSONException e) {
@@ -771,7 +873,6 @@ SpaAdapter spaAdapter;
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             spamenulist.clear();
-            spadataenulist.clear();
 
             if (result != null) {
 
@@ -804,8 +905,7 @@ SpaAdapter spaAdapter;
 
 
                         }
-                        spaCartegoryAdapter   =new SpaCAtegoryAdapter(spamenulist,SpaMainActivitytablet.this,id);
-                        shimmerRecyclerViewcategory.setAdapter(spaCartegoryAdapter);
+                        spaCartegoryAdapter.notifyDataSetChanged();
 
 
 
@@ -2142,11 +2242,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(SpaMainActivitytablet.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(SpaMainActivitytablet.this)){
-                        new SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(SpaMainActivitytablet.this)){
-                        new SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else{
@@ -2202,11 +2302,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(SpaMainActivitytablet.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(SpaMainActivitytablet.this)){
-                        new SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(SpaMainActivitytablet.this)){
-                        new SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else{
@@ -2308,6 +2408,50 @@ SpaAdapter spaAdapter;
         }
 
 
+
+    }
+    private void GetHeader() {
+        // display a progress dialog
+/*
+        String credentials = Credentials.basic("admin", "LetsValet2You");
+*/
+
+        (RetrofitClientInstance.getApiService().Spa_getHeader("Bearer "+sessionManager.getACCESSTOKEN())).enqueue(new Callback<Header>() {
+            @Override
+            public void onResponse(@NonNull Call<Header> call, @NonNull Response<Header> response) {
+
+                if(response.code()==202||response.code()==200){
+                    Header  login = response.body();
+                    newtotalspa.setText(String.valueOf(login.getData().getNew_order()));
+                    totalorderspa.setText(String.valueOf(login.getData().getNew_order()+login.getData().getAccepted_order()+login.getData().getCleared_order()));
+                    inprogresstotalspa.setText(String.valueOf(login.getData().getAccepted_order()));
+
+
+                }
+                else if(response.code()==401){
+                    Header login = response.body();
+                    Toast.makeText(SpaMainActivitytablet.this, "Unauthorised", Toast.LENGTH_SHORT).show();
+                    sessionManager.logoutsession();
+                }
+                else if(response.code()==500){
+                    Toast.makeText(SpaMainActivitytablet.this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Header> call, @NonNull Throwable t) {
+                Log.d("response", Arrays.toString(t.getStackTrace()));
+
+            }
+        });
 
     }
 

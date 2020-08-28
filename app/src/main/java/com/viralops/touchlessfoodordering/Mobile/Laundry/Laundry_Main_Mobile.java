@@ -45,8 +45,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
@@ -60,12 +63,14 @@ import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 import com.viralops.touchlessfoodordering.database.AlarmReceiver;
 import com.viralops.touchlessfoodordering.database.DbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -75,6 +80,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
@@ -113,6 +119,8 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
 
     SQLiteDatabase db;
     DbHelper mDbHelper;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,10 +132,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
         // Set up the login form.
         setContentView(R.layout.associate_main);
         mDbHelper = new DbHelper(Laundry_Main_Mobile.this);
-        localarray.clear();
-        db= mDbHelper.getWritableDatabase();
-        localarray=mDbHelper.getAllCotacts();
-        System.out.println("this is a local array"+localarray.size());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(Color.parseColor("#091F42"));
         setSupportActionBar(toolbar);
@@ -136,6 +141,14 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
         toolbar.setOverflowIcon(drawable);
         sessionManager=new SessionManager(Laundry_Main_Mobile.this);
         sessionManagerFCM=new SessionManagerFCM(Laundry_Main_Mobile.this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
+
         porchname=findViewById(R.id.porchname);
         porchname.setText(sessionManager.getPorchName());
          font = Typeface.createFromAsset(
@@ -171,29 +184,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
         newcount.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         orders=findViewById(R.id.event);
         orders.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        if (Network.isNetworkAvailable(Laundry_Main_Mobile.this)) {
-            new LaundryIRDenu().execute();
 
-//
-
-        } else if (Network.isNetworkAvailable2(Laundry_Main_Mobile.this)) {
-            new LaundryIRDenu().execute();
-
-
-
-        }
-        else{
-           /* if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(Laundry_Main_Mobile.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }*/
-        }
 
 
         if (savedInstanceState == null) {
@@ -267,79 +258,29 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
         switch (id){
             case R.id.menu:
                 // Include dialog.xml file
-                final Dialog dialog = new Dialog(Laundry_Main_Mobile.this);
+                if (Network.isNetworkAvailable(Laundry_Main_Mobile.this)) {
+                    new LaundryIRDenu().execute();
 
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
 
-                // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.menulist);
-                int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
-                int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
-                dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                } else if (Network.isNetworkAvailable2(Laundry_Main_Mobile.this)) {
+                    new LaundryIRDenu().execute();
 
-                dialog.getWindow().setLayout(width1, height1);
 
-                dialog.setCancelable(false);
-                // Set dialog title
-                dialog.setTitle("");
-                dialog.show();
-                shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
-                shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(Laundry_Main_Mobile.this, LinearLayoutManager.VERTICAL, false));
-                TextView title = dialog.findViewById(R.id.hotel);
-                title.setTypeface(font);
-                title.setText("Laundry Menu");
-                final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
-                final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
-                laundryCartegoryAdapter = new LaundryCAtegoryAdapter(laundrymenulist, Laundry_Main_Mobile.this);
-                shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
-                EditText searchtext = dialog.findViewById(R.id.searchtext);
 
-                registerForContextMenu(menubutton);
-                ImageView close = dialog.findViewById(R.id.close);
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
+                }
+                else{
+           /* if (sessionManager.getIsINternet().equals("false")) {
+                Intent intent = new Intent(Laundry_Main_Mobile.this, Internetconnection.class);
+                startActivity(intent);
 
-                menubutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        menudialog = new Dialog(Laundry_Main_Mobile.this);
-                        // Include dialog.xml file
-                        menudialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                        menudialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                sessionManager.setIsINternet("true");
+                finish();
 
-                        menudialog.setContentView(R.layout.categorypopup);
-                        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
-                        int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+            } else {
 
-                        menudialog.getWindow().setLayout(width, height);
-                        menudialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
-
-                        // dialog.setCancelable(true);
-                        menudialog.setCanceledOnTouchOutside(true);
-                        // setFinishOnTouchOutside(true);
-                        // Set dialog title
-                        menudialog.setTitle("Select Category");
-                        menudialog.show();
-                        recyclerView = menudialog.findViewById(R.id.recycler);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(Laundry_Main_Mobile.this, LinearLayoutManager.VERTICAL, false));
-                        LaundryCartegoryAdapter menupopupadapeter = new LaundryCartegoryAdapter(laundrycategorylistlist, Laundry_Main_Mobile.this);
-                        recyclerView.setAdapter(menupopupadapeter);
-                        ImageView close = menudialog.findViewById(R.id.close);
-                        close.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                menudialog.dismiss();
-                            }
-                        });
-
-                    }
-                });
-
+            }*/
+                }
 
                 break;
             case R.id.history:
@@ -431,7 +372,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
         textView.setText("Are you sure you want to exit ?");
         // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
         TextView confirm=dialog.findViewById(R.id.cancel) ;
-        CardView cancel1=dialog.findViewById(R.id.confirm);
+        TextView cancel1=dialog.findViewById(R.id.confirm);
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -503,7 +444,16 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
     @Override
     protected void onPause() {
         super.onPause();
+        try {
 
+            registerReceiver(mMessageReceiver, new IntentFilter("com.viralops.touchlessfoodordering"));
+
+           // unregisterReceiver(mMessageReceiver);
+
+        }
+        catch (Exception e)
+        {
+        }
 
     }
 
@@ -567,11 +517,14 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
 
     public class LaundryIRDenu extends AsyncTask<String, String, String> {
 
+        final ProgressDialog progressDialog = new ProgressDialog(Laundry_Main_Mobile.this);
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
         }
 
 
@@ -608,6 +561,9 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
             super.onPostExecute(result);
             laundrymenulist.clear();
             laundrycategorylistlist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
 
             if (result != null) {
 
@@ -639,6 +595,79 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
                         laundrymenulist.add(ird_category);
                         laundrycategorylistlist.add(ird_category);
                     }
+                    final Dialog dialog = new Dialog(Laundry_Main_Mobile.this);
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.menulist);
+                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog.getWindow().setLayout(width1, height1);
+
+                    dialog.setCancelable(false);
+                    // Set dialog title
+                    dialog.setTitle("");
+                    dialog.show();
+                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(Laundry_Main_Mobile.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("Laundry Menu");
+                    final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
+                    final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
+                    laundryCartegoryAdapter = new LaundryCAtegoryAdapter(laundrymenulist, Laundry_Main_Mobile.this);
+                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+                    EditText searchtext = dialog.findViewById(R.id.searchtext);
+
+                    registerForContextMenu(menubutton);
+                    ImageView close = dialog.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    menubutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            menudialog = new Dialog(Laundry_Main_Mobile.this);
+                            // Include dialog.xml file
+                            menudialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            menudialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                            menudialog.setContentView(R.layout.categorypopup);
+                            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                            int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+
+                            menudialog.getWindow().setLayout(width, height);
+                            menudialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+
+                            // dialog.setCancelable(true);
+                            menudialog.setCanceledOnTouchOutside(true);
+                            // setFinishOnTouchOutside(true);
+                            // Set dialog title
+                            menudialog.setTitle("Select Category");
+                            menudialog.show();
+                            recyclerView = menudialog.findViewById(R.id.recycler);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(Laundry_Main_Mobile.this, LinearLayoutManager.VERTICAL, false));
+                            LaundryCartegoryAdapter menupopupadapeter = new LaundryCartegoryAdapter(laundrycategorylistlist, Laundry_Main_Mobile.this);
+                            recyclerView.setAdapter(menupopupadapeter);
+                            ImageView close = menudialog.findViewById(R.id.close);
+                            close.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    menudialog.dismiss();
+                                }
+                            });
+
+                        }
+                    });
+
 
 
                 }
@@ -724,8 +753,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
                         laundrymenulist.add(ird_category);
                         laundrycategorylistlist.add(ird_category);
                     }
-                    laundryCartegoryAdapter =new LaundryCAtegoryAdapter(laundrymenulist,Laundry_Main_Mobile.this);
-                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+                    laundryCartegoryAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -1766,7 +1794,10 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
                     Laundry_Dashboard1  login = response.body();
                     queuelist=new ArrayList<>();
                     queuelistnew=new ArrayList<>();
-
+                    localarray.clear();
+                    db= mDbHelper.getWritableDatabase();
+                    localarray=mDbHelper.getAllCotacts();
+                    System.out.println("this is a local array"+localarray.size());
                     queuelist=login.getData();
                     if(queuelist.size()!=0){
                         for(int i=0;i<queuelist.size();i++){
@@ -1810,7 +1841,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
                                 System.out.println("current date" + timeStamp + " " + queuelist.get(i).getOrder_detail().getRequested_pickup_at());
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                                //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                                 Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
                                 long epoch = 0;
 
@@ -1899,7 +1930,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
                                 System.out.println("current date" + timeStamp + " " + datalist.get(i).getOrder_detail().getRequested_pickup_at());
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                                //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                                 Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
                                 long epoch = 0;
 
@@ -2151,7 +2182,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
             //String alertTitle = mTitleText.getText().toString();
             intent.putExtra("title", laundry_dashboard.getPrimises().getPremise_no());
             intent.putExtra("time", timeString);
-            intent.putExtra("alramid",alarmid);
+            intent.putExtra("alramid",String.valueOf(alarmid));
             PendingIntent pendingIntent = PendingIntent.getBroadcast(Laundry_Main_Mobile.this, alarmid, intent, 0);
 
             alarmMgr.set(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);

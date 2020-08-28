@@ -1,8 +1,12 @@
 package com.viralops.touchlessfoodordering.Mobile.Spa;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -38,12 +42,17 @@ import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.BuildConfig;
 import com.viralops.touchlessfoodordering.Mobile.IRD.Associate_Dashboard_Clearance;
+import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Dashboard1;
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.Model.Spa_dashboard;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.database.AlarmReceiver;
+import com.viralops.touchlessfoodordering.database.AlarmReceiver1;
+
+import com.viralops.touchlessfoodordering.database.DbHelper1;
 
 
 import java.text.ParseException;
@@ -75,7 +84,11 @@ String text="";
     private Dialog dialognew;
     ArrayList<Spa_dashboard.Data> queuelist=new ArrayList<>();
     ArrayList<Spa_dashboard.Data> queuelistnew=new ArrayList<>();
+    ArrayList<Spa_dashboard.Data> localarray=new ArrayList<>();
+
     AutoCompleteTextView searchView;
+    SQLiteDatabase db;
+    DbHelper1 mDbHelper;
     public static Associate_Dashboard_Clearance newInstance() {
         return new Associate_Dashboard_Clearance();
     }
@@ -97,7 +110,11 @@ String text="";
                 getActivity().getAssets(),
                 "font/Roboto-Thin.ttf");
         searchView =  view.findViewById(R.id.searchView);
-
+        mDbHelper = new DbHelper1(getActivity());
+        localarray.clear();
+        db= mDbHelper.getWritableDatabase();
+        localarray=mDbHelper.getAllCotacts();
+        System.out.println("this is a local array"+localarray.size());
         recyclerView=view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
         sessionManager=new SessionManager(getActivity());
@@ -400,7 +417,7 @@ String text="";
         });
 
     }
-    private void setClear(String id, final int position,String text1,String reason) {
+    private void setClear(final String id, final int position, String text1, String reason) {
         // display a progress dialog
 /*
         String credentials = Credentials.basic("admin", "LetsValet2You");
@@ -414,6 +431,26 @@ String text="";
                     Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
                      text="";
+                    int alarmid=0;
+                    try{
+                        alarmid=Integer.parseInt(id);
+                    }catch (Exception e){
+
+                    }
+                    for(int i=0;i<localarray.size();i++){
+                        if(localarray.get(i).getO_id().equals(id)){
+                            localarray.remove(i);
+                            db.delete(DbHelper1.TABLE_NAME, DbHelper1.O_ID + "=" + id, null);
+                            Intent intent  = new Intent(getActivity(), AlarmReceiver1.class);
+
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), alarmid, intent, 0);
+                            AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+                            if(pendingIntent != null) {
+                                alarmManager.cancel(pendingIntent);
+                            }
+                            // db.close();
+                        }
+                    }
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
                     }
@@ -2606,7 +2643,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
     }
     private String getDatenew(String time) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-       // dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
         try {
             date = dateFormat.parse(time);
@@ -2614,7 +2651,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
             e.printStackTrace();
         }
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, hh:mm a");
-       // dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //If you need time just put specific format for time like 'HH:mm:ss'
         String dateStr = formatter.format(date);
         return dateStr;

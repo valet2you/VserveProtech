@@ -16,7 +16,7 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:src="@mipmap/launcherbluesmall"
+        android:src="@mipmap/launcherbluesmall1"
         android:layout_marginTop="87dp"
         android:layout_height="wrap_content" />
 

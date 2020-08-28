@@ -38,8 +38,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.Picasso;
 import com.todkars.shimmer.ShimmerRecyclerView;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
@@ -66,6 +69,7 @@ import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
 import com.viralops.touchlessfoodordering.Support.SessionManagerFCM;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 import com.viralops.touchlessfoodordering.Tablet.Spa.SpaMainActivitytablet;
 import com.viralops.touchlessfoodordering.Tablet.combine.AcceptedMainFragmentcombine;
 import com.viralops.touchlessfoodordering.Tablet.combine.Connect_Fragmentcombine;
@@ -192,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      TextView spacount;
      TextView ayscount;
 SpaAdapter spaAdapter;
+Typeface font;
+Typeface font1;
 
    
     ArrayList<Spa_Data> spadataenulist=new ArrayList<>();
@@ -202,6 +208,7 @@ SpaAdapter spaAdapter;
     SpaCAtegoryAdapter   spaCartegoryAdapter;
     MinibarCAtegoryAdapter minibarCartegoryAdapter;
     MinibarIRD_ItemsWithoutactegoryAdapter minibarIRD_itemsWithoutactegoryAdapter;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,12 +216,22 @@ SpaAdapter spaAdapter;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
         }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         setContentView(R.layout.main_activity);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); StrictMode.setThreadPolicy(policy);
         sessionManager=new SessionManager(MainActivity.this);
         sessionManagerFCM=new SessionManagerFCM(MainActivity.this);
         sessionManager.setIsINternet("false");
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Crashlytics.setUserIdentifier(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        FirebaseCrashlytics.getInstance().setUserId(sessionManager.getPorchName()+" "+sessionManager.getNAME());
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        mFirebaseAnalytics.setUserId(sessionManager.getPorchName());
+        mFirebaseAnalytics.setUserProperty("Id",sessionManager.getPorchName()+" "+sessionManager.getNAME());
+
         dashboardcount=  findViewById(R.id.dashboardcount);
         laundrycount=  findViewById(R.id.laundrycount);
         minibarcount=  findViewById(R.id.minibarcount);
@@ -252,10 +269,10 @@ SpaAdapter spaAdapter;
         newordersspa=findViewById(R.id.newordersspa);
         newordersminibar=findViewById(R.id.newordersminibar);
         startndard=findViewById(R.id.startndard);
-        final Typeface font = Typeface.createFromAsset(
+         font = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Regular.ttf");
-        Typeface font1 = Typeface.createFromAsset(
+         font1 = Typeface.createFromAsset(
                 getAssets(),
                 "font/Roboto-Thin.ttf");
 
@@ -433,221 +450,87 @@ SpaAdapter spaAdapter;
             public void onClick(View v) {
 
                 if(word.equals("IRD")) {
-                    final Dialog dialog = new Dialog(MainActivity.this);
-                    // Include dialog.xml file
+                    if (Network.isNetworkAvailable(MainActivity.this)) {
+                        new  IRDDatamenu().execute();
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.menu_popuplist);
-                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
-                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog.getWindow().setLayout(width1, height1);
+                    } else if (Network.isNetworkAvailable2(MainActivity.this)) {
+                        new IRDDatamenu().execute();
 
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
-                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
-                    TextView title = dialog.findViewById(R.id.hotel);
-                    title.setTypeface(font);
-                    title.setText("MENU");
-                    irdAdapter = new IRDAdapter(irddataenulist, MainActivity.this);
-                    shimmerRecyclerView.setAdapter(irdAdapter);
-                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
-                    searchtext.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+
+                    }
+                    else{
+                        if (sessionManager.getIsINternet().equals("false")) {
+                            Intent intent = new Intent(MainActivity.this, Internetconnection.class);
+                            startActivity(intent);
+
+                            sessionManager.setIsINternet("true");
+                            finish();
+
+                        } else {
 
                         }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                            filter1(s.toString());
-                        }
-                    });*/
-                    //  registerForContextMenu(menubutton);
-                    ImageView close = dialog.findViewById(R.id.close);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-
-                            if (Network.isNetworkAvailable(MainActivity.this)) {
-                                //  new IRDDatamenu().execute();
-
-                            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
-                                // new IRDDatamenu().execute();
-                                dialog.dismiss();
-
-                            } else {
-
-                            }
-                        }
-                    });
+                    }
 
 
                 }
 
 
                else if(word.equals("Laundry")) {
+                    if (Network.isNetworkAvailable(MainActivity.this)) {
 
-                    final Dialog dialog = new Dialog(MainActivity.this);
-                    // Include dialog.xml file
+                        new LaundryIRDenu().execute();
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.menulist);
-                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
-                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.95);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog.getWindow().setLayout(width1, height1);
+                    } else if (Network.isNetworkAvailable2(MainActivity.this)) {
 
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
-                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
-                    TextView title = dialog.findViewById(R.id.hotel);
-                    title.setTypeface(font);
-                    title.setText("Laundry Menu");
-                    final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
-                    final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
-                    laundryCartegoryAdapter = new LaundryCAtegoryAdapter(laundrymenulist, MainActivity.this);
-                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+                        new LaundryIRDenu().execute();
 
-                    registerForContextMenu(menubutton);
-                    ImageView close = dialog.findViewById(R.id.close);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
 
-                    menubutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            menudialog = new Dialog(MainActivity.this);
-                            // Include dialog.xml file
-                            menudialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                            menudialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-                            menudialog.setContentView(R.layout.categorypopup);
-                            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
-                            int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                    }
+                    else{
+                        if (sessionManager.getIsINternet().equals("false")) {
+                            Intent intent = new Intent(MainActivity.this, Internetconnection.class);
+                            startActivity(intent);
 
-                            menudialog.getWindow().setLayout(width, height);
-                            menudialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+                            sessionManager.setIsINternet("true");
+                            finish();
 
-                            // dialog.setCancelable(true);
-                            menudialog.setCanceledOnTouchOutside(true);
-                            // setFinishOnTouchOutside(true);
-                            // Set dialog title
-                            menudialog.setTitle("Select Category");
-                            menudialog.show();
-                            recyclerView = menudialog.findViewById(R.id.recycler);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
-                            LaundryCartegoryAdapter menupopupadapeter = new LaundryCartegoryAdapter(laundrycategorylistlist, MainActivity.this);
-                            recyclerView.setAdapter(menupopupadapeter);
-                            ImageView close = menudialog.findViewById(R.id.close);
-                            close.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    menudialog.dismiss();
-                                }
-                            });
+                        } else {
 
                         }
-                    });
+                    }
+
 
                 }
                else if(word.equals("SPA")) {
-                    final Dialog dialog1 = new Dialog(MainActivity.this);
-                    // Include dialog.xml file
+                    if (Network.isNetworkAvailable(MainActivity.this)) {
 
-                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        new SpaDatamenu().execute();
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog1.setContentView(R.layout.menu_popuplist);
-                    int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
-                    int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
-                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog1.getWindow().setLayout(width, height);
+                    } else if (Network.isNetworkAvailable2(MainActivity.this)) {
 
-                    dialog1.setCancelable(false);
-                    // Set dialog title
-                    dialog1.setTitle("");
-                    dialog1.show();
-                    shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
-                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
-                    TextView title = dialog1.findViewById(R.id.hotel);
-                    title.setTypeface(font);
-                    title.setText("MENU");
-                    spaAdapter = new MainActivity.SpaAdapter(spadataenulist, MainActivity.this);
-                    shimmerRecyclerView.setAdapter(spaAdapter);
-                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
-                    searchtext.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        new SpaDatamenu().execute();
+
+
+                    }
+                    else{
+                        if (sessionManager.getIsINternet().equals("false")) {
+                            Intent intent = new Intent(MainActivity.this, Internetconnection.class);
+                            startActivity(intent);
+
+                            sessionManager.setIsINternet("true");
+                            finish();
+
+                        } else {
 
                         }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                            filter1(s.toString());
-                        }
-                    });*/
-                    //  registerForContextMenu(menubutton);
-                    ImageView close = dialog1.findViewById(R.id.close);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
-                            if (Network.isNetworkAvailable(MainActivity.this)) {
-                                new MainActivity.SpaDatamenu().execute();
-
-//
-
-                            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
-                                new MainActivity.SpaDatamenu().execute();
-
-
-                            } else {
-           /* if (sessionManager.getIsINternet().equals("false")) {
-                Intent intent = new Intent(MainActivity.this, Internetconnection.class);
-                startActivity(intent);
-
-                sessionManager.setIsINternet("true");
-                finish();
-
-            } else {
-
-            }*/
-                            }
-
-                        }
-                    });
+                    }
 
 
                 }
@@ -769,18 +652,14 @@ SpaAdapter spaAdapter;
               word="IRD";
 
         }
+
         if (Network.isNetworkAvailable(MainActivity.this)) {
-          new  IRDDatamenu().execute();
-          new MinibarIRDenu().execute();
-          new LaundryIRDenu().execute();
-            new MainActivity.SpaDatamenu().execute();
+            new MinibarIRDenu().execute();
 
 
         } else if (Network.isNetworkAvailable2(MainActivity.this)) {
-            new IRDDatamenu().execute();
             new MinibarIRDenu().execute();
-            new LaundryIRDenu().execute();
-            new MainActivity.SpaDatamenu().execute();
+
 
 
         }
@@ -796,35 +675,12 @@ SpaAdapter spaAdapter;
 
             }
         }
-
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId()== R.id.laundrylayout){
-            if (Network.isNetworkAvailable(MainActivity.this))
-            {
-                new LaundryIRDenu().execute();
 
-
-            }
-            else if (Network.isNetworkAvailable2(MainActivity.this)) {
-                new LaundryIRDenu().execute();
-
-
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(MainActivity.this, Internetconnection.class);
-                    startActivity(intent);
-
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
             laundrycount.setText("");
 
             word="Laundry";
@@ -857,23 +713,7 @@ SpaAdapter spaAdapter;
         }
         else if(v.getId()== R.id.minibarlayout){
             isvisisble=3;
-            if (Network.isNetworkAvailable(MainActivity.this)) {
-                new MinibarIRDenu().execute();
-            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
-                new MinibarIRDenu().execute();
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(MainActivity.this, Internetconnection.class);
-                    startActivity(intent);
 
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
             minibarcount.setText("");
 
             word="MIN";
@@ -906,25 +746,8 @@ SpaAdapter spaAdapter;
 
         else if(v.getId()== R.id.irdlayout){
             isvisisble=1;
-            if (Network.isNetworkAvailable(MainActivity.this)) {
-                new  IRDDatamenu().execute();
 
-            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
-                new IRDDatamenu().execute();
 
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(MainActivity.this, Internetconnection.class);
-                    startActivity(intent);
-
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
             dashboardcount.setText("");
 
             word="IRD";
@@ -954,29 +777,7 @@ SpaAdapter spaAdapter;
                     .commitNow();
         }
         else if(v.getId()== R.id.spalayout){
-            if (Network.isNetworkAvailable(MainActivity.this))
-            {
-                new SpaDatamenu().execute();
 
-
-            }
-            else if (Network.isNetworkAvailable2(MainActivity.this)) {
-                new SpaDatamenu().execute();
-
-
-            }
-            else{
-                if (sessionManager.getIsINternet().equals("false")) {
-                    Intent intent = new Intent(MainActivity.this, Internetconnection.class);
-                    startActivity(intent);
-
-                    sessionManager.setIsINternet("true");
-                    finish();
-
-                } else {
-
-                }
-            }
             spacount.setText("");
 
             isvisisble=4;
@@ -1896,7 +1697,7 @@ SpaAdapter spaAdapter;
             TextView descriprtion;
             RecyclerView rv_child;
             ToggleButton toggleButton1;
-            RelativeLayout parent;
+            LinearLayout parent;
 
             IRd_SubCategory mitem;
 
@@ -2397,7 +2198,7 @@ SpaAdapter spaAdapter;
             TextView descriprtion;
             RecyclerView rv_child;
             ToggleButton toggleButton1;
-            RelativeLayout parent;
+            LinearLayout parent;
 
             IRD_Addons mitem;
 
@@ -2642,6 +2443,167 @@ SpaAdapter spaAdapter;
 
 
     public class IRDDatamenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+
+
+            try {
+                String credentials = Credentials.basic("admin", "LetsValet2You");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.BASE_URL + BuildConfig.ird_menu)
+                        .addHeader("Authorization", "Bearer " + sessionManager.getACCESSTOKEN())
+                        .get()
+                        .build();
+                okhttp3.Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+                return response.body().string();
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            irdmenuslist.clear();
+            irddataenulist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result.replaceAll("\t", "").trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        IRD_Data_data ird_data = new IRD_Data_data();
+                        ird_data.setId(data.getString("id"));
+                        ird_data.setName(data.getString("name"));
+                        ird_data.setHotel_id(data.getString("hotel_id"));
+                        ird_data.setDescription(data.getString("description"));
+                        ird_data.setEnabled(data.getString("enabled"));
+                        ird_data.setCreated_at(data.getString("created_at"));
+                        ird_data.setUpdated_at(data.getString("updated_at"));
+                        JSONArray jsonArray1 = data.getJSONArray("categories");
+                        ird_data.setCategories(jsonArray1);
+
+                       /* for (int j = 0; j < jsonArray1.length(); j++) {
+                            JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                            IRD_Category ird_category = new IRD_Category();
+                            ird_category.setId(jsonObject1.getString("id"));
+                            ird_category.setCreated_at(jsonObject1.getString("created_at"));
+                            ird_category.setUpdated_at(jsonObject1.getString("updated_at"));
+                            ird_category.setMenu_id(jsonObject1.getString("menu_id"));
+                            ird_category.setDescription(jsonObject1.getString("description"));
+                            ird_category.setEnabled(jsonObject1.getString("enabled"));
+                            ird_category.setName(jsonObject1.getString("name"));
+                            ird_category.setTags(jsonObject1.getString("tags"));
+                            ird_category.setWithout_sub_category_items(jsonObject1.getJSONArray("without_sub_category_items"));
+                            ird_category.setSub_categories(jsonObject1.getJSONArray("sub_categories"));
+                            irdmenuslist.add(ird_category);
+                            ird_data.setCategories(irdmenuslist);
+
+                        }*/
+                        irddataenulist.add(ird_data);
+
+
+                    }
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    // Include dialog.xml file
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.menu_popuplist);
+                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog.getWindow().setLayout(width1, height1);
+
+                    dialog.setCancelable(false);
+                    // Set dialog title
+                    dialog.setTitle("");
+                    dialog.show();
+                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    irdAdapter = new IRDAdapter(irddataenulist, MainActivity.this);
+                    shimmerRecyclerView.setAdapter(irdAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+
+                            if (Network.isNetworkAvailable(MainActivity.this)) {
+                                //  new IRDDatamenu().execute();
+
+                            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
+                                // new IRDDatamenu().execute();
+                                dialog.dismiss();
+
+                            } else {
+
+                            }
+                        }
+                    });
+
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+    public class IRDDatamenu1 extends AsyncTask<String, String, String> {
 
 
         @Override
@@ -2685,6 +2647,7 @@ SpaAdapter spaAdapter;
             irdmenuslist.clear();
             irddataenulist.clear();
 
+
             if (result != null) {
 
                 try {
@@ -2725,6 +2688,67 @@ SpaAdapter spaAdapter;
 
 
                     }
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    // Include dialog.xml file
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.menu_popuplist);
+                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog.getWindow().setLayout(width1, height1);
+
+                    dialog.setCancelable(false);
+                    // Set dialog title
+                    dialog.setTitle("");
+                    dialog.show();
+                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    irdAdapter = new IRDAdapter(irddataenulist, MainActivity.this);
+                    shimmerRecyclerView.setAdapter(irdAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+
+                            if (Network.isNetworkAvailable(MainActivity.this)) {
+                                //  new IRDDatamenu().execute();
+
+                            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
+                                // new IRDDatamenu().execute();
+                                dialog.dismiss();
+
+                            } else {
+
+                            }
+                        }
+                    });
 
                 }
                 catch (JSONException e) {
@@ -2900,8 +2924,7 @@ SpaAdapter spaAdapter;
                                 irdmenuslist.add(ird_category);
                                 irdcategorylist.add(ird_category);
                             }
-                            irdcAtegoryAdapter =new IRDCAtegoryAdapter(irdcategorylist, MainActivity.this,id);
-                            shimmerRecyclerViewcategory.setAdapter(irdcAtegoryAdapter);
+                            irdcAtegoryAdapter.notifyDataSetChanged();
 
                         }
 
@@ -3140,11 +3163,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(MainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{
@@ -3200,11 +3223,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(MainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity.this)){
-                        new IRDDatamenu().execute();
+                        new IRDDatamenu1().execute();
 
                     }
                     else{
@@ -3817,7 +3840,7 @@ SpaAdapter spaAdapter;
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        shimmerRecyclerView.smoothScrollToPosition(getAdapterPosition());
+                        shimmerRecyclerViewcategory.smoothScrollToPosition(getAdapterPosition());
                         menudialog.dismiss();
 
                     }
@@ -6240,12 +6263,15 @@ SpaAdapter spaAdapter;
     //-------------Laundry------------------------------//
 
     public class LaundryIRDenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
         }
 
 
@@ -6282,6 +6308,9 @@ SpaAdapter spaAdapter;
             super.onPostExecute(result);
             laundrymenulist.clear();
             laundrycategorylistlist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
 
             if (result != null) {
 
@@ -6313,7 +6342,78 @@ SpaAdapter spaAdapter;
                         laundrymenulist.add(ird_category);
                         laundrycategorylistlist.add(ird_category);
                     }
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    // Include dialog.xml file
 
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.menulist);
+                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.95);
+                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog.getWindow().setLayout(width1, height1);
+
+                    dialog.setCancelable(false);
+                    // Set dialog title
+                    dialog.setTitle("");
+                    dialog.show();
+                    shimmerRecyclerView = dialog.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("Laundry Menu");
+                    final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
+                    final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
+                    laundryCartegoryAdapter = new LaundryCAtegoryAdapter(laundrymenulist, MainActivity.this);
+                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+
+                    registerForContextMenu(menubutton);
+                    ImageView close = dialog.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    menubutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            menudialog = new Dialog(MainActivity.this);
+                            // Include dialog.xml file
+                            menudialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            menudialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                            menudialog.setContentView(R.layout.categorypopup);
+                            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                            int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+
+                            menudialog.getWindow().setLayout(width, height);
+                            menudialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+
+                            // dialog.setCancelable(true);
+                            menudialog.setCanceledOnTouchOutside(true);
+                            // setFinishOnTouchOutside(true);
+                            // Set dialog title
+                            menudialog.setTitle("Select Category");
+                            menudialog.show();
+                            recyclerView = menudialog.findViewById(R.id.recycler);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+                            LaundryCartegoryAdapter menupopupadapeter = new LaundryCartegoryAdapter(laundrycategorylistlist, MainActivity.this);
+                            recyclerView.setAdapter(menupopupadapeter);
+                            ImageView close = menudialog.findViewById(R.id.close);
+                            close.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    menudialog.dismiss();
+                                }
+                            });
+
+                        }
+                    });
 
                 }
                 catch (JSONException e) {
@@ -6398,8 +6498,7 @@ SpaAdapter spaAdapter;
                         laundrymenulist.add(ird_category);
                         laundrycategorylistlist.add(ird_category);
                     }
-                    laundryCartegoryAdapter =new LaundryCAtegoryAdapter(laundrymenulist, MainActivity.this);
-                    shimmerRecyclerView.setAdapter(laundryCartegoryAdapter);
+                    laundryCartegoryAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -8198,12 +8297,15 @@ SpaAdapter spaAdapter;
 
     // -------------Spa------------------------------//
     public class SpaDatamenu extends AsyncTask<String, String, String> {
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            progressDialog.setCancelable(false); // set cancelable to false
+            progressDialog.setMessage("Please Wait..."); // set message
+            progressDialog.show();
         }
 
 
@@ -8238,8 +8340,10 @@ SpaAdapter spaAdapter;
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            spamenulist.clear();
             spadataenulist.clear();
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+            }
 
             if (result != null) {
 
@@ -8281,7 +8385,173 @@ SpaAdapter spaAdapter;
 
 
                     }
+                    final Dialog dialog1 = new Dialog(MainActivity.this);
+                    // Include dialog.xml file
 
+                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setContentView(R.layout.menu_popuplist);
+                    int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+                    int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                    dialog1.getWindow().setLayout(width, height);
+
+                    dialog1.setCancelable(false);
+                    // Set dialog title
+                    dialog1.setTitle("");
+                    dialog1.show();
+                    shimmerRecyclerView = dialog1.findViewById(R.id.recyclerview);
+                    shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+                    TextView title = dialog1.findViewById(R.id.hotel);
+                    title.setTypeface(font);
+                    title.setText("MENU");
+                    spaAdapter = new MainActivity.SpaAdapter(spadataenulist, MainActivity.this);
+                    shimmerRecyclerView.setAdapter(spaAdapter);
+                    /*EditText searchtext = dialog.findViewById(R.id.searchtext);
+                    searchtext.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                            filter1(s.toString());
+                        }
+                    });*/
+                    //  registerForContextMenu(menubutton);
+                    ImageView close = dialog1.findViewById(R.id.close);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+                            if (Network.isNetworkAvailable(MainActivity.this)) {
+                             //   new MainActivity.SpaDatamenu().execute();
+
+//
+
+                            } else if (Network.isNetworkAvailable2(MainActivity.this)) {
+                              //  new MainActivity.SpaDatamenu().execute();
+
+
+                            } else {
+           /* if (sessionManager.getIsINternet().equals("false")) {
+                Intent intent = new Intent(MainActivity.this, Internetconnection.class);
+                startActivity(intent);
+
+                sessionManager.setIsINternet("true");
+                finish();
+
+            } else {
+
+            }*/
+                            }
+
+                        }
+                    });
+
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+    public class SpaDatamenu1 extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+
+
+            try {
+                String credentials = okhttp3.Credentials.basic("admin", "LetsValet2You");
+
+                Request request = new Request.Builder()
+                        .url(BuildConfig.BASE_URL + BuildConfig.spa_menu)
+                        .addHeader("Authorization", "Bearer " + sessionManager.getACCESSTOKEN())
+                        .get()
+                        .build();
+                okhttp3.Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    return null;
+                }
+                return response.body().string();
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            spadataenulist.clear();
+
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result.replaceAll("\t", "").trim());
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        Spa_Data ird_data = new Spa_Data();
+                        ird_data.setId(data.getString("id"));
+                        ird_data.setName(data.getString("name"));
+                        ird_data.setHotel_id(data.getString("hotel_id"));
+                        ird_data.setDescription(data.getString("description"));
+                        ird_data.setEnabled(data.getString("enabled"));
+                        ird_data.setCreated_at(data.getString("created_at"));
+                        ird_data.setUpdated_at(data.getString("updated_at"));
+                        JSONArray jsonArray1 = data.getJSONArray("categories");
+                        ird_data.setCategories(jsonArray1);
+
+                       /* for (int j = 0; j < jsonArray1.length(); j++) {
+                            JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                            IRD_Category ird_category = new IRD_Category();
+                            ird_category.setId(jsonObject1.getString("id"));
+                            ird_category.setCreated_at(jsonObject1.getString("created_at"));
+                            ird_category.setUpdated_at(jsonObject1.getString("updated_at"));
+                            ird_category.setMenu_id(jsonObject1.getString("menu_id"));
+                            ird_category.setDescription(jsonObject1.getString("description"));
+                            ird_category.setEnabled(jsonObject1.getString("enabled"));
+                            ird_category.setName(jsonObject1.getString("name"));
+                            ird_category.setTags(jsonObject1.getString("tags"));
+                            ird_category.setWithout_sub_category_items(jsonObject1.getJSONArray("without_sub_category_items"));
+                            ird_category.setSub_categories(jsonObject1.getJSONArray("sub_categories"));
+                            irdmenuslist.add(ird_category);
+                            ird_data.setCategories(irdmenuslist);
+
+                        }*/
+                        spadataenulist.add(ird_data);
+
+
+                    }
+                    spaAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -8335,7 +8605,6 @@ SpaAdapter spaAdapter;
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             spamenulist.clear();
-            spadataenulist.clear();
 
             if (result != null) {
 
@@ -8368,8 +8637,7 @@ SpaAdapter spaAdapter;
 
 
                         }
-                        spaCartegoryAdapter   =new MainActivity.SpaCAtegoryAdapter(spamenulist,MainActivity.this,id);
-                        shimmerRecyclerViewcategory.setAdapter(spaCartegoryAdapter);
+                        spaCartegoryAdapter.notifyDataSetChanged();
 
 
 
@@ -8696,11 +8964,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(MainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity.this)){
-                        new MainActivity.SPAenu().execute(menuid);
+                        new SPAenu().execute(menuid);
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity.this)){
-                        new MainActivity.SPAenu().execute(menuid);
+                        new SPAenu().execute(menuid);
 
                     }
                     else{
@@ -9605,7 +9873,7 @@ SpaAdapter spaAdapter;
                                 title.setText(order_items.get(getAdapterPosition()).getName());
                                 final MaterialButton menubutton = dialog.findViewById(R.id.menubutton);
                                 final MaterialButton backbutton = dialog.findViewById(R.id.closebutton);
-                                spaCartegoryAdapter = new MainActivity.SpaCAtegoryAdapter(spamenulist, MainActivity.this, order_items.get(getAdapterPosition()).getId());
+                                spaCartegoryAdapter = new SpaCAtegoryAdapter(spamenulist, MainActivity.this, order_items.get(getAdapterPosition()).getId());
                                 shimmerRecyclerViewcategory.setAdapter(spaCartegoryAdapter);
                                 registerForContextMenu(menubutton);
                                 ImageView close = dialog.findViewById(R.id.close);
@@ -9706,11 +9974,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(MainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity.this)){
-                        new MainActivity.SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity.this)){
-                        new MainActivity.SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else{
@@ -9766,11 +10034,11 @@ SpaAdapter spaAdapter;
                     Action  login = response.body();
                     Toast.makeText(MainActivity.this, login.getMessage(), Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(MainActivity.this)){
-                        new MainActivity.SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else if(Network.isNetworkAvailable2(MainActivity.this)){
-                        new MainActivity.SpaDatamenu().execute();
+                        new SpaDatamenu1().execute();
 
                     }
                     else{
@@ -10492,6 +10760,75 @@ SpaAdapter spaAdapter;
                     Fragment fragment1 = new DispatchedMainFragmentcombine();
                     getSupportFragmentManager().beginTransaction().replace(R.id.content_view, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
 
+                }
+
+                if(sessionManager.getDesign_Style().equals("connect")) {
+                    if(Network.isNetworkAvailable(MainActivity.this)){
+                        ConnectGetHeader();
+                    } else if(Network.isNetworkAvailable2(MainActivity.this)){
+                        ConnectGetHeader();
+                    }
+                    else{
+
+                    }
+                }
+                if(sessionManager.getDesign_Style().equals("other")) {
+                    if(Network.isNetworkAvailable(MainActivity.this)){
+                        ConnectGetHeader();
+                    } else if(Network.isNetworkAvailable2(MainActivity.this)){
+                        ConnectGetHeader();
+                    }
+                    else{
+
+                    }
+                }
+
+            }
+            if(isvisisble==6) {
+                if(sessionManager.getDesign_Style().equals("laundry")) {
+
+                    if(Network.isNetworkAvailable(MainActivity.this)){
+                        LaundryGetHeader();
+                    } else if(Network.isNetworkAvailable2(MainActivity.this)){
+                        LaundryGetHeader();
+                    }
+                    else{
+
+                    }
+                }
+                if(sessionManager.getDesign_Style().equals("spa")) {
+
+                    if(Network.isNetworkAvailable(MainActivity.this)){
+                        SpaGetHeader();
+                    } else if(Network.isNetworkAvailable2(MainActivity.this)){
+                        SpaGetHeader();
+                    }
+                    else{
+
+                    }
+
+                }
+                if(sessionManager.getDesign_Style().equals("minibar")) {
+
+                    if(Network.isNetworkAvailable(MainActivity.this)){
+                        MInibarGetHeader();
+                    } else if(Network.isNetworkAvailable2(MainActivity.this)){
+                        MInibarGetHeader();
+                    }
+                    else{
+
+                    }
+                }
+                if(sessionManager.getDesign_Style().equals("ird")) {
+
+                    if(Network.isNetworkAvailable(MainActivity.this)){
+                        IRDGetHeader();
+                    } else if(Network.isNetworkAvailable2(MainActivity.this)){
+                        IRDGetHeader();
+                    }
+                    else{
+
+                    }
                 }
 
                 if(sessionManager.getDesign_Style().equals("connect")) {

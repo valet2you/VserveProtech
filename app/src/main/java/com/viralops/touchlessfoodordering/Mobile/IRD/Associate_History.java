@@ -237,7 +237,7 @@ HomeAdapter homeAdapter;
                     MainActivity_Mobile.newcount.setText("( "+String.valueOf(login.getData().getNew_order())+" )");
                     totalorderslaundry.setText(String.valueOf(login.getData().getAccepted_order()+login.getData().getNew_order()+login.getData().getDispatched_order()+login.getData().getCleared_order()));
                     MainActivity_Mobile.newcountevent.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
-                    MainActivity_Mobile.newcountevent1.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
+                    MainActivity_Mobile.newcountevent1.setText("( "+String.valueOf(login.getData().getDispatched_order())+" )");
 
 
                 }
@@ -527,7 +527,7 @@ HomeAdapter homeAdapter;
                         }
                         TextView dispactch=dialog.findViewById(R.id.dispactch);
                         dispactch.setText(getDate1(holder.mitem.getOrder_detail().getCleared_at()));
-                        dispatched.setText(getDate1(holder.mitem.getOrder_detail().getCleared_at()));
+                        dispatched.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
 
                         guests.setText(holder.mitem.getNo_of_guest());
                         guests.setTextColor(context.getResources().getColor(R.color.black));

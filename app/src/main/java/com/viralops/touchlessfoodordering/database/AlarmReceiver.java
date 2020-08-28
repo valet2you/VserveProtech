@@ -31,18 +31,29 @@ public class AlarmReceiver extends BroadcastReceiver {
         db= mDbHelper.getWritableDatabase();
         localarray=mDbHelper.getAllCotacts();
         calendar=Calendar.getInstance();
-        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-        String format = s.format(new Date());
-     //   Toast.makeText(context, "notify 1" + intent.getStringExtra("time") , Toast.LENGTH_LONG).show();
-        String Title = intent.getStringExtra("title");
-        String time = intent.getStringExtra("time");
-        String id = intent.getStringExtra("id");
-        Intent x = new Intent(context, Alert.class);
-        x.putExtra("title",Title);
-        x.putExtra("time",time);
-        x.putExtra("alramid",id);
-        x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(x);
+        try {
+            String id1 = intent.getStringExtra("alramid");
+            for (int i = 0; i < localarray.size(); i++) {
+                if (localarray.get(i).getO_id().contains(id1)) {
+                    SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                    String format = s.format(new Date());
+                    //   Toast.makeText(context, "notify 1" + intent.getStringExtra("time") , Toast.LENGTH_LONG).show();
+                    String Title = intent.getStringExtra("title");
+                    String time = intent.getStringExtra("time");
+                    String id = intent.getStringExtra("alramid");
+                    Intent x = new Intent(context, Alert.class);
+                    x.putExtra("title", Title);
+                    x.putExtra("time", time);
+                    x.putExtra("alramid", id);
+                    x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(x);
+                } else {
+
+                }
+            }
+        }catch (Exception e){
+
+        }
 /*
         for(int i=0;i<localarray.size();i++){
             String date=localarray.get(i).getDatenew()+" "+localarray.get(i).getTimestring();

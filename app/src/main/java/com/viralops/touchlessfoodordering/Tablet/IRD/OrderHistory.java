@@ -47,6 +47,7 @@ public class OrderHistory extends Fragment {
     TextView guest;
     TextView orderreceivedtext;
     TextView deliveredat;
+    TextView dispatcheddat;
     TextView orderacceptedtext;
     TextView norecord;
     ArrayList<com.viralops.touchlessfoodordering.Model.OrderHistory.Data> orderslist;
@@ -71,6 +72,7 @@ public class OrderHistory extends Fragment {
         recyclerview.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
         filter=view.findViewById(R.id.filter);
         roomno=view.findViewById(R.id.roomno);
+        dispatcheddat=view.findViewById(R.id.dispatcheddat);
         guest=view.findViewById(R.id.guest);
         orderreceivedtext=view.findViewById(R.id.orderreceivedtext);
         deliveredat=view.findViewById(R.id.deliveredat);
@@ -84,6 +86,7 @@ public class OrderHistory extends Fragment {
         orderreceivedtext.setTypeface(font);
         deliveredat.setTypeface(font);
         orderacceptedtext.setTypeface(font);
+        dispatcheddat.setTypeface(font);
 
         Typeface font1 = Typeface.createFromAsset(
                 getActivity().getAssets(),
