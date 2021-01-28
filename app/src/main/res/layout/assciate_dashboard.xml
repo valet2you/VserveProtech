@@ -135,7 +135,7 @@
                 android:textSize="12sp"
                 android:singleLine="true"
                 android:imeOptions="actionDone"
-                android:inputType="number"
+                android:inputType="text"
                 android:drawablePadding="10dp"
                 android:drawableLeft="@mipmap/search"
                 android:paddingLeft="10dp"
@@ -156,13 +156,14 @@
     android:layout_marginTop="40dp"
     android:layout_height="match_parent">
 
-    <com.todkars.shimmer.ShimmerRecyclerView
-        android:layout_width="match_parent"
-        android:id="@+id/recycler"
-        android:layout_marginBottom="10dp"
+      <com.todkars.shimmer.ShimmerRecyclerView
+          android:id="@+id/recycler"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
 
-        android:layout_height="match_parent"></com.todkars.shimmer.ShimmerRecyclerView>
-<TextView
+          android:layout_marginBottom="10dp"></com.todkars.shimmer.ShimmerRecyclerView>
+
+      <TextView
     android:layout_width="match_parent"
     android:text="No Request found."
     android:textColor="#615c5c"

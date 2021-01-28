@@ -131,6 +131,7 @@ String text="";
         totalexpress.setTypeface(font);
         totalorderslaundry=view.findViewById(R.id.totalorderslaundry);
         totalorderslaundry.setTypeface(font);
+
         if (Network.isNetworkAvailable2(getActivity())) {
 
             GetMenu();
@@ -1496,475 +1497,668 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.mitem.getGuest().getName().equals("Guest")){
-                    final Dialog dialog = new Dialog(context);
-                    // Include dialog.xml file
+                if(holder.mitem.getOrder_detail()!=null) {
+                    if (holder.mitem.getGuest().getName().equals("Guest")) {
+                        final Dialog dialog = new Dialog(context);
+                        // Include dialog.xml file
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.spadetail_popupwithoutguest);
-                    int width1 = (int)(context.getResources().getDisplayMetrics().widthPixels*0.99);
-                    int height1 = (int)(context.getResources().getDisplayMetrics().heightPixels*0.99);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                        // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.spadetail_popupwithoutguest);
+                        int width1 = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.99);
+                        int height1 = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.99);
+                        dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog.getWindow().setLayout(width1, height1);
+                        dialog.getWindow().setLayout(width1, height1);
 
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    ImageView back=dialog.findViewById(R.id.back);
-                    TextView title=dialog.findViewById(R.id.title);
-                    title.setTypeface(holder.font);
-                    TextView roomno=dialog.findViewById(R.id.roomno);
-                    TextView guests=dialog.findViewById(R.id.guest);
-                    TextView name=dialog.findViewById(R.id.name);
-                    TextView since=dialog.findViewById(R.id.since);
-                    TextView orderitemsdetailtext=dialog.findViewById(R.id.orderitemsdetailtext);
-                    orderitemsdetailtext.setTypeface(holder.font);
-                    TextView orderins=dialog.findViewById(R.id.orderins);
-                    orderins.setTypeface(holder.font);
-                    TextView orderinsdetails=dialog.findViewById(R.id.orderinsdetails);
-                    TextView acceptedat=dialog.findViewById(R.id.accepttext);
-                    acceptedat.setTypeface(holder.font);
-                    TextView accepted=dialog.findViewById(R.id.accepted);
-                    TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
-                    name.setText(holder.mitem.getGuest().getName());
-                    if(holder.mitem.getStatus().equals("new_order")){
-                        dispatchbutton.setText("ACCEPT");
-
-
-
-                    }
-                    else{
-                        dispatchbutton.setText("TAKE ACTION");
+                        dialog.setCancelable(false);
+                        // Set dialog title
+                        dialog.setTitle("");
+                        dialog.show();
+                        ImageView back = dialog.findViewById(R.id.back);
+                        TextView title = dialog.findViewById(R.id.title);
+                        title.setTypeface(holder.font);
+                        TextView roomno = dialog.findViewById(R.id.roomno);
+                        TextView guests = dialog.findViewById(R.id.guest);
+                        TextView name = dialog.findViewById(R.id.name);
+                        TextView since = dialog.findViewById(R.id.since);
+                        TextView orderitemsdetailtext = dialog.findViewById(R.id.orderitemsdetailtext);
+                        orderitemsdetailtext.setTypeface(holder.font);
+                        TextView orderins = dialog.findViewById(R.id.orderins);
+                        orderins.setTypeface(holder.font);
+                        TextView orderinsdetails = dialog.findViewById(R.id.orderinsdetails);
+                        TextView acceptedat = dialog.findViewById(R.id.accepttext);
+                        acceptedat.setTypeface(holder.font);
+                        TextView accepted = dialog.findViewById(R.id.accepted);
+                        TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
+                        name.setText(holder.mitem.getGuest().getName());
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            dispatchbutton.setText("ACCEPT");
 
 
-                    }
-                    guests.setText(holder.mitem.getNo_of_guest());
+                        } else {
+                            dispatchbutton.setText("TAKE ACTION");
 
 
-                    RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
-                    orderitemsdetail.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
-                    roomno.setText(holder.mitem.getPrimises().getPremise_no());
-                    since.setText(getDate1(holder.mitem.getCreated_at()));
-
-                    orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequest_schedule_at()));
-
-
-                    HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail=new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_spa_items(),context);
-                    orderitemsdetail.setAdapter(order_itemAdapterdetail);
-                    LinearLayout colorimage=dialog.findViewById(R.id.colorimage);
-                    if(holder.mitem.getStatus().equals("new_order")){
-                        accepted.setText("-");
-                    }
-                    else{
-                        accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
-
-                    }
-
-                    if(holder.mitem.getStatus().equals("new_order")){
-                        colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
-                        since.setTextColor(context.getResources().getColor(R.color.gray));
-                        roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
-
-                    }
-                    else{
-                        colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
-                        since.setTextColor(context.getResources().getColor(R.color.gray));
-                        roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
-
-
-                    }
-                    back.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
                         }
-                    });
+                        guests.setText(holder.mitem.getNo_of_guest());
 
 
-                    dispatchbutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(holder.mitem.getStatus().equals("new_order")){
-                                if(Network.isNetworkAvailable(getActivity())){
+                        RecyclerView orderitemsdetail = dialog.findViewById(R.id.orderitemsdetail);
+                        orderitemsdetail.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+                        roomno.setText(holder.mitem.getPrimises().getPremise_no());
+                        since.setText(getDate1(holder.mitem.getCreated_at()));
 
-                                    setAccept(holder.mitem.getOrder_detail().getOrder_id());
-                                    // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                        orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequest_schedule_at()));
 
-                                    dialog.dismiss();
-                                }
-                                else if(Network.isNetworkAvailable2(getActivity())){
 
-                                    setAccept(holder.mitem.getOrder_detail().getOrder_id());
-                                    // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                        HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail = new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_spa_items(), context);
+                        orderitemsdetail.setAdapter(order_itemAdapterdetail);
+                        LinearLayout colorimage = dialog.findViewById(R.id.colorimage);
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            accepted.setText("-");
+                        } else {
+                            accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
 
-                                    dialog.dismiss();
+                        }
 
-                                }
-                                else{
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
+                            since.setTextColor(context.getResources().getColor(R.color.gray));
+                            roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
 
-                                }
+                        } else {
+                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
+                            since.setTextColor(context.getResources().getColor(R.color.gray));
+                            roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
 
+
+                        }
+                        back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
                             }
-                            else{
+                        });
 
-                                //super.onBackPressed();
-                                final Dialog dialog1 = new Dialog(getActivity());
-                                // Include dialog.xml file
 
-                                dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dispatchbutton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (holder.mitem.getStatus().equals("new_order")) {
+                                    if (Network.isNetworkAvailable(getActivity())) {
 
-                                // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                dialog1.setContentView(R.layout.spaactionpopup);
-                                int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.99);
-                                int height1 = (int)(getResources().getDisplayMetrics().heightPixels*0.99);
-                                dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                dialog1.getWindow().setLayout(width1, height1);
+                                        dialog.dismiss();
+                                    } else if (Network.isNetworkAvailable2(getActivity())) {
 
-                                dialog1.setCancelable(false);
-                                // Set dialog title
-                                dialog1.setTitle("");
-                                dialog1.show();
-                                // TextView textView=dialog.findViewById(R.id.text) ;
-                                // textView.setText("Send to History?");
-                                // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
-                                ImageView confirm=dialog1.findViewById(R.id.close) ;
-                                TextView cancel1=dialog1.findViewById(R.id.dispatch);
-                                final RadioGroup radioGroup=dialog1.findViewById(R.id.radiogroup);
-                                final EditText editText=dialog1.findViewById(R.id.reason);
+                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                                    @Override
-                                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                        int selectedid=radioGroup.getCheckedRadioButtonId();
+                                        dialog.dismiss();
 
-                                        RadioButton radioButton=(RadioButton)dialog1.findViewById(selectedid);
-                                        text= String.valueOf(radioButton.getTag());
-                                        //  Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
-                                        if(text.equals("other")){
-                                            editText.setVisibility(View.VISIBLE);
-                                        }
-                                        else{
-                                            editText.setVisibility(View.GONE);
-
-                                        }
+                                    } else {
 
                                     }
-                                });
 
-                                confirm.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                                } else {
 
-                                        dialog1.dismiss();
-                                    }
-                                });
-                                cancel1.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if(text.equals("")){
-                                            Toast.makeText(getActivity(),"Please select atleast one",Toast.LENGTH_SHORT).show();
+                                    //super.onBackPressed();
+                                    final Dialog dialog1 = new Dialog(getActivity());
+                                    // Include dialog.xml file
+
+                                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    dialog1.setContentView(R.layout.spaactionpopup);
+                                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                                    dialog1.getWindow().setLayout(width1, height1);
+
+                                    dialog1.setCancelable(false);
+                                    // Set dialog title
+                                    dialog1.setTitle("");
+                                    dialog1.show();
+                                    // TextView textView=dialog.findViewById(R.id.text) ;
+                                    // textView.setText("Send to History?");
+                                    // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
+                                    ImageView confirm = dialog1.findViewById(R.id.close);
+                                    TextView cancel1 = dialog1.findViewById(R.id.dispatch);
+                                    final RadioGroup radioGroup = dialog1.findViewById(R.id.radiogroup);
+                                    final EditText editText = dialog1.findViewById(R.id.reason);
+
+                                    radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                            int selectedid = radioGroup.getCheckedRadioButtonId();
+
+                                            RadioButton radioButton = (RadioButton) dialog1.findViewById(selectedid);
+                                            text = String.valueOf(radioButton.getTag());
+                                            //  Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
+                                            if (text.equals("other")) {
+                                                editText.setVisibility(View.VISIBLE);
+                                            } else {
+                                                editText.setVisibility(View.GONE);
+
+                                            }
+
                                         }
-                                        else{
-                                            if(text.equals("other")){
-                                                if(editText.getText().toString().equals("")){
-                                                    Toast.makeText(getActivity(),"Please write your reason",Toast.LENGTH_SHORT).show();
-                                                }else{
-                                                    if(Network.isNetworkAvailable(getActivity())){
+                                    });
 
-                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                    confirm.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
-                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,editText.getText().toString());
+                                            dialog1.dismiss();
+                                        }
+                                    });
+                                    cancel1.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (text.equals("")) {
+                                                Toast.makeText(getActivity(), "Please select atleast one", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                if (text.equals("other")) {
+                                                    if (editText.getText().toString().equals("")) {
+                                                        Toast.makeText(getActivity(), "Please write your reason", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (Network.isNetworkAvailable(getActivity())) {
+
+                                                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                            setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, editText.getText().toString());
+                                                            dialog.dismiss();
+                                                            dialog1.dismiss();
+
+                                                        } else if (Network.isNetworkAvailable2(getActivity())) {
+                                                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                            setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, editText.getText().toString());
+
+                                                            dialog.dismiss();
+                                                            dialog1.dismiss();
+
+                                                        } else {
+
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    if (Network.isNetworkAvailable(getActivity())) {
+                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, "");
                                                         dialog.dismiss();
                                                         dialog1.dismiss();
 
-                                                    }
-                                                    else if(Network.isNetworkAvailable2(getActivity())){
-                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                                    } else if (Network.isNetworkAvailable2(getActivity())) {
+                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
 
-                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,editText.getText().toString());
+                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, "");
 
                                                         dialog.dismiss();
                                                         dialog1.dismiss();
 
-                                                    }
-                                                    else{
+                                                    } else {
 
                                                     }
                                                 }
-
                                             }
-                                            else{
-                                                if(Network.isNetworkAvailable(getActivity())){
-                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,"");
-                                                    dialog.dismiss();
-                                                    dialog1.dismiss();
 
-                                                }
-                                                else if(Network.isNetworkAvailable2(getActivity())){
-                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,"");
-
-                                                    dialog.dismiss();
-                                                    dialog1.dismiss();
-
-                                                }
-                                                else{
-
-                                                }
-                                            }
                                         }
+                                    });
 
+                                }
+                            }
+                        });
+                    } else {
+                        final Dialog dialog = new Dialog(context);
+                        // Include dialog.xml file
+
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                        // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.spadetail_popup);
+                        int width1 = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.99);
+                        int height1 = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.99);
+                        dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                        dialog.getWindow().setLayout(width1, height1);
+
+                        dialog.setCancelable(false);
+                        // Set dialog title
+                        dialog.setTitle("");
+                        dialog.show();
+                        ImageView back = dialog.findViewById(R.id.back);
+                        TextView title = dialog.findViewById(R.id.title);
+                        title.setTypeface(holder.font);
+                        TextView roomno = dialog.findViewById(R.id.roomno);
+                        TextView guests = dialog.findViewById(R.id.guest);
+                        TextView name = dialog.findViewById(R.id.name);
+                        TextView since = dialog.findViewById(R.id.since);
+                        TextView orderitemsdetailtext = dialog.findViewById(R.id.orderitemsdetailtext);
+                        orderitemsdetailtext.setTypeface(holder.font);
+                        TextView orderins = dialog.findViewById(R.id.orderins);
+                        orderins.setTypeface(holder.font);
+                        TextView orderinsdetails = dialog.findViewById(R.id.orderinsdetails);
+                        TextView acceptedat = dialog.findViewById(R.id.accepttext);
+                        acceptedat.setTypeface(holder.font);
+                        TextView accepted = dialog.findViewById(R.id.accepted);
+                        TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
+                        name.setText(holder.mitem.getGuest().getName());
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            dispatchbutton.setText("ACCEPT");
+
+
+                        } else {
+                            dispatchbutton.setText("TAKE ACTION");
+
+
+                        }
+                        guests.setText(holder.mitem.getNo_of_guest());
+
+
+                        RecyclerView orderitemsdetail = dialog.findViewById(R.id.orderitemsdetail);
+                        orderitemsdetail.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+                        roomno.setText(holder.mitem.getPrimises().getPremise_no());
+                        since.setText(getDate1(holder.mitem.getCreated_at()));
+
+                        orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequest_schedule_at()));
+
+
+                        HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail = new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_spa_items(), context);
+                        orderitemsdetail.setAdapter(order_itemAdapterdetail);
+                        LinearLayout colorimage = dialog.findViewById(R.id.colorimage);
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            accepted.setText("-");
+                        } else {
+                            accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
+
+                        }
+
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
+                            since.setTextColor(context.getResources().getColor(R.color.gray));
+                            roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
+
+                        } else {
+                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
+                            since.setTextColor(context.getResources().getColor(R.color.gray));
+                            roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
+
+
+                        }
+                        back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        dispatchbutton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (holder.mitem.getStatus().equals("new_order")) {
+                                    if (Network.isNetworkAvailable(getActivity())) {
+
+                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+
+                                        dialog.dismiss();
+                                    } else if (Network.isNetworkAvailable2(getActivity())) {
+
+                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+
+                                        dialog.dismiss();
+
+                                    } else {
 
                                     }
-                                });
 
+                                } else {
+
+                                    //super.onBackPressed();
+                                    final Dialog dialog1 = new Dialog(getActivity());
+                                    // Include dialog.xml file
+
+                                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    dialog1.setContentView(R.layout.spaactionpopup);
+                                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                                    dialog1.getWindow().setLayout(width1, height1);
+
+                                    dialog1.setCancelable(false);
+                                    // Set dialog title
+                                    dialog1.setTitle("");
+                                    dialog1.show();
+                                    // TextView textView=dialog.findViewById(R.id.text) ;
+                                    // textView.setText("Send to History?");
+                                    // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
+                                    ImageView confirm = dialog1.findViewById(R.id.close);
+                                    TextView cancel1 = dialog1.findViewById(R.id.dispatch);
+                                    final RadioGroup radioGroup = dialog1.findViewById(R.id.radiogroup);
+                                    final EditText editText = dialog1.findViewById(R.id.reason);
+
+                                    radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                            int selectedid = radioGroup.getCheckedRadioButtonId();
+
+                                            RadioButton radioButton = (RadioButton) dialog1.findViewById(selectedid);
+                                            text = String.valueOf(radioButton.getTag());
+                                            //  Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
+                                            if (text.equals("other")) {
+                                                editText.setVisibility(View.VISIBLE);
+                                            } else {
+                                                editText.setVisibility(View.GONE);
+
+                                            }
+
+                                        }
+                                    });
+
+                                    confirm.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            dialog1.dismiss();
+                                        }
+                                    });
+                                    cancel1.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (text.equals("")) {
+                                                Toast.makeText(getActivity(), "Please select atleast one", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                if (text.equals("other")) {
+                                                    if (editText.getText().toString().equals("")) {
+                                                        Toast.makeText(getActivity(), "Please write your reason", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (Network.isNetworkAvailable(getActivity())) {
+
+                                                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                            setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, editText.getText().toString());
+                                                            dialog.dismiss();
+                                                            dialog1.dismiss();
+
+                                                        } else if (Network.isNetworkAvailable2(getActivity())) {
+                                                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                            setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, editText.getText().toString());
+
+                                                            dialog.dismiss();
+                                                            dialog1.dismiss();
+
+                                                        } else {
+
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    if (Network.isNetworkAvailable(getActivity())) {
+                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, "");
+                                                        dialog.dismiss();
+                                                        dialog1.dismiss();
+
+                                                    } else if (Network.isNetworkAvailable2(getActivity())) {
+                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, "");
+
+                                                        dialog.dismiss();
+                                                        dialog1.dismiss();
+
+                                                    } else {
+
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                    });
+
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 else{
-                    final Dialog dialog = new Dialog(context);
-                    // Include dialog.xml file
+                    {
+                        final Dialog dialog = new Dialog(context);
+                        // Include dialog.xml file
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.spadetail_popup);
-                    int width1 = (int)(context.getResources().getDisplayMetrics().widthPixels*0.99);
-                    int height1 = (int)(context.getResources().getDisplayMetrics().heightPixels*0.99);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                        // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.spadetail_popupwithoutguest);
+                        int width1 = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.99);
+                        int height1 = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.99);
+                        dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                    dialog.getWindow().setLayout(width1, height1);
+                        dialog.getWindow().setLayout(width1, height1);
 
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    ImageView back=dialog.findViewById(R.id.back);
-                    TextView title=dialog.findViewById(R.id.title);
-                    title.setTypeface(holder.font);
-                    TextView roomno=dialog.findViewById(R.id.roomno);
-                    TextView guests=dialog.findViewById(R.id.guest);
-                    TextView name=dialog.findViewById(R.id.name);
-                    TextView since=dialog.findViewById(R.id.since);
-                    TextView orderitemsdetailtext=dialog.findViewById(R.id.orderitemsdetailtext);
-                    orderitemsdetailtext.setTypeface(holder.font);
-                    TextView orderins=dialog.findViewById(R.id.orderins);
-                    orderins.setTypeface(holder.font);
-                    TextView orderinsdetails=dialog.findViewById(R.id.orderinsdetails);
-                    TextView acceptedat=dialog.findViewById(R.id.accepttext);
-                    acceptedat.setTypeface(holder.font);
-                    TextView accepted=dialog.findViewById(R.id.accepted);
-                    TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
-                    name.setText(holder.mitem.getGuest().getName());
-                    if(holder.mitem.getStatus().equals("new_order")){
-                        dispatchbutton.setText("ACCEPT");
-
-
-
-                    }
-                    else{
-                        dispatchbutton.setText("TAKE ACTION");
+                        dialog.setCancelable(false);
+                        // Set dialog title
+                        dialog.setTitle("");
+                        dialog.show();
+                        ImageView back = dialog.findViewById(R.id.back);
+                        TextView title = dialog.findViewById(R.id.title);
+                        title.setTypeface(holder.font);
+                        TextView roomno = dialog.findViewById(R.id.roomno);
+                        TextView guests = dialog.findViewById(R.id.guest);
+                        TextView name = dialog.findViewById(R.id.name);
+                        TextView since = dialog.findViewById(R.id.since);
+                        TextView orderitemsdetailtext = dialog.findViewById(R.id.orderitemsdetailtext);
+                        orderitemsdetailtext.setTypeface(holder.font);
+                        TextView orderins = dialog.findViewById(R.id.orderins);
+                        orderins.setTypeface(holder.font);
+                        TextView orderinsdetails = dialog.findViewById(R.id.orderinsdetails);
+                        TextView acceptedat = dialog.findViewById(R.id.accepttext);
+                        acceptedat.setTypeface(holder.font);
+                        TextView accepted = dialog.findViewById(R.id.accepted);
+                        TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            dispatchbutton.setText("ACCEPT");
 
 
-                    }
-                    guests.setText(holder.mitem.getNo_of_guest());
+                        } else {
+                            dispatchbutton.setText("TAKE ACTION");
 
 
-                    RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
-                    orderitemsdetail.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
-                    roomno.setText(holder.mitem.getPrimises().getPremise_no());
-                    since.setText(getDate1(holder.mitem.getCreated_at()));
-
-                    orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequest_schedule_at()));
-
-
-                    HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail=new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_spa_items(),context);
-                    orderitemsdetail.setAdapter(order_itemAdapterdetail);
-                    LinearLayout colorimage=dialog.findViewById(R.id.colorimage);
-                    if(holder.mitem.getStatus().equals("new_order")){
-                        accepted.setText("-");
-                    }
-                    else{
-                        accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
-
-                    }
-
-                    if(holder.mitem.getStatus().equals("new_order")){
-                        colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
-                        since.setTextColor(context.getResources().getColor(R.color.gray));
-                        roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
-
-                    }
-                    else{
-                        colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
-                        since.setTextColor(context.getResources().getColor(R.color.gray));
-                        roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
-
-
-                    }
-                    back.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
                         }
-                    });
+                        guests.setText(holder.mitem.getNo_of_guest());
 
 
-                    dispatchbutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(holder.mitem.getStatus().equals("new_order")){
-                                if(Network.isNetworkAvailable(getActivity())){
+                        RecyclerView orderitemsdetail = dialog.findViewById(R.id.orderitemsdetail);
+                        orderitemsdetail.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+                        roomno.setText(holder.mitem.getPrimises().getPremise_no());
+                        since.setText(getDate1(holder.mitem.getCreated_at()));
 
-                                    setAccept(holder.mitem.getOrder_detail().getOrder_id());
-                                    // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                        orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequest_schedule_at()));
 
-                                    dialog.dismiss();
-                                }
-                                else if(Network.isNetworkAvailable2(getActivity())){
 
-                                    setAccept(holder.mitem.getOrder_detail().getOrder_id());
-                                    // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                        HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail = new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_spa_items(), context);
+                        orderitemsdetail.setAdapter(order_itemAdapterdetail);
+                        LinearLayout colorimage = dialog.findViewById(R.id.colorimage);
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            accepted.setText("-");
+                        } else {
+                            accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
 
-                                    dialog.dismiss();
+                        }
 
-                                }
-                                else{
+                        if (holder.mitem.getStatus().equals("new_order")) {
+                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
+                            since.setTextColor(context.getResources().getColor(R.color.gray));
+                            roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
 
-                                }
+                        } else {
+                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
+                            since.setTextColor(context.getResources().getColor(R.color.gray));
+                            roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
 
+
+                        }
+                        back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
                             }
-                            else{
+                        });
 
-                                //super.onBackPressed();
-                                final Dialog dialog1 = new Dialog(getActivity());
-                                // Include dialog.xml file
 
-                                dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dispatchbutton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (holder.mitem.getStatus().equals("new_order")) {
+                                    if (Network.isNetworkAvailable(getActivity())) {
 
-                                // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                dialog1.setContentView(R.layout.spaactionpopup);
-                                int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.99);
-                                int height1 = (int)(getResources().getDisplayMetrics().heightPixels*0.99);
-                                dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                dialog1.getWindow().setLayout(width1, height1);
+                                        dialog.dismiss();
+                                    } else if (Network.isNetworkAvailable2(getActivity())) {
 
-                                dialog1.setCancelable(false);
-                                // Set dialog title
-                                dialog1.setTitle("");
-                                dialog1.show();
-                                // TextView textView=dialog.findViewById(R.id.text) ;
-                                // textView.setText("Send to History?");
-                                // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
-                                ImageView confirm=dialog1.findViewById(R.id.close) ;
-                                TextView cancel1=dialog1.findViewById(R.id.dispatch);
-                                final RadioGroup radioGroup=dialog1.findViewById(R.id.radiogroup);
-                                final EditText editText=dialog1.findViewById(R.id.reason);
+                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                                    @Override
-                                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                        int selectedid=radioGroup.getCheckedRadioButtonId();
+                                        dialog.dismiss();
 
-                                        RadioButton radioButton=(RadioButton)dialog1.findViewById(selectedid);
-                                        text= String.valueOf(radioButton.getTag());
-                                        //  Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
-                                        if(text.equals("other")){
-                                            editText.setVisibility(View.VISIBLE);
-                                        }
-                                        else{
-                                            editText.setVisibility(View.GONE);
-
-                                        }
+                                    } else {
 
                                     }
-                                });
 
-                                confirm.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                                } else {
 
-                                        dialog1.dismiss();
-                                    }
-                                });
-                                cancel1.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if(text.equals("")){
-                                            Toast.makeText(getActivity(),"Please select atleast one",Toast.LENGTH_SHORT).show();
+                                    //super.onBackPressed();
+                                    final Dialog dialog1 = new Dialog(getActivity());
+                                    // Include dialog.xml file
+
+                                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    dialog1.setContentView(R.layout.spaactionpopup);
+                                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.99);
+                                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.99);
+                                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                                    dialog1.getWindow().setLayout(width1, height1);
+
+                                    dialog1.setCancelable(false);
+                                    // Set dialog title
+                                    dialog1.setTitle("");
+                                    dialog1.show();
+                                    // TextView textView=dialog.findViewById(R.id.text) ;
+                                    // textView.setText("Send to History?");
+                                    // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
+                                    ImageView confirm = dialog1.findViewById(R.id.close);
+                                    TextView cancel1 = dialog1.findViewById(R.id.dispatch);
+                                    final RadioGroup radioGroup = dialog1.findViewById(R.id.radiogroup);
+                                    final EditText editText = dialog1.findViewById(R.id.reason);
+
+                                    radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                            int selectedid = radioGroup.getCheckedRadioButtonId();
+
+                                            RadioButton radioButton = (RadioButton) dialog1.findViewById(selectedid);
+                                            text = String.valueOf(radioButton.getTag());
+                                            //  Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
+                                            if (text.equals("other")) {
+                                                editText.setVisibility(View.VISIBLE);
+                                            } else {
+                                                editText.setVisibility(View.GONE);
+
+                                            }
+
                                         }
-                                        else{
-                                            if(text.equals("other")){
-                                                if(editText.getText().toString().equals("")){
-                                                    Toast.makeText(getActivity(),"Please write your reason",Toast.LENGTH_SHORT).show();
-                                                }else{
-                                                    if(Network.isNetworkAvailable(getActivity())){
+                                    });
 
-                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                    confirm.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
-                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,editText.getText().toString());
+                                            dialog1.dismiss();
+                                        }
+                                    });
+                                    cancel1.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (text.equals("")) {
+                                                Toast.makeText(getActivity(), "Please select atleast one", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                if (text.equals("other")) {
+                                                    if (editText.getText().toString().equals("")) {
+                                                        Toast.makeText(getActivity(), "Please write your reason", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (Network.isNetworkAvailable(getActivity())) {
+
+                                                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                            setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, editText.getText().toString());
+                                                            dialog.dismiss();
+                                                            dialog1.dismiss();
+
+                                                        } else if (Network.isNetworkAvailable2(getActivity())) {
+                                                            setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                            setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, editText.getText().toString());
+
+                                                            dialog.dismiss();
+                                                            dialog1.dismiss();
+
+                                                        } else {
+
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    if (Network.isNetworkAvailable(getActivity())) {
+                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, "");
                                                         dialog.dismiss();
                                                         dialog1.dismiss();
 
-                                                    }
-                                                    else if(Network.isNetworkAvailable2(getActivity())){
-                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                                    } else if (Network.isNetworkAvailable2(getActivity())) {
+                                                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
 
-                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,editText.getText().toString());
+                                                        setClear(holder.mitem.getOrder_detail().getOrder_id(), position, text, "");
 
                                                         dialog.dismiss();
                                                         dialog1.dismiss();
 
-                                                    }
-                                                    else{
+                                                    } else {
 
                                                     }
                                                 }
-
                                             }
-                                            else{
-                                                if(Network.isNetworkAvailable(getActivity())){
-                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
-                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,"");
-                                                    dialog.dismiss();
-                                                    dialog1.dismiss();
 
-                                                }
-                                                else if(Network.isNetworkAvailable2(getActivity())){
-                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(),position,text,"");
-
-                                                    dialog.dismiss();
-                                                    dialog1.dismiss();
-
-                                                }
-                                                else{
-
-                                                }
-                                            }
                                         }
+                                    });
 
-
-                                    }
-                                });
-
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-
             }
         });
 
@@ -2671,7 +2865,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
         }
 
         //calling a method of the adapter class and passing the filtered list
-        homeAdapter.filterList(filterdNames);
+        try {
+            homeAdapter.filterList(filterdNames);
+        }
+        catch (Exception e){
+
+        }
     }
     public void tryAnimation(View view) {
         Animation animation = AnimationUtils.loadAnimation(getActivity(), android.R.anim.slide_in_left);

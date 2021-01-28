@@ -702,7 +702,7 @@ public class DispatchedMainFragment extends Fragment implements View.OnClickList
 
         holder.since.setText(getDate1(holder.mitem.getCreated_at()));
 
-            holder.dispatch.setText("DELIVERED");
+            holder.dispatch.setText("CLEARED");
 
             holder.colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
             holder.orderstatus.setTextColor(context.getResources().getColor(R.color.gray));
@@ -847,7 +847,7 @@ public class DispatchedMainFragment extends Fragment implements View.OnClickList
                 }
                 TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
 
-                    dispatchbutton.setText("DELIVERED");
+                    dispatchbutton.setText("CLEARED");
 
 
 
@@ -1467,7 +1467,7 @@ public class DispatchedMainFragment extends Fragment implements View.OnClickList
                                 }
                             });*/
 
-                            dispatchbutton.setText("DELIVERED");
+                            dispatchbutton.setText("CLEARED");
 
                         if(statuspayemnt.equals("offline")){
                             status1.setText("Settle Later");

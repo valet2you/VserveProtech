@@ -52,6 +52,7 @@ import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.Dashboard;
 import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.Model.Order_Item;
+import com.viralops.touchlessfoodordering.Model.Revenue;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
@@ -426,7 +427,15 @@ public class DispatchedMainFragmentcombine extends Fragment implements View.OnCl
                         newcount.setText("( "+String.valueOf(login.getData().getNew_order())+" )");
                         acceptedcount.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
                         disptachedcount.setText("( "+String.valueOf(login.getData().getDispatched_order())+" )");
+                        if(Network.isNetworkAvailable(getActivity())){
+                            getRevenue("day");
+                        }
+                        else if(Network.isNetworkAvailable2(getActivity())){
+                            getRevenue("day");
+                        }
+                        else{
 
+                        }
                     }
                     else if(response.code()==401){
                         Header login = response.body();
@@ -704,7 +713,7 @@ public class DispatchedMainFragmentcombine extends Fragment implements View.OnCl
 
         holder.since.setText(getDate1(holder.mitem.getCreated_at()));
 
-            holder.dispatch.setText("DELIVERED");
+            holder.dispatch.setText("CLEARED");
 
             holder.colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
             holder.orderstatus.setTextColor(context.getResources().getColor(R.color.gray));
@@ -840,7 +849,7 @@ public class DispatchedMainFragmentcombine extends Fragment implements View.OnCl
                 status.setVisibility(View.VISIBLE);
                 TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
 
-                    dispatchbutton.setText("DELIVERED");
+                    dispatchbutton.setText("CLEARED");
 
 
 
@@ -1470,7 +1479,7 @@ public class DispatchedMainFragmentcombine extends Fragment implements View.OnCl
                                 }
                             });*/
 
-                            dispatchbutton.setText("DELIVERED");
+                            dispatchbutton.setText("CLEARED");
 
                         if(statuspayemnt.equals("offline")){
                             status1.setText("Settle Later");
@@ -1855,4 +1864,50 @@ public class DispatchedMainFragmentcombine extends Fragment implements View.OnCl
         });
 
     }
+    private void getRevenue(String param) {
+        // display a progress dialog
+/*
+        String credentials = Credentials.basic("admin", "LetsValet2You");
+*/
+
+        (RetrofitClientInstance.getApiService().getRevenue(BuildConfig.get_revenue+"duration=day","Bearer "+sessionManager.getACCESSTOKEN()," "," ")).enqueue(new Callback<Revenue>() {
+            @Override
+            public void onResponse(@NonNull Call<Revenue> call, @NonNull Response<Revenue> response) {
+
+                if(response.code()==202||response.code()==200){
+                    Revenue login = response.body();
+                    ArrayList<Revenue.Data> dataArrayList=login.getData();
+                    try {
+                        MainActivity.revenue.setText(getActivity().getResources().getString(R.string.Rs) + " " + (dataArrayList.get(0).getTotal_revenue()));
+                    }catch (Exception e){
+
+                    }
+                }
+                else if(response.code()==401){
+                    Revenue login = response.body();
+                    Toast.makeText(getActivity(), "Unauthorised", Toast.LENGTH_SHORT).show();
+                    sessionManager.logoutsession();
+                }
+                else if(response.code()==500){
+                    Toast.makeText(getActivity(), "Something went wrong.", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Revenue> call, @NonNull Throwable t) {
+                Log.d("response", Arrays.toString(t.getStackTrace()));
+
+            }
+        });
+
+    }
+
 }

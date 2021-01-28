@@ -1546,9 +1546,16 @@ HomeAdapter homeAdapter;
                 holder.more.setVisibility(View.GONE);
 
             }
+            if(holder.mitem.getGuest()!=null){
+                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1=new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPrimises().getPremise_no(),holder.mitem.getStatus(),holder.mitem.getOrder_detail().getCreated_at(),holder.mitem.getOrder_detail().getRequested_pickup_at(),holder.mitem.getOrder_detail().getAccepted_at(),holder.mitem.getOrder_detail().getOrder_id(),position,holder.mitem.getStatus(),holder.mitem.getOrder_laundry_items(),holder.mitem.getGuest().getName(),context);
+                holder.recyclerView.setAdapter(order_itemAdapter1);
+            }
+            else{
+                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1=new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPrimises().getPremise_no(),holder.mitem.getStatus(),holder.mitem.getOrder_detail().getCreated_at(),holder.mitem.getOrder_detail().getRequested_pickup_at(),holder.mitem.getOrder_detail().getAccepted_at(),holder.mitem.getOrder_detail().getOrder_id(),position,holder.mitem.getStatus(),holder.mitem.getOrder_laundry_items(),"Guest",context);
+                holder.recyclerView.setAdapter(order_itemAdapter1);
+            }
 
-            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1=new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPrimises().getPremise_no(),holder.mitem.getStatus(),holder.mitem.getOrder_detail().getCreated_at(),holder.mitem.getOrder_detail().getRequested_pickup_at(),holder.mitem.getOrder_detail().getAccepted_at(),holder.mitem.getOrder_detail().getOrder_id(),position,holder.mitem.getStatus(),holder.mitem.getOrder_laundry_items(),holder.mitem.getGuest().getName(),context);
-            holder.recyclerView.setAdapter(order_itemAdapter1);
+
 
             holder.dispatch.setOnClickListener(new View.OnClickListener() {
                 @SuppressLint("WrongConstant")
@@ -1640,183 +1647,347 @@ HomeAdapter homeAdapter;
             holder.parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(holder.mitem.getGuest().getName().equals("Guest")){
-                        final Dialog dialog = new Dialog(context);
-                        // Include dialog.xml file
+                    if(holder.mitem.getGuest()!=null) {
+                        if (holder.mitem.getGuest().getName().equals("Guest")) {
+                            final Dialog dialog = new Dialog(context);
+                            // Include dialog.xml file
 
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                        // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.laudrydetail_popupwithoutguets);
-                        int width1 = (int)(context.getResources().getDisplayMetrics().widthPixels*0.99);
-                        int height1 = (int)(context.getResources().getDisplayMetrics().heightPixels*0.99);
-                        dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+                            // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.laudrydetail_popupwithoutguets);
+                            int width1 = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.99);
+                            int height1 = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.99);
+                            dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
-                        dialog.getWindow().setLayout(width1, height1);
+                            dialog.getWindow().setLayout(width1, height1);
 
-                        dialog.setCancelable(false);
-                        // Set dialog title
-                        dialog.setTitle("");
-                        dialog.show();
-                        ImageView back=dialog.findViewById(R.id.back);
-                        TextView title=dialog.findViewById(R.id.title);
-                        title.setTypeface(holder.font);
-                        TextView roomno=dialog.findViewById(R.id.roomno);
-                        TextView name=dialog.findViewById(R.id.name);
-                        TextView guests=dialog.findViewById(R.id.guest);
-                        TextView since=dialog.findViewById(R.id.since);
-                        TextView orderitemsdetailtext=dialog.findViewById(R.id.orderitemsdetailtext);
-                        orderitemsdetailtext.setTypeface(holder.font);
-                        TextView orderins=dialog.findViewById(R.id.orderins);
-                        orderins.setTypeface(holder.font);
-                        TextView orderinsdetails=dialog.findViewById(R.id.orderinsdetails);
-                        TextView acceptedat=dialog.findViewById(R.id.accepttext);
-                        acceptedat.setTypeface(holder.font);
-                        TextView accepted=dialog.findViewById(R.id.accepted);
-                        TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
-                        name.setText(holder.mitem.getGuest().getName());
-                        if(holder.mitem.getStatus().equals("New Order")){
-                            dispatchbutton.setText("ACCEPT");
-                            guests.setText("New Order");
-                            guests.setTextColor(context.getResources().getColor(R.color.mehroon));
-
-
-                        }
-                        else{
-                            dispatchbutton.setText("PICKED UP");
-                            guests.setText("Accepted");
-                            guests.setTextColor(context.getResources().getColor(R.color.mogiya));
-
-                        }
+                            dialog.setCancelable(false);
+                            // Set dialog title
+                            dialog.setTitle("");
+                            dialog.show();
+                            ImageView back = dialog.findViewById(R.id.back);
+                            TextView title = dialog.findViewById(R.id.title);
+                            title.setTypeface(holder.font);
+                            TextView roomno = dialog.findViewById(R.id.roomno);
+                            TextView name = dialog.findViewById(R.id.name);
+                            TextView guests = dialog.findViewById(R.id.guest);
+                            TextView since = dialog.findViewById(R.id.since);
+                            TextView orderitemsdetailtext = dialog.findViewById(R.id.orderitemsdetailtext);
+                            orderitemsdetailtext.setTypeface(holder.font);
+                            TextView orderins = dialog.findViewById(R.id.orderins);
+                            orderins.setTypeface(holder.font);
+                            TextView orderinsdetails = dialog.findViewById(R.id.orderinsdetails);
+                            TextView acceptedat = dialog.findViewById(R.id.accepttext);
+                            acceptedat.setTypeface(holder.font);
+                            TextView accepted = dialog.findViewById(R.id.accepted);
+                            TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
+                            name.setText("Guest");
+                            if (holder.mitem.getStatus().equals("New Order")) {
+                                dispatchbutton.setText("ACCEPT");
+                                guests.setText("New Order");
+                                guests.setTextColor(context.getResources().getColor(R.color.mehroon));
 
 
-                        RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
-                        orderitemsdetail.setLayoutManager(new GridLayoutManager(context,2));
-                        roomno.setText(holder.mitem.getPrimises().getPremise_no());
-                        since.setText(getDate1(holder.mitem.getCreated_at()));
+                            } else {
+                                dispatchbutton.setText("PICKED UP");
+                                guests.setText("Accepted");
+                                guests.setTextColor(context.getResources().getColor(R.color.mogiya));
 
-                        orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequested_pickup_at()));
-
-
-                        HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail=new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_laundry_items(),context);
-                        orderitemsdetail.setAdapter(order_itemAdapterdetail);
-                        LinearLayout colorimage=dialog.findViewById(R.id.colorimage);
-                        if(holder.mitem.getStatus().equals("New Order")){
-                            accepted.setText("-");
-                        }
-                        else{
-                            accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
-
-                        }
-
-                        if(holder.mitem.getStatus().equals("New Order")){
-                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
-                            since.setTextColor(context.getResources().getColor(R.color.gray));
-                            roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
-
-                        }
-                        else{
-                            colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
-                            since.setTextColor(context.getResources().getColor(R.color.gray));
-                            roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
-
-
-                        }
-                        back.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
                             }
-                        });
 
 
-                        dispatchbutton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if(holder.mitem.getStatus().equals("New Order")){
-                                    if(Network.isNetworkAvailable(getActivity())){
+                            RecyclerView orderitemsdetail = dialog.findViewById(R.id.orderitemsdetail);
+                            orderitemsdetail.setLayoutManager(new GridLayoutManager(context, 2));
+                            roomno.setText(holder.mitem.getPrimises().getPremise_no());
+                            since.setText(getDate1(holder.mitem.getCreated_at()));
 
-                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
-                                        ///  setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                        dialog.dismiss();
-                                    }
-                                    else if(Network.isNetworkAvailable2(getActivity())){
-
-                                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
-                                        // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                        dialog.dismiss();
-
-                                    }
-                                    else{
-
-                                    }
-
-                                }
-                                else{
-
-                                    //super.onBackPressed();
-                                    final Dialog dialog1 = new Dialog(getActivity());
-                                    // Include dialog.xml file
-
-                                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-                                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    dialog1.setContentView(R.layout.delet_dialog);
-                                    int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.50);
-                                    int height1 = (int)(getResources().getDisplayMetrics().heightPixels*0.90);
-                                    dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
-
-                                    dialog1.getWindow().setLayout(width1, height1);
-
-                                    dialog1.setCancelable(false);
-                                    // Set dialog title
-                                    dialog1.setTitle("");
-                                    dialog1.show();
-                                    TextView textView=dialog1.findViewById(R.id.text) ;
-                                    textView.setText("Send to History?");
-                                    // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
-                                    TextView confirm=dialog1.findViewById(R.id.cancel) ;
-                                    CardView cancel1=dialog1.findViewById(R.id.confirm);
-
-                                    confirm.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-
-                                            dialog1.dismiss();
-                                        }
-                                    });
-                                    cancel1.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if(Network.isNetworkAvailable(getActivity())){
-                                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                                dialog1.dismiss();
-                                                dialog.dismiss();
-
-                                            }
-                                            else if(Network.isNetworkAvailable2(getActivity())){
-
-                                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                                dialog1.dismiss();
-                                                dialog.dismiss();
-
-                                            }
-                                            else{
-
-                                            }
-                                        }
-                                    });
+                            orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequested_pickup_at()));
 
 
-                                }
+                            HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail = new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_laundry_items(), context);
+                            orderitemsdetail.setAdapter(order_itemAdapterdetail);
+                            LinearLayout colorimage = dialog.findViewById(R.id.colorimage);
+                            if (holder.mitem.getStatus().equals("New Order")) {
+                                accepted.setText("-");
+                            } else {
+                                accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
+
                             }
-                        });
+
+                            if (holder.mitem.getStatus().equals("New Order")) {
+                                colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
+                                since.setTextColor(context.getResources().getColor(R.color.gray));
+                                roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
+
+                            } else {
+                                colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
+                                since.setTextColor(context.getResources().getColor(R.color.gray));
+                                roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
+
+
+                            }
+                            back.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+
+                            dispatchbutton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (holder.mitem.getStatus().equals("New Order")) {
+                                        if (Network.isNetworkAvailable(getActivity())) {
+
+                                            setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                            ///  setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+
+                                            dialog.dismiss();
+                                        } else if (Network.isNetworkAvailable2(getActivity())) {
+
+                                            setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                            // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+
+                                            dialog.dismiss();
+
+                                        } else {
+
+                                        }
+
+                                    } else {
+
+                                        //super.onBackPressed();
+                                        final Dialog dialog1 = new Dialog(getActivity());
+                                        // Include dialog.xml file
+
+                                        dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                                        // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                        dialog1.setContentView(R.layout.delet_dialog);
+                                        int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.50);
+                                        int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.90);
+                                        dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                                        dialog1.getWindow().setLayout(width1, height1);
+
+                                        dialog1.setCancelable(false);
+                                        // Set dialog title
+                                        dialog1.setTitle("");
+                                        dialog1.show();
+                                        TextView textView = dialog1.findViewById(R.id.text);
+                                        textView.setText("Send to History?");
+                                        // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
+                                        TextView confirm = dialog1.findViewById(R.id.cancel);
+                                        CardView cancel1 = dialog1.findViewById(R.id.confirm);
+
+                                        confirm.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                dialog1.dismiss();
+                                            }
+                                        });
+                                        cancel1.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (Network.isNetworkAvailable(getActivity())) {
+                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(), position);
+                                                    dialog1.dismiss();
+                                                    dialog.dismiss();
+
+                                                } else if (Network.isNetworkAvailable2(getActivity())) {
+
+                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(), position);
+                                                    dialog1.dismiss();
+                                                    dialog.dismiss();
+
+                                                } else {
+
+                                                }
+                                            }
+                                        });
+
+
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            final Dialog dialog = new Dialog(context);
+                            // Include dialog.xml file
+
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                            // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.laudrydetail_popup);
+                            int width1 = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.99);
+                            int height1 = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.99);
+                            dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                            dialog.getWindow().setLayout(width1, height1);
+
+                            dialog.setCancelable(false);
+                            // Set dialog title
+                            dialog.setTitle("");
+                            dialog.show();
+                            ImageView back = dialog.findViewById(R.id.back);
+                            TextView title = dialog.findViewById(R.id.title);
+                            title.setTypeface(holder.font);
+                            TextView roomno = dialog.findViewById(R.id.roomno);
+                            TextView name = dialog.findViewById(R.id.name);
+                            TextView guests = dialog.findViewById(R.id.guest);
+                            TextView since = dialog.findViewById(R.id.since);
+                            TextView orderitemsdetailtext = dialog.findViewById(R.id.orderitemsdetailtext);
+                            orderitemsdetailtext.setTypeface(holder.font);
+                            TextView orderins = dialog.findViewById(R.id.orderins);
+                            orderins.setTypeface(holder.font);
+                            TextView orderinsdetails = dialog.findViewById(R.id.orderinsdetails);
+                            TextView acceptedat = dialog.findViewById(R.id.accepttext);
+                            acceptedat.setTypeface(holder.font);
+                            TextView accepted = dialog.findViewById(R.id.accepted);
+                            TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
+                            name.setText(holder.mitem.getGuest().getName());
+                            if (holder.mitem.getStatus().equals("New Order")) {
+                                dispatchbutton.setText("ACCEPT");
+                                guests.setText("New Order");
+                                guests.setTextColor(context.getResources().getColor(R.color.mehroon));
+
+
+                            } else {
+                                dispatchbutton.setText("PICKED UP");
+                                guests.setText("Accepted");
+                                guests.setTextColor(context.getResources().getColor(R.color.mogiya));
+
+                            }
+
+
+                            RecyclerView orderitemsdetail = dialog.findViewById(R.id.orderitemsdetail);
+                            orderitemsdetail.setLayoutManager(new GridLayoutManager(context, 2));
+                            roomno.setText(holder.mitem.getPrimises().getPremise_no());
+                            since.setText(getDate1(holder.mitem.getCreated_at()));
+
+                            orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequested_pickup_at()));
+
+
+                            HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail = new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_laundry_items(), context);
+                            orderitemsdetail.setAdapter(order_itemAdapterdetail);
+                            LinearLayout colorimage = dialog.findViewById(R.id.colorimage);
+                            if (holder.mitem.getStatus().equals("New Order")) {
+                                accepted.setText("-");
+                            } else {
+                                accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
+
+                            }
+
+                            if (holder.mitem.getStatus().equals("New Order")) {
+                                colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
+                                since.setTextColor(context.getResources().getColor(R.color.gray));
+                                roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
+
+                            } else {
+                                colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
+                                since.setTextColor(context.getResources().getColor(R.color.gray));
+                                roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
+
+
+                            }
+                            back.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+
+                            dispatchbutton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (holder.mitem.getStatus().equals("New Order")) {
+                                        if (Network.isNetworkAvailable(getActivity())) {
+
+                                            setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                            ///  setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+
+                                            dialog.dismiss();
+                                        } else if (Network.isNetworkAvailable2(getActivity())) {
+
+                                            setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                                            // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+
+                                            dialog.dismiss();
+
+                                        } else {
+
+                                        }
+
+                                    } else {
+
+                                        //super.onBackPressed();
+                                        final Dialog dialog1 = new Dialog(getActivity());
+                                        // Include dialog.xml file
+
+                                        dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                                        // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                        dialog1.setContentView(R.layout.delet_dialog);
+                                        int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.50);
+                                        int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.90);
+                                        dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+                                        dialog1.getWindow().setLayout(width1, height1);
+
+                                        dialog1.setCancelable(false);
+                                        // Set dialog title
+                                        dialog1.setTitle("");
+                                        dialog1.show();
+                                        TextView textView = dialog1.findViewById(R.id.text);
+                                        textView.setText("Send to History?");
+                                        // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
+                                        TextView confirm = dialog1.findViewById(R.id.cancel);
+                                        CardView cancel1 = dialog1.findViewById(R.id.confirm);
+
+                                        confirm.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                dialog1.dismiss();
+                                            }
+                                        });
+                                        cancel1.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (Network.isNetworkAvailable(getActivity())) {
+                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(), position);
+                                                    dialog1.dismiss();
+                                                    dialog.dismiss();
+
+                                                } else if (Network.isNetworkAvailable2(getActivity())) {
+
+                                                    setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
+
+                                                    setClear(holder.mitem.getOrder_detail().getOrder_id(), position);
+                                                    dialog1.dismiss();
+                                                    dialog.dismiss();
+
+                                                } else {
+
+                                                }
+                                            }
+                                        });
+
+
+                                    }
+                                }
+                            });
+                        }
                     }
                     else{
                         final Dialog dialog = new Dialog(context);
@@ -1825,9 +1996,9 @@ HomeAdapter homeAdapter;
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                         // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.laudrydetail_popup);
-                        int width1 = (int)(context.getResources().getDisplayMetrics().widthPixels*0.99);
-                        int height1 = (int)(context.getResources().getDisplayMetrics().heightPixels*0.99);
+                        dialog.setContentView(R.layout.laudrydetail_popupwithoutguets);
+                        int width1 = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.99);
+                        int height1 = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.99);
                         dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
                         dialog.getWindow().setLayout(width1, height1);
@@ -1836,31 +2007,29 @@ HomeAdapter homeAdapter;
                         // Set dialog title
                         dialog.setTitle("");
                         dialog.show();
-                        ImageView back=dialog.findViewById(R.id.back);
-                        TextView title=dialog.findViewById(R.id.title);
+                        ImageView back = dialog.findViewById(R.id.back);
+                        TextView title = dialog.findViewById(R.id.title);
                         title.setTypeface(holder.font);
-                        TextView roomno=dialog.findViewById(R.id.roomno);
-                        TextView name=dialog.findViewById(R.id.name);
-                        TextView guests=dialog.findViewById(R.id.guest);
-                        TextView since=dialog.findViewById(R.id.since);
-                        TextView orderitemsdetailtext=dialog.findViewById(R.id.orderitemsdetailtext);
+                        TextView roomno = dialog.findViewById(R.id.roomno);
+                        TextView name = dialog.findViewById(R.id.name);
+                        TextView guests = dialog.findViewById(R.id.guest);
+                        TextView since = dialog.findViewById(R.id.since);
+                        TextView orderitemsdetailtext = dialog.findViewById(R.id.orderitemsdetailtext);
                         orderitemsdetailtext.setTypeface(holder.font);
-                        TextView orderins=dialog.findViewById(R.id.orderins);
+                        TextView orderins = dialog.findViewById(R.id.orderins);
                         orderins.setTypeface(holder.font);
-                        TextView orderinsdetails=dialog.findViewById(R.id.orderinsdetails);
-                        TextView acceptedat=dialog.findViewById(R.id.accepttext);
+                        TextView orderinsdetails = dialog.findViewById(R.id.orderinsdetails);
+                        TextView acceptedat = dialog.findViewById(R.id.accepttext);
                         acceptedat.setTypeface(holder.font);
-                        TextView accepted=dialog.findViewById(R.id.accepted);
-                        TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
-                        name.setText(holder.mitem.getGuest().getName());
-                        if(holder.mitem.getStatus().equals("New Order")){
+                        TextView accepted = dialog.findViewById(R.id.accepted);
+                        TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
+                        if (holder.mitem.getStatus().equals("New Order")) {
                             dispatchbutton.setText("ACCEPT");
                             guests.setText("New Order");
                             guests.setTextColor(context.getResources().getColor(R.color.mehroon));
 
 
-                        }
-                        else{
+                        } else {
                             dispatchbutton.setText("PICKED UP");
                             guests.setText("Accepted");
                             guests.setTextColor(context.getResources().getColor(R.color.mogiya));
@@ -1868,32 +2037,30 @@ HomeAdapter homeAdapter;
                         }
 
 
-                        RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
-                        orderitemsdetail.setLayoutManager(new GridLayoutManager(context,2));
+                        RecyclerView orderitemsdetail = dialog.findViewById(R.id.orderitemsdetail);
+                        orderitemsdetail.setLayoutManager(new GridLayoutManager(context, 2));
                         roomno.setText(holder.mitem.getPrimises().getPremise_no());
                         since.setText(getDate1(holder.mitem.getCreated_at()));
 
                         orderinsdetails.setText(getDatenew(holder.mitem.getOrder_detail().getRequested_pickup_at()));
 
 
-                        HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail=new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_laundry_items(),context);
+                        HomeAdapter.Order_ItemAdapterdetail order_itemAdapterdetail = new HomeAdapter.Order_ItemAdapterdetail(holder.mitem.getOrder_laundry_items(), context);
                         orderitemsdetail.setAdapter(order_itemAdapterdetail);
-                        LinearLayout colorimage=dialog.findViewById(R.id.colorimage);
-                        if(holder.mitem.getStatus().equals("New Order")){
+                        LinearLayout colorimage = dialog.findViewById(R.id.colorimage);
+                        if (holder.mitem.getStatus().equals("New Order")) {
                             accepted.setText("-");
-                        }
-                        else{
+                        } else {
                             accepted.setText(getDate1(holder.mitem.getOrder_detail().getAccepted_at()));
 
                         }
 
-                        if(holder.mitem.getStatus().equals("New Order")){
+                        if (holder.mitem.getStatus().equals("New Order")) {
                             colorimage.setBackgroundColor(context.getResources().getColor(R.color.red));
                             since.setTextColor(context.getResources().getColor(R.color.gray));
                             roomno.setTextColor(context.getResources().getColor(R.color.mehroon));
 
-                        }
-                        else{
+                        } else {
                             colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
                             since.setTextColor(context.getResources().getColor(R.color.gray));
                             roomno.setTextColor(context.getResources().getColor(R.color.mogiya));
@@ -1911,28 +2078,25 @@ HomeAdapter homeAdapter;
                         dispatchbutton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(holder.mitem.getStatus().equals("New Order")){
-                                    if(Network.isNetworkAvailable(getActivity())){
+                                if (holder.mitem.getStatus().equals("New Order")) {
+                                    if (Network.isNetworkAvailable(getActivity())) {
 
                                         setAccept(holder.mitem.getOrder_detail().getOrder_id());
                                         ///  setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
                                         dialog.dismiss();
-                                    }
-                                    else if(Network.isNetworkAvailable2(getActivity())){
+                                    } else if (Network.isNetworkAvailable2(getActivity())) {
 
                                         setAccept(holder.mitem.getOrder_detail().getOrder_id());
                                         // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
                                         dialog.dismiss();
 
-                                    }
-                                    else{
+                                    } else {
 
                                     }
 
-                                }
-                                else{
+                                } else {
 
                                     //super.onBackPressed();
                                     final Dialog dialog1 = new Dialog(getActivity());
@@ -1942,8 +2106,8 @@ HomeAdapter homeAdapter;
 
                                     // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     dialog1.setContentView(R.layout.delet_dialog);
-                                    int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.50);
-                                    int height1 = (int)(getResources().getDisplayMetrics().heightPixels*0.90);
+                                    int width1 = (int) (getResources().getDisplayMetrics().widthPixels * 0.50);
+                                    int height1 = (int) (getResources().getDisplayMetrics().heightPixels * 0.90);
                                     dialog1.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
                                     dialog1.getWindow().setLayout(width1, height1);
@@ -1952,11 +2116,11 @@ HomeAdapter homeAdapter;
                                     // Set dialog title
                                     dialog1.setTitle("");
                                     dialog1.show();
-                                    TextView textView=dialog1.findViewById(R.id.text) ;
+                                    TextView textView = dialog1.findViewById(R.id.text);
                                     textView.setText("Send to History?");
                                     // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
-                                    TextView confirm=dialog1.findViewById(R.id.cancel) ;
-                                    CardView cancel1=dialog1.findViewById(R.id.confirm);
+                                    TextView confirm = dialog1.findViewById(R.id.cancel);
+                                    CardView cancel1 = dialog1.findViewById(R.id.confirm);
 
                                     confirm.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -1968,24 +2132,22 @@ HomeAdapter homeAdapter;
                                     cancel1.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if(Network.isNetworkAvailable(getActivity())){
-                                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                            if (Network.isNetworkAvailable(getActivity())) {
+                                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
 
-                                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                                setClear(holder.mitem.getOrder_detail().getOrder_id(), position);
                                                 dialog1.dismiss();
                                                 dialog.dismiss();
 
-                                            }
-                                            else if(Network.isNetworkAvailable2(getActivity())){
+                                            } else if (Network.isNetworkAvailable2(getActivity())) {
 
-                                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(), position);
 
-                                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
+                                                setClear(holder.mitem.getOrder_detail().getOrder_id(), position);
                                                 dialog1.dismiss();
                                                 dialog.dismiss();
 
-                                            }
-                                            else{
+                                            } else {
 
                                             }
                                         }
@@ -1996,6 +2158,7 @@ HomeAdapter homeAdapter;
                             }
                         });
                     }
+
 
                 }
             });

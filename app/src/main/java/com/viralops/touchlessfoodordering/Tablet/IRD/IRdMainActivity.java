@@ -89,13 +89,9 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
     static public TextView availableassciate;
     static public TextView totaltext;
     static public TextView totalorders;
-    IRDAdapter   irdAdapter;
-    ArrayList<IRD_Data_data> irddataenulist=new ArrayList<>();
-    ShimmerRecyclerView shimmerRecyclerViewcategory;
 
     private TextView text;
-    RecyclerView recyclerView;
-     Dialog menudialog;
+
     private TextView text1;
     private CardView menu;
     private  TextView history;
@@ -103,6 +99,12 @@ public class IRdMainActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView logout;
     private SessionManager sessionManager;
     private SessionManagerFCM sessionManagerFCM;
+    RecyclerView recyclerView;
+    Dialog menudialog;
+    IRDAdapter   irdAdapter;
+    ArrayList<IRD_Data_data> irddataenulist=new ArrayList<>();
+    ShimmerRecyclerView shimmerRecyclerViewcategory;
+
     ArrayList<IRD_Category> categorylist=new ArrayList<>();
     ArrayList<IRD_Category> irdcategorylist=new ArrayList<>();
     ArrayList<Menu.menu_data> menuslist=new ArrayList<>();

@@ -82,7 +82,7 @@ public class AYSMain_Mobile extends AppCompatActivity implements View.OnClickLis
 
         }
         // Set up the login form.
-        setContentView(R.layout.associate_main);
+        setContentView(R.layout.associate_main1);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(Color.parseColor("#091F42"));

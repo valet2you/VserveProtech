@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity;
 import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
@@ -49,7 +53,9 @@ private TextView text;
 private TextView button;
 private EditText username;
 private EditText password;
+private ImageView show_pass_btn;
 SessionManager sessionManager;
+boolean click=false;
 SessionManagerFCM sessionManagerFCM;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +91,31 @@ SessionManagerFCM sessionManagerFCM;
 
         button=findViewById(R.id.button);
         button.setTypeface(font);
+        show_pass_btn=findViewById(R.id.show_pass_btn);
+
 
         button.setOnClickListener(this);
+        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        show_pass_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(password.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
+                    show_pass_btn.setImageResource(R.mipmap.hide1);
+
+                    //Show Password
+                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+                else{
+                    show_pass_btn.setImageResource(R.mipmap.show1);
+
+                    //Hide Password
+                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+                }
+
+            }
+        });
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             text.setLetterSpacing((float) 0.2);
 
@@ -126,7 +155,7 @@ SessionManagerFCM sessionManagerFCM;
         // display a progress dialog
         final ProgressDialog progressDialog = new ProgressDialog(Login_Activity.this);
 
-        progressDialog.setCancelable(false); // set cancelable to false
+        progressDialog.setCancelable(false); // set cancelable to falsez
         progressDialog.setMessage("Please Wait"); // set message
         progressDialog.show(); // show progress dialog
 
@@ -137,7 +166,6 @@ SessionManagerFCM sessionManagerFCM;
 
                 if(response.code()==201||response.code()==200){
                     Login login = response.body();
-                    Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
                     sessionManager.setNAME(login.getUser_type());
 
 
@@ -145,8 +173,10 @@ SessionManagerFCM sessionManagerFCM;
 
                     sessionManager.setACCESSTOKEN(login.getAccess_token());
                    if(isTablet(Login_Activity.this)){
+                       Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
 
                        if(sessionManager.getNAME().equals("ird_manager")){
+
                            sessionManager.setPorchName(login.getHotel().getName());
 
                            Intent intent = new Intent(Login_Activity.this, IRdMainActivity.class);
@@ -201,22 +231,41 @@ SessionManagerFCM sessionManagerFCM;
 
                    }
                     else{
-                        if(sessionManager.getNAME().equals("restaurant_manager")){
-                            sessionManager.setPorchName(login.getHotel().getName());
+
+                       if(sessionManager.getNAME().equals("restaurant_manager")){
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
 
                             Intent intent = new Intent(Login_Activity.this, RestaurantMain.class);
                             startActivity(intent);
                             finish();
 
-                        } else if(sessionManager.getNAME().equals("global_supervisor")){
-                            sessionManager.setPorchName("none");
+                        }
+
+
+                       else if(sessionManager.getNAME().equals("booking_service_manager")){
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
+
+                            Intent intent = new Intent(Login_Activity.this, Booking_Activity.class);
+                            startActivity(intent);
+                            finish();
+
+                        }  else if(sessionManager.getNAME().equals("global_supervisor")){
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName("none");
 
                             Intent intent = new Intent(Login_Activity.this, Supervisor_mainactivity.class);
                             startActivity(intent);
                             finish();
 
                         }else if(sessionManager.getNAME().equals("ird_manager")) {
-                            sessionManager.setPorchName(login.getHotel().getName());
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
 
                             Intent intent = new Intent(Login_Activity.this, MainActivity_Mobile.class);
                             startActivity(intent);
@@ -224,26 +273,33 @@ SessionManagerFCM sessionManagerFCM;
 
                         }
                         else if(sessionManager.getNAME().equals("hotel_admin")){
-                            sessionManager.setPorchName(login.getHotel().getName());
+                            sessionManager.setPorchName("");
+                           Toast.makeText(Login_Activity.this,"Not supported! Please login via laptop or desktop.",Toast.LENGTH_SHORT).show();
 
                             //      Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                         //    startActivity(intent);
                         } else if(sessionManager.getNAME().equals("laundry_manager")){
-                            sessionManager.setPorchName(login.getHotel().getName());
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
 
                             Intent intent = new Intent(Login_Activity.this, Laundry_Main_Mobile.class);
                             startActivity(intent);
                             finish();
 
                         } else if(sessionManager.getNAME().equals("spa_manager")){
-                            sessionManager.setPorchName(login.getHotel().getName());
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
 
                             Intent intent = new Intent(Login_Activity.this, Spa_Mobile.class);
                            startActivity(intent);
                             finish();
 
                         } else if(sessionManager.getNAME().equals("connect_manager")){
-                            sessionManager.setPorchName(login.getHotel().getName());
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
 
                             Intent intent = new Intent(Login_Activity.this, AYSMain_Mobile.class);
                             startActivity(intent);
@@ -252,7 +308,9 @@ SessionManagerFCM sessionManagerFCM;
                         }
 
                         else if(sessionManager.getNAME().equals("mini_bar_manager")){
-                            sessionManager.setPorchName(login.getHotel().getName());
+                           Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
+
+                           sessionManager.setPorchName(login.getHotel().getName());
 
                             //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                           //  startActivity(intent);

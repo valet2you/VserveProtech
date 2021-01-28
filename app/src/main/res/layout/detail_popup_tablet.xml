@@ -245,6 +245,30 @@
 
                 <TextView
                     android:layout_width="match_parent"
+                    android:text="ORDER Dispatched at"
+                    android:padding="10dp"
+                    android:textAllCaps="true"
+                    android:id="@+id/dispatchtext"
+                    android:textSize="12sp"
+                    android:textColor="@color/blue"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text=" - "
+                    android:id="@+id/dispachedat"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray"
+                    android:layout_height="wrap_content"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:background="#F1F1F1"
+                    android:layout_height="1dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:text="ORDER STATUS"
                     android:padding="10dp"
                     android:visibility="gone"

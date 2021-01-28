@@ -1377,9 +1377,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
             holder.more.setVisibility(View.GONE);
 
         }
+        if(holder.mitem.getGuest()!=null){
+            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1=new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPrimises().getPremise_no(),holder.mitem.getStatus(),holder.mitem.getOrder_detail().getCreated_at(),holder.mitem.getOrder_detail().getRequested_pickup_at(),holder.mitem.getOrder_detail().getAccepted_at(),holder.mitem.getOrder_detail().getOrder_id(),position,holder.mitem.getStatus(),holder.mitem.getOrder_laundry_items(),holder.mitem.getGuest().getName(),context);
+            holder.recyclerView.setAdapter(order_itemAdapter1);
+        }
+        else{
+            HomeAdapter.Order_ItemAdapter1 order_itemAdapter1=new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPrimises().getPremise_no(),holder.mitem.getStatus(),holder.mitem.getOrder_detail().getCreated_at(),holder.mitem.getOrder_detail().getRequested_pickup_at(),holder.mitem.getOrder_detail().getAccepted_at(),holder.mitem.getOrder_detail().getOrder_id(),position,holder.mitem.getStatus(),holder.mitem.getOrder_laundry_items(),"Guest",context);
+            holder.recyclerView.setAdapter(order_itemAdapter1);
+        }
 
-        HomeAdapter.Order_ItemAdapter1 order_itemAdapter1=new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPrimises().getPremise_no(),holder.mitem.getStatus(),holder.mitem.getOrder_detail().getCreated_at(),holder.mitem.getOrder_detail().getRequested_pickup_at(),holder.mitem.getOrder_detail().getAccepted_at(),holder.mitem.getOrder_detail().getOrder_id(),position,holder.mitem.getStatus(),holder.mitem.getOrder_laundry_items(),holder.mitem.getGuest().getName(),context);
-        holder.recyclerView.setAdapter(order_itemAdapter1);
+
 
         holder.dispatch.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("WrongConstant")
@@ -1561,7 +1568,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
                     acceptedat.setTypeface(holder.font);
                     TextView accepted=dialog.findViewById(R.id.accepted);
                     TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
-                    name.setText(holder.mitem.getGuest().getName());
+                    name.setText("Guest");
                     if(holder.mitem.getStatus().equals("new_order")){
                         dispatchbutton.setText("ACCEPT");
                         guests.setText("New Order");

@@ -26,6 +26,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity;
 import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
@@ -72,10 +73,26 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         updateMyActivity(this, "df");
         String target = "";
         String message = "";
+        String picupslot="";
+        String booking_service_type="";
         sessionManager = new SessionManager(this);
         try {
             message = object.getString("message");
             target = object.getString("target");
+            if(object.has("pickup_slot")){
+                picupslot=object.getString("pickup_slot");
+            }
+            else{
+                picupslot="";
+            }
+
+          if(object.has("booking_service_type")){
+              booking_service_type=object.getString("booking_service_type");
+            }
+            else{
+              booking_service_type="";
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -84,7 +101,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         } else if (message.equals("New delayed order for dispatch")) {
             sessionManager.setDesignStyle(message);
-        }
+        }else if (message.equals("New Booking Order")) {
+            sessionManager.setDesignStyle(booking_service_type);
+            sessionManager.setSLOT1(picupslot);        }
 
     else
 
@@ -95,10 +114,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
 
-           sendNotification(message,target);
+           sendNotification(message,target,picupslot,booking_service_type);
 
     }
-    private void sendNotification(String messageBody,String target) {
+    private void sendNotification(String messageBody,String target,String picupslot,String booking_service_type ) {
 
         Bitmap logo = null;
         try {
@@ -113,6 +132,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             if (isTablet(FirebaseMessagingService.this)) {
                 if (sessionManager.getNAME().equals("ird_manager")) {
                     Intent intent = new Intent(FirebaseMessagingService.this, IRdMainActivity.class);
+                    intent.putExtra("key", target);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                }
+                if (sessionManager.getNAME().equals("restaurant_manager")) {
+                    Intent intent = new Intent(FirebaseMessagingService.this, Resturant_Tablet_MainActivity.class);
                     intent.putExtra("key", target);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                     pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -216,6 +243,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                     pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+                }else if (sessionManager.getNAME().equals("booking_service_manager")) {
+                    sessionManager.setDesignStyle(booking_service_type);
+                    sessionManager.setSLOT1(picupslot);
+                    Intent intent = new Intent(FirebaseMessagingService.this, Booking_Activity.class);
+                    intent.putExtra("key", target);
+                    intent.putExtra("pickupslaot",picupslot);
+                    intent.putExtra("booking",booking_service_type);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
                 } else if (sessionManager.getNAME().equals("mini_bar_manager")) {
                     //  Intent intent = new Intent(Login_Activity.this, MainActivity.class);
                     //  startActivity(intent);
@@ -260,7 +297,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
                         } else if (target.equals("global_supervisor")) {
                             if (messageBody.equals("New delayed order for acceptance")) {
-                                message = "Alert! Delay is accepting order";
+                                message = "Alert! Delay in accepting order";
                             } else {
                                 message = "Alert! Delay in dispatching order";
 
@@ -276,6 +313,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                 .setLargeIcon(logo)
                                 .setContentTitle(message).
                                         setContentIntent(pendingIntent)
+                       . setAutoCancel(true)
 
                                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                                 //LED
@@ -330,7 +368,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
                             } else if (target.equals("global_supervisor")) {
                                 if (messageBody.equals("New delayed order for acceptance")) {
-                                    message = "Alert! Delay is accepting order";
+                                    message = "Alert! Delay in accepting order";
                                 } else {
                                     message = "Alert! Delay in dispatching order";
 
@@ -344,6 +382,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                     .setSmallIcon(R.mipmap.launcherbluesmall)
                                     .setLargeIcon(logo)
                                     .setContentTitle(message).
+                                            setAutoCancel(true).
                                             setContentIntent(pendingIntent)
 
                                     .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
@@ -389,11 +428,13 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                         .setSmallIcon(R.mipmap.ic_launcher)
                                         .setSound(uri)
                                         .setChannelId("channel")
+                                         .setAutoCancel(true)
                                         .setAutoCancel(true).build();
                             } else {
                                 n = new Notification.Builder(this)
                                         .setSmallIcon(R.mipmap.ic_launcher)
                                         .setSound(uri)
+                                        . setAutoCancel(true)
                                         .setAutoCancel(true).build();
                             }
                             NotificationManager notificationManager =
@@ -427,7 +468,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                         } 
                         else if (target.equals("global_supervisor")) {
                             if (messageBody.equals("New delayed order for acceptance")) {
-                                message = "Alert! Delay is accepting order";
+                                message = "Alert! Delay in accepting order";
                             } else {
                                 message = "Alert! Delay in dispatching order";
 
@@ -442,7 +483,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                 .setLargeIcon(logo)
                                 .setContentTitle(message).
                                         setContentIntent(pendingIntent)
-
+                                . setAutoCancel(true)
                                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                                 //LED
                                 //Sound
@@ -477,7 +518,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                 mBuilder.build());
 
 
-                    } else {
+                    }
+                    else {
                         String message = "";
 
                         if (target.equals("ird")) {
@@ -498,9 +540,21 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                         else if (target.equals("global_supervisor"))
                         {
                             if (messageBody.equals("New delayed order for acceptance")) {
-                                message = "Alert! Delay is accepting order";
+                                message = "Alert! Delay in accepting order";
                             } else {
                                 message = "Alert! Delay in dispatching order";
+
+                            }
+                        }
+                        else if (target.equals("booking")){
+                            if (booking_service_type.equals("gym")) {
+                                message = "Alert! New Booking for Fitness center.";
+                            }else if (booking_service_type.equals("pool")) {
+                                message = "Alert! New Booking for Pool.";
+                            }else if (booking_service_type.equals("meeting")) {
+                                message = "Alert! New Booking for Meeting.";
+                            } else {
+                                message = "Alert! New Booking for Conference.";
 
                             }
                         }
@@ -514,7 +568,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                 .setLargeIcon(logo)
                                 .setContentTitle(message).
                                         setContentIntent(pendingIntent)
-
+                                . setAutoCancel(true)
                                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                                 //LED
                                 //Sound

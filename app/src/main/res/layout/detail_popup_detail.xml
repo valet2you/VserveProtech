@@ -238,16 +238,17 @@
             android:background="#F1F1F1"
             android:layout_height="1dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:text="ORDER DISPATCHED at"
-            android:padding="10dp"
-            android:textAllCaps="true"
-            android:id="@+id/dispacthtext"
-            android:textSize="12sp"
-            android:textColor="@color/blue"
-            android:layout_height="wrap_content"/>
-        <TextView
+            <TextView
+                android:id="@+id/dispacthtext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="ORDER DISPATCHED at"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="12sp" />
+
+            <TextView
             android:layout_width="match_parent"
             android:text=" - "
             android:id="@+id/dispachedatvaleue"

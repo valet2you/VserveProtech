@@ -113,7 +113,7 @@
                 android:textSize="15sp" />
   <TextView
                 android:layout_width="wrap_content"
-                android:text="ORDER SERVED AT"
+                android:text="ORDER CLEARED AT"
                 android:textSize="12sp"
                 android:textColor="#808080"
                android:id="@+id/sincetext"

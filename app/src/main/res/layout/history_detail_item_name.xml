@@ -259,7 +259,7 @@
                     android:layout_height="1dp"/>
                 <TextView
                     android:layout_width="match_parent"
-                    android:text="ORDER DELIVERED at"
+                    android:text="ORDER CLEARED at"
                     android:padding="10dp"
                     android:textAllCaps="true"
                     android:id="@+id/deliveredtext"

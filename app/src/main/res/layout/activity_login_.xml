@@ -52,18 +52,39 @@
                 android:textColor="#65000000"
                 android:background="@drawable/whitebackgroud"
                 android:layout_height="80dp"/>
-            <EditText
+            <LinearLayout
                 android:layout_width="500dp"
+                android:orientation="horizontal"
+                android:background="@drawable/whitebackgroud"
+                android:layout_marginTop="50dp"
+                android:layout_height="80dp">
+            <EditText
+                android:layout_width="460dp"
+                android:layout_weight="1"
                 android:id="@+id/password"
                 android:paddingLeft="30dp"
+                android:background="@null"
                 android:textSize="24sp"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
-                android:layout_marginTop="50dp"
+
                 android:hint="Password"
                 android:textColor="#65000000"
-                android:background="@drawable/whitebackgroud"
                 android:layout_height="80dp"/>
+                <ImageView
+                    android:id="@+id/show_pass_btn"
+                    android:layout_width="40dp"
+                    android:padding="5dp"
+                    android:layout_gravity="center"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="8dp"
+                    android:src="@mipmap/show1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/laypass"
+                    app:layout_constraintTop_toTopOf="@+id/edit_password" />
+            </LinearLayout>
             <TextView
                 android:layout_width="160sp"
                 android:id="@+id/button"

@@ -179,7 +179,7 @@ HomeAdapter homeAdapter;
                     queuelist=login.getData();
                     if(queuelist.size()!=0){
                         for(int i=0;i<queuelist.size();i++){
-                            if(!queuelist.get(i).getStatus().equals("new_order")&&queuelist.get(i).getOrder_detail()!=null){
+                            if(queuelist.get(i).getStatus().equals("accepted")&&queuelist.get(i).getOrder_detail()!=null){
                                 RestaurantApp_Dashboard.Data data=new RestaurantApp_Dashboard.Data();
                                 data.setCreated_at(queuelist.get(i).getCreated_at());
                                 data.setDescription(queuelist.get(i).getDescription());
@@ -317,6 +317,7 @@ HomeAdapter homeAdapter;
                    // RestaurantMain.newcount.setText("( "+String.valueOf(login.getData().getNew_order())+" )");
                     totalorderslaundry.setText(String.valueOf(login.getData().getDispatched_order()+login.getData().getAccepted_order()+login.getData().getNew_order()+login.getData().getCleared_order()));
                     RestaurantMain.newcountevent.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
+                    RestaurantMain.newcountdispatched.setText("( "+String.valueOf(login.getData().getDispatched_order())+" )");
 
 
 
@@ -411,48 +412,6 @@ HomeAdapter homeAdapter;
                 if(response.code()==202||response.code()==200||response.code()==201){
                     Action login = response.body();
                     //  Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-
-
-                }
-                else if(response.code()==401){
-                    Action login = response.body();
-                    Toast.makeText(getActivity(), "Unauthorised", Toast.LENGTH_SHORT).show();
-                    sessionManager.logoutsession();
-
-                }
-                else if(response.code()==500){
-                    Toast.makeText(getActivity(), "Something went wrong.", Toast.LENGTH_SHORT).show();
-
-                }
-                else{
-
-                }
-
-
-
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Action> call, @NonNull Throwable t) {
-                Log.d("response", Arrays.toString(t.getStackTrace()));
-
-            }
-        });
-
-    }
-    private void setClear(String id, final int position) {
-        // display a progress dialog
-/*
-        String credentials = Credentials.basic("admin", "LetsValet2You");
-*/
-
-        (RetrofitClientInstance.getApiService().RestaurantOrderCleared(BuildConfig.restaurant_order_clear+id,"Bearer "+sessionManager.getACCESSTOKEN())).enqueue(new Callback<Action>() {
-            @Override
-            public void onResponse(@NonNull Call<Action> call, @NonNull Response<Action> response) {
-
-                if(response.code()==202||response.code()==200){
-                    Action login = response.body();
                     Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
                     if(Network.isNetworkAvailable(getActivity())){
                         GetMenu();
@@ -463,8 +422,6 @@ HomeAdapter homeAdapter;
                     else{
 
                     }
-
-
 
                 }
                 else if(response.code()==401){
@@ -1386,7 +1343,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
 
         }
         else{
-            holder.dispatch.setText("SERVED");
+            holder.dispatch.setText("DISPATCHED");
 
             holder.colorimage.setBackgroundColor(context.getResources().getColor(R.color.light_green));
             holder.orderstatus.setTextColor(context.getResources().getColor(R.color.gray));
@@ -1416,16 +1373,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
             @SuppressLint("WrongConstant")
             @Override
             public void onClick(View v) {
-                if(holder.mitem.getStatus().equals("New Order")) {
                     if(Network.isNetworkAvailable(getActivity())){
                         //    holder.stop();
-                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
                         //setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
                     }else if(Network.isNetworkAvailable2(getActivity())){
                         //   holder.stop();
 
-                        setAccept(holder.mitem.getOrder_detail().getOrder_id());
+                        setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
                         // setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
 
 
@@ -1434,66 +1390,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
 
                     }
 
-                }
-                else{
-
-                    //super.onBackPressed();
-                    final Dialog dialog = new Dialog(getActivity());
-                    // Include dialog.xml file
-
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-                    // dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.FILL_PARENT);            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.delet_dialog);
-                    int width1 = (int)(getResources().getDisplayMetrics().widthPixels*0.99);
-                    int height1 = (int)(getResources().getDisplayMetrics().heightPixels*0.99);
-                    dialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
-
-                    dialog.getWindow().setLayout(width1, height1);
-
-                    dialog.setCancelable(false);
-                    // Set dialog title
-                    dialog.setTitle("");
-                    dialog.show();
-                    TextView textView=dialog.findViewById(R.id.text) ;
-                    textView.setText("Send to History?");
-                    // String textstring="Do you confirm that room is cleared and trolley is back to IRD operation? or"+<b>
-                    TextView confirm=dialog.findViewById(R.id.cancel) ;
-                    TextView cancel1=dialog.findViewById(R.id.confirm);
-
-                    confirm.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            dialog.dismiss();
-                        }
-                    });
-                    cancel1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(Network.isNetworkAvailable(getActivity())){
-
-                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                dialog.dismiss();
-
-                            }
-                            else if(Network.isNetworkAvailable2(getActivity())){
-                                setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
-
-                                dialog.dismiss();
-
-                            }
-                            else{
-
-                            }
-                        }
-                    });
-
-                }
 
 
 
@@ -1540,11 +1436,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
                 acceptedat.setTypeface(holder.font);
                 TextView accepted=dialog.findViewById(R.id.accepted);
                 TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
+                TextView dispatchedtext=dialog.findViewById(R.id.dispatchedtext);
+                TextView dispatchedat=dialog.findViewById(R.id.dispatchedat);
                 TextView statustext=dialog.findViewById(R.id.statustext);
                 statustext.setTypeface(holder.font);
                 TextView status=dialog.findViewById(R.id.status);
                 status.setText(holder.mitem.getPayment_status());
-                dispatchbutton.setText("SERVED");
+                dispatchbutton.setText("DISPATCHED");
                 guests.setText(holder.mitem.getNo_of_guest());
                 guests.setTextColor(context.getResources().getColor(R.color.black));
                 if(holder.mitem.getOrder_detail()!=null){
@@ -1555,8 +1453,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
                     orderid.setText("");
 
                 }
+                dispatchedtext.setTypeface(holder.font);
 
-
+                if(holder.mitem.getOrder_detail().getDispatched_at()==null){
+                    dispatchedat.setText("-");
+                }
+                else {
+                    dispatchedat.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
+                }
 
                 RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
                 orderitemsdetail.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
@@ -1604,14 +1508,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
                             if(Network.isNetworkAvailable(getActivity())){
 
                                 setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
 
                                 dialog.dismiss();
                             }
                             else if(Network.isNetworkAvailable2(getActivity())){
 
                                  setDispatch(holder.mitem.getOrder_detail().getOrder_id(),position);
-                                setClear(holder.mitem.getOrder_detail().getOrder_id(),position);
 
                                 dialog.dismiss();
 

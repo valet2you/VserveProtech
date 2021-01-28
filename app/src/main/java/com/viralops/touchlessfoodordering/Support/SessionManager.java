@@ -56,6 +56,7 @@ public class SessionManager {
     private static final String TH_bg_color = "th_bg_color";
     private static final String TH_font_color = "th_font_color";
     private static final String LOCK_VALUE="lockvalue";
+    private static final String FILTER_VALUE="filtervalue";
 
     public  String getDesign_Style() {
         return pref.getString(Design_Style,"");
@@ -419,4 +420,12 @@ public class SessionManager {
         return pref.getString(notificationvalue,"");
     }
 
+    public  String getFilterValue() {
+        return pref.getString(FILTER_VALUE,"");
+    }
+    public  void setFilterValue(String FILTER) {
+        editor.putString(FILTER_VALUE,FILTER);
+        editor.commit();
+
+    }
 }

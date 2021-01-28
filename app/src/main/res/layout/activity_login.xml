@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:background="@color/white"
     android:orientation="vertical"
@@ -11,8 +12,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:focusableInTouchMode="true"
     android:focusable="true"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    >
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -73,6 +73,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/password"
@@ -87,6 +90,24 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true" />
+                    <ImageView
+                        android:id="@+id/show_pass_btn"
+                        android:layout_width="30dp"
+                        android:padding="5dp"
+                        android:layout_gravity="center"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:src="@mipmap/show1"
+                        android:tint="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/laypass"
+                        app:layout_constraintTop_toTopOf="@+id/edit_password" />
+
+                </RelativeLayout>
+
+
 
             </com.google.android.material.textfield.TextInputLayout>
 

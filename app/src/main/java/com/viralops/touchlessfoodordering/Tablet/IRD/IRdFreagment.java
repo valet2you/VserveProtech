@@ -805,8 +805,10 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
 
             }
             if(holder.mitem.getGuest()!=null) {
-                HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),holder.mitem.getGuest().getName(), context,holder.mitem.getOrder_detail().getDispatched_at());
-                holder.recyclerView.setAdapter(order_itemAdapter1);
+                if(holder.mitem.getOrder_detail()!=null) {
+                    HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(), holder.mitem.getGuest().getName(), context, holder.mitem.getOrder_detail().getDispatched_at());
+                    holder.recyclerView.setAdapter(order_itemAdapter1);
+                }
             }
             else{
                 HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getPayment_status(), holder.mitem.getPrimises().getPremise_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(),"Guest", context,holder.mitem.getOrder_detail().getDispatched_at());
@@ -1239,7 +1241,8 @@ public class IRdFreagment extends Fragment implements View.OnClickListener {
                             }
 
                         }
-                    } else {
+                    }
+                    else {
                         if (elapsedDays == 1 || elapsedDays == 01) {
                             if (mitem.getStatus().equals("New Order")) {
                                 roomno.startAnimation(anim);

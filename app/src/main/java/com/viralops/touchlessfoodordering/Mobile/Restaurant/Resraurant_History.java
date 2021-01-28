@@ -369,6 +369,9 @@ HomeAdapter homeAdapter;
                     TextView status=dialog.findViewById(R.id.status);
                    TextView orderid=dialog.findViewById(R.id.orderid);
                     TextView ordertext=dialog.findViewById(R.id.ordertext);
+                    TextView dispatchtext=dialog.findViewById(R.id.dispatchtext);
+                    TextView dispachedat=dialog.findViewById(R.id.dispachedat);
+                    dispatchtext.setTypeface(holder.font);
                     ordertext.setTypeface(holder.font);
                     if(holder.mitem.getOrder_detail()!=null){
                         orderid.setText(holder.mitem.getOrder_detail().getOrder_id());
@@ -385,7 +388,7 @@ HomeAdapter homeAdapter;
                         guests.setText(holder.mitem.getNo_of_guest());
                         guests.setTextColor(context.getResources().getColor(R.color.black));
 
-
+                       dispachedat.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
 
 
 

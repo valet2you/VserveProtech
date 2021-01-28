@@ -149,8 +149,11 @@ public class ResturantHistoryAdapter extends RecyclerView.Adapter<ResturantHisto
                      TextView acceptedat=dialog.findViewById(R.id.accepttext);
                      acceptedat.setTypeface(font);
                      TextView accepted=dialog.findViewById(R.id.accepted);
+                     TextView dispatchedtext=dialog.findViewById(R.id.dispatchedtext);
+                     TextView dispatched=dialog.findViewById(R.id.dispatched);
                      TextView distpatchtext=dialog.findViewById(R.id.distpatchtext);
                      distpatchtext.setTypeface(font);
+                     dispatchedtext.setTypeface(font);
                      TextView dispatcg=dialog.findViewById(R.id.dispactch);
                      TextView orderid=dialog.findViewById(R.id.orderid);
                      RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
@@ -166,6 +169,7 @@ public class ResturantHistoryAdapter extends RecyclerView.Adapter<ResturantHisto
                          orderinsdetails.setText("-");
 
                      }
+                     dispatched.setText(getDate1(homeViewModels.get(getAdapterPosition()).getOrder_detail().getDispatched_at()));
                      orderid.setText(homeViewModels.get(getAdapterPosition()).getOrder_detail().getOrder_id());
 
                      Order_ItemAdapterdetail order_itemAdapterdetail=new Order_ItemAdapterdetail(homeViewModels.get(getAdapterPosition()).getOrder_menu_items(),context);

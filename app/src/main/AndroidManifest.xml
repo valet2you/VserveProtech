@@ -2,20 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.viralops.touchlessfoodordering">
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <permission
         android:name="com.viralops.touchlessfoodordering.FCM"
         android:label="FCM"
         android:protectionLevel="dangerous" />
+
     <application
+        android:name=".Support.CustomFontApp"
         android:allowBackup="true"
         android:icon="@mipmap/launcherbluebig"
         android:label="@string/app_name"
-        android:name=".Support.CustomFontApp"
         android:roundIcon="@mipmap/launcherbluebig"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Mobile.Booking.Booking_Activity"
+            android:label="@string/title_activity_booking_"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity"></activity>
         <activity android:name=".Acitities.Splash_Screen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,48 +33,66 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Acitities.Login_Activity"/>
-        <activity android:name=".Mobile.IRD.MainActivity_Mobile"
+        <activity android:name=".Acitities.Login_Activity" />
+        <activity
+            android:name=".Mobile.IRD.MainActivity_Mobile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Tablet.IRD.IRdMainActivity"
+        <activity
+            android:name=".Tablet.IRD.IRdMainActivity"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Mobile.Restaurant.RestaurantMain"
+        <activity
+            android:name=".Mobile.Restaurant.RestaurantMain"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Tablet.Restaurant.Resturant_Tablet_MainActivity"
+        <activity
+            android:name=".Tablet.Restaurant.Resturant_Tablet_MainActivity"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Mobile.AYS.AYSMain_Mobile"
+        <activity
+            android:name=".Mobile.AYS.AYSMain_Mobile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Tablet.AYS.AYSMainActivity"
+        <activity
+            android:name=".Tablet.AYS.AYSMainActivity"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Mobile.Spa.Spa_Mobile"
+        <activity
+            android:name=".Mobile.Spa.Spa_Mobile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Tablet.Spa.SpaMainActivitytablet"
+        <activity
+            android:name=".Tablet.Spa.SpaMainActivitytablet"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Tablet.Laundry.LaundryMainActivity"
+        <activity
+            android:name=".Tablet.Laundry.LaundryMainActivity"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Mobile.Laundry.Laundry_Main_Mobile"
+        <activity
+            android:name=".Mobile.Laundry.Laundry_Main_Mobile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Mobile.Supervisor.Supervisor_mainactivity"
+        <activity
+            android:name=".Mobile.Supervisor.Supervisor_mainactivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Support.Internetconnection"
-             />
+        <activity android:name=".Support.Internetconnection" />
 
-        <receiver android:name=".database.AlarmReceiver" android:exported="true" android:enabled="true"> </receiver>
-        <receiver android:name=".database.AlarmReceiver1" android:exported="true" android:enabled="true"> </receiver>
+        <receiver
+            android:name=".database.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
+        <receiver
+            android:name=".database.AlarmReceiver1"
+            android:enabled="true"
+            android:exported="true"></receiver>
+
         <service
             android:name=".FCM.FirebaseMessagingService"
             android:exported="false"
@@ -73,13 +101,17 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-        <!--<receiver android:name=".NotificationManager2" android:exported="true" android:enabled="true"> </receiver>-->
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-
+        </service> <!-- <receiver android:name=".NotificationManager2" android:exported="true" android:enabled="true"> </receiver> -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logotransparent" />
-        <activity android:theme="@android:style/Theme.Dialog" android:name=".database.Alert"> </activity>
-        <activity android:theme="@android:style/Theme.Dialog" android:name=".database.Alert1"> </activity>
+
+        <activity
+            android:name=".database.Alert"
+            android:theme="@android:style/Theme.Dialog"></activity>
+        <activity
+            android:name=".database.Alert1"
+            android:theme="@android:style/Theme.Dialog"></activity>
     </application>
 
 </manifest>

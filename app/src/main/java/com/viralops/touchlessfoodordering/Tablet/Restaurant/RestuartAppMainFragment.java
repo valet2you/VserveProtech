@@ -46,12 +46,16 @@ import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.BuildConfig;
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantApp_Dashboard;
+import com.viralops.touchlessfoodordering.Mobile.Restaurant.Restaurant_Dashboard;
 import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.Header;
 import com.viralops.touchlessfoodordering.R;
 import com.viralops.touchlessfoodordering.Support.Internetconnection;
 import com.viralops.touchlessfoodordering.Support.Network;
 import com.viralops.touchlessfoodordering.Support.SessionManager;
+import com.viralops.touchlessfoodordering.Tablet.IRD.AcceptedMainFragment;
+import com.viralops.touchlessfoodordering.Tablet.IRD.DispatchedMainFragment;
+import com.viralops.touchlessfoodordering.Tablet.IRD.IRdMainActivity;
 
 
 import java.text.ParseException;
@@ -69,11 +73,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RestuartAppMainFragment extends Fragment {
+public class RestuartAppMainFragment extends Fragment implements View.OnClickListener {
     private Ringtone r;
     ShimmerRecyclerView shimmerRecyclerView;
     ArrayList<RestaurantApp_Dashboard.Data> queuelist=new ArrayList<>();
-
+    ArrayList<RestaurantApp_Dashboard.Data> queuelistnew=new ArrayList<>();
+    LinearLayout neworder,acceptedorder,dispatchedorder;
+    TextView newordertext,newcount,acceptedtext,acceptedcount,disptachedtexxt,disptachedcount;
     SessionManager sessionManager;
     TextView norecord;
     AutoCompleteTextView searchView;
@@ -96,7 +102,7 @@ public class RestuartAppMainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.main_fragment, container, false);
+        View view =inflater.inflate(R.layout.main_fragment_res, container, false);
         setHasOptionsMenu(true);
 
         homeAdapter=new HomeAdapter(getActivity(),queuelist);
@@ -108,7 +114,32 @@ searchView.setHint("Search for Table No. or Order No.");
         shimmerRecyclerView=view.findViewById(R.id.recyclerview);
         shimmerRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),5));
         norecord=view.findViewById(R.id.norecord);
+        neworder=view.findViewById(R.id.neworder);
+        neworder.setOnClickListener(this);
+        newcount=view.findViewById(R.id.newordercount);
+        newordertext=view.findViewById(R.id.newordertext);
 
+        acceptedorder=view.findViewById(R.id.acceptedorder);
+        acceptedorder.setOnClickListener(this);
+        acceptedcount=view.findViewById(R.id.acceptedcount);
+        acceptedtext=view.findViewById(R.id.acceptedtexttext);
+
+        dispatchedorder=view.findViewById(R.id.diaptachedorders);
+        dispatchedorder.setOnClickListener(this);
+        disptachedcount=view.findViewById(R.id.dispatchedcount);
+        disptachedtexxt=view.findViewById(R.id.dispatchedtext);
+
+        neworder.setBackgroundResource(R.drawable.bluebackgroudblack);
+        newordertext.setTextColor(getResources().getColor(R.color.white));
+        newcount.setTextColor(getResources().getColor(R.color.white));
+
+        acceptedorder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+        acceptedtext.setTextColor(getResources().getColor(R.color.gray));
+        acceptedcount.setTextColor(getResources().getColor(R.color.gray));
+
+        dispatchedorder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+        disptachedtexxt.setTextColor(getResources().getColor(R.color.gray));
+        disptachedcount.setTextColor(getResources().getColor(R.color.gray));
         if(Network.isNetworkAvailable(getActivity())){
             GetMenu();
 
@@ -237,155 +268,105 @@ searchView.setHint("Search for Table No. or Order No.");
                 if(response.code()==201||response.code()==200){
                     RestaurantApp_Dashboard  login = response.body();
                     queuelist=new ArrayList<>();
+                    queuelistnew=new ArrayList<>();
+
                     queuelist=login.getData();
                     if(queuelist.size()!=0){
-                         homeAdapter=new HomeAdapter(getActivity(),queuelist);
-                        shimmerRecyclerView.setAdapter(homeAdapter);
-                        norecord.setVisibility(View.GONE);
-                    }
-                    else{
-                         homeAdapter=new HomeAdapter(getActivity(),queuelist);
-                        shimmerRecyclerView.setAdapter(homeAdapter);
-                        norecord.setVisibility(View.VISIBLE);
-                    }
+                        for(int i=0;i<queuelist.size();i++){
+                            if(queuelist.get(i).getStatus().equals("new_order")&&queuelist.get(i).getOrder_detail()!=null){
+                                RestaurantApp_Dashboard.Data data=new RestaurantApp_Dashboard.Data();
+                                data.setCreated_at(queuelist.get(i).getCreated_at());
+                                data.setDescription(queuelist.get(i).getDescription());
+                                data.setHotel_id(queuelist.get(i).getHotel_id());
+                                data.setId(queuelist.get(i).getId());
+                                data.setNo_of_guest(queuelist.get(i).getNo_of_guest());
+                                data.setOrder_detail(queuelist.get(i).getOrder_detail());
+                                data.setOrder_menu_items(queuelist.get(i).getOrder_menu_items());
+                                data.setPayment_status(queuelist.get(i).getPayment_status());
+                                data.setTable(queuelist.get(i).getTable());
+                                data.setPrimises_id(queuelist.get(i).getPrimises_id());
+                                data.setStatus(queuelist.get(i).getStatus());
+                                data.setType(queuelist.get(i).getType());
+                                data.setUpdated_at(queuelist.get(i).getUpdated_at());
+                                long timeDiff = 0;
+                                Date date1 = null;
+                                Date date2 = null;
+                                final Calendar calendar = Calendar.getInstance();
+                                String timeStamp = new SimpleDateFormat("dd MMM yyyy hh:mm a").format(new Date());
+                                System.out.println("current date" + timeStamp + " " + queuelist.get(i).getCreated_at());
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
+                                long epoch = 0;
 
-                    for(int i=0;i<queuelist.size();i++) {
-                        if(queuelist.get(i).getStatus().equals("new_order")) {
-                            long timeDiff = 0;
-                            Date date1 = null;
-                            Date date2 = null;
-                            final Calendar calendar = Calendar.getInstance();
-                            String timeStamp = new SimpleDateFormat("dd MMM yyyy hh:mm a").format(new Date());
-                            System.out.println("current date" + timeStamp + " " + queuelist.get(i).getCreated_at());
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
-                            long epoch = 0;
+                                try {
+                                    dt = dateFormat.parse(queuelist.get(i).getCreated_at());
+                                    epoch = dt.getTime();
 
-                            try {
-                                dt = dateFormat.parse(queuelist.get(i).getCreated_at());
-                                epoch = dt.getTime();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
 
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+
+
+
+                                Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+                                cal.setTimeInMillis(epoch);
+                                String date23 = DateFormat.format("dd MMM yyyy hh:mm a",dt ).toString();
+                                try {
+                                    date1 = formatter.parse(timeStamp);
+                                    date2 = formatter.parse(date23);
+                                    System.out.println("current datem 2 " + date1 + " " + date2);
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    System.out.println("current datem 2 " + e.toString());
+
+                                }  //  timeDiff = date1.getTime() - date2.getTime();
+                                timeDiff = (date1.getTime() - date2.getTime()) - SystemClock.elapsedRealtime();
+                                System.out.println(" time diff"
+                                        + timeDiff);
+
+                                data.setTimedifference(timeDiff);
+                                data.setStatus("New Order");
+                                queuelistnew.add(data);
                             }
-
-
-
-        /*                   //------------------------------------------------------------------------------------------//
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
-                            try {
-                                date = dateFormat.parse(queuelist.get(i).getCreated_at());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            SimpleDateFormat formatter1 = new SimpleDateFormat("dd MMM yyyy hh:mm a");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-//If you need time just put specific format for time like 'HH:mm:ss'
-                            String dateStr = formatter1.format(date);
-                            long timestttt = 0;
-                            try {
-                                Date dateneww = formatter1.parse(dateStr);
-                                System.out.println("Today is " +dateneww.getTime());
-                                timestttt=dateneww.getTime();
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            //----------------------------------------//*/
-
-
-                            Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-                             cal.setTimeInMillis(epoch);
-                            String date23 = DateFormat.format("dd MMM yyyy hh:mm a",dt ).toString();
-                            try {
-                                date1 = formatter.parse(timeStamp);
-                                date2 = formatter.parse(date23);
-                                System.out.println("current datem 2 " + date1 + " " + date2);
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                                System.out.println("current datem 2 " + e.toString());
-
-                            }  //  timeDiff = date1.getTime() - date2.getTime();
-                            timeDiff = (date1.getTime() - date2.getTime()) - SystemClock.elapsedRealtime();
-                            System.out.println(" time diff"
-                                    + timeDiff);
-                            queuelist.get(i).setTimedifference(timeDiff);
-                            queuelist.get(i).setStatus("New Order");
+                        }
+                        if(queuelistnew.size()!=0) {
+                            homeAdapter = new HomeAdapter(getActivity(), queuelistnew);
+                            shimmerRecyclerView.setAdapter(homeAdapter);
+                            norecord.setVisibility(View.GONE);
                         }
                         else{
-                            long timeDiff = 0;
-                            Date date1 = null;
-                            Date date2 = null;
-                            final Calendar calendar = Calendar.getInstance();
-                            String timeStamp = new SimpleDateFormat("dd MMM yyyy hh:mm a").format(new Date());
-                            System.out.println("current date" + timeStamp + " " + queuelist.get(i).getOrder_detail().getId());
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm a");
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            Date dt = null;//You will get date object relative to server/client timezone wherever it is parsed
-                            long epoch = 0;
+                            homeAdapter = new HomeAdapter(getActivity(), queuelistnew);
+                            shimmerRecyclerView.setAdapter(homeAdapter);
+                            norecord.setVisibility(View.VISIBLE);
+                        }
+                       /* if(getArguments().getString("visible").equals("1")){
+                            homeAdapter = new HomeAdapter(getActivity(), queuelistnew);
+                            recyclerView.setAdapter(homeAdapter);
+                           // recyclerView.smoothScrollToPosition(queuelistnew.size() - 1);
 
-                            try {
-                                dt = dateFormat.parse(queuelist.get(i).getOrder_detail().getAccepted_at());
-                                epoch = dt.getTime();
+                            norecord.setVisibility(View.GONE);
+                            RestaurantMain.homeicon.setVisibility(View.GONE);
+                            RestaurantMain.homeicon.setVisibility(View.GONE);
 
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-
-
-        /*                   //------------------------------------------------------------------------------------------//
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
-                            try {
-                                date = dateFormat.parse(queuelist.get(i).getCreated_at());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            SimpleDateFormat formatter1 = new SimpleDateFormat("dd MMM yyyy hh:mm a");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-//If you need time just put specific format for time like 'HH:mm:ss'
-                            String dateStr = formatter1.format(date);
-                            long timestttt = 0;
-                            try {
-                                Date dateneww = formatter1.parse(dateStr);
-                                System.out.println("Today is " +dateneww.getTime());
-                                timestttt=dateneww.getTime();
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            //----------------------------------------//*/
-
-
-                            Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-                            cal.setTimeInMillis(epoch);
-                            String date23 = DateFormat.format("dd MMM yyyy hh:mm a",dt ).toString();
-                            try {
-                                date1 = formatter.parse(timeStamp);
-                                date2 = formatter.parse(date23);
-                                System.out.println("current datem 2 " + date1 + " " + date2);
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                                System.out.println("current datem 2 " + e.toString());
-
-                            }  //  timeDiff = date1.getTime() - date2.getTime();
-                            timeDiff = (date1.getTime() - date2.getTime()) - SystemClock.elapsedRealtime();
-                            System.out.println(" time diff"
-                                    + timeDiff);
-                            queuelist.get(i).setTimedifference(timeDiff);
-                            queuelist.get(i).setStatus("SERVED");
+                           *//* LinearLayout layoutManager = LinearLayout.class.cast(recyclerView.getLayoutManager());
+                            int lastItem = homeAdapter.getItemCount() - 1;
+                            tryAnimation(layoutManager.findViewByPosition(lastItem));*//*
 
                         }
-
+                        else {
+                            homeAdapter = new HomeAdapter(getActivity(), queuelistnew);
+                            recyclerView.setAdapter(homeAdapter);
+                            norecord.setVisibility(View.GONE);
+                        }*/
+                    }
+                    else{
+                        homeAdapter=new HomeAdapter(getActivity(),queuelistnew);
+                        shimmerRecyclerView.setAdapter(homeAdapter);
+                        norecord.setVisibility(View.VISIBLE);
                     }
 
                     if(Network.isNetworkAvailable(getActivity())){
@@ -444,7 +425,9 @@ searchView.setHint("Search for Table No. or Order No.");
                     Resturant_Tablet_MainActivity.availabletray.setText(String.valueOf(login.getData().getAccepted_order()));
                     Resturant_Tablet_MainActivity.availableassciate.setText(String.valueOf(login.getData().getDispatched_order()));
                     Resturant_Tablet_MainActivity.totalorders.setText(String.valueOf(login.getData().getNew_order()+login.getData().getAccepted_order()+login.getData().getCleared_order()));
-
+                    newcount.setText("( "+String.valueOf(login.getData().getNew_order())+" )");
+                    acceptedcount.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
+                    disptachedcount.setText("( "+String.valueOf(login.getData().getDispatched_order())+" )");
 
                 }
                 else if(response.code()==401){
@@ -485,7 +468,11 @@ searchView.setHint("Search for Table No. or Order No.");
 
                 if(response.code()==202||response.code()==200){
                     Action  login = response.body();
-                    Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    try {
+                        Toast.makeText(getActivity(), login.getMessage(), Toast.LENGTH_SHORT).show();
+                    }catch (Exception e){
+
+                    }
                     Resturant_Tablet_MainActivity.imgBell.setVisibility(View.GONE);
                     searchView.setText("");
 
@@ -623,6 +610,73 @@ searchView.setHint("Search for Table No. or Order No.");
 
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v.getId()== R.id.neworder){
+            Resturant_Tablet_MainActivity.isvisisble=true;
+            neworder.setBackgroundResource(R.drawable.bluebackgroudblack);
+            newordertext.setTextColor(getResources().getColor(R.color.white));
+            newcount.setTextColor(getResources().getColor(R.color.white));
+
+            acceptedorder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+            acceptedtext.setTextColor(getResources().getColor(R.color.gray));
+            acceptedcount.setTextColor(getResources().getColor(R.color.gray));
+
+            dispatchedorder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+            disptachedtexxt.setTextColor(getResources().getColor(R.color.gray));
+            disptachedcount.setTextColor(getResources().getColor(R.color.gray));
+            if(Network.isNetworkAvailable(getActivity())){
+                GetMenu();
+            }
+            else if(Network.isNetworkAvailable2(getActivity())){
+                GetMenu();
+            }
+            else{
+
+            }
+              /*  getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_view, MainFragment.newInstance())
+                        .commitNow();*/
+        }
+        if(v.getId()== R.id.acceptedorder){
+            Resturant_Tablet_MainActivity.isvisisble=false;
+            neworder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+            newordertext.setTextColor(getResources().getColor(R.color.gray));
+            newcount.setTextColor(getResources().getColor(R.color.gray));
+
+            acceptedorder.setBackgroundResource(R.drawable.bluebackgroudblack);
+            acceptedtext.setTextColor(getResources().getColor(R.color.white));
+            acceptedcount.setTextColor(getResources().getColor(R.color.white));
+
+            dispatchedorder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+            disptachedtexxt.setTextColor(getResources().getColor(R.color.gray));
+            disptachedcount.setTextColor(getResources().getColor(R.color.gray));
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_view, RestuartAppMainFragmentAccepted.newInstance())
+                    .commitNow();
+        }
+        if(v.getId()== R.id.diaptachedorders){
+            Resturant_Tablet_MainActivity.isvisisble=false;
+
+            neworder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+            newordertext.setTextColor(getResources().getColor(R.color.gray));
+            newcount.setTextColor(getResources().getColor(R.color.gray));
+
+            acceptedorder.setBackgroundResource(R.drawable.whitebackgroudblack1);
+            acceptedtext.setTextColor(getResources().getColor(R.color.gray));
+            acceptedcount.setTextColor(getResources().getColor(R.color.gray));
+
+            dispatchedorder.setBackgroundResource(R.drawable.bluebackgroudblack);
+            disptachedtexxt.setTextColor(getResources().getColor(R.color.white));
+            disptachedcount.setTextColor(getResources().getColor(R.color.white));
+
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_view, RestuartAppMainFragmentDispatched.newInstance())
+                    .commitNow();
+        }
+    }
+
     public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.viewholder> {
         ArrayList<RestaurantApp_Dashboard.Data> homeViewModels;
         Context context;
@@ -737,11 +791,11 @@ searchView.setHint("Search for Table No. or Order No.");
 
             }
               if(holder.mitem.getTable()!=null) {
-                  HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getTable().getTable_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(), context);
+                  HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1(holder.mitem.getTable().getTable_no(), holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(),holder.mitem.getOrder_detail().getDispatched_at(), holder.mitem.getOrder_menu_items(), context);
                   holder.recyclerView.setAdapter(order_itemAdapter1);
               }
               else{
-                  HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1("", holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(), holder.mitem.getOrder_menu_items(), context);
+                  HomeAdapter.Order_ItemAdapter1 order_itemAdapter1 = new HomeAdapter.Order_ItemAdapter1("", holder.mitem.getNo_of_guest(), holder.mitem.getOrder_detail().getCreated_at(), holder.mitem.getDescription(), holder.mitem.getOrder_detail().getAccepted_at(), holder.mitem.getOrder_detail().getOrder_id(), position, holder.mitem.getStatus(),holder.mitem.getOrder_detail().getDispatched_at(), holder.mitem.getOrder_menu_items(), context);
                   holder.recyclerView.setAdapter(order_itemAdapter1);
               }
 
@@ -869,6 +923,7 @@ searchView.setHint("Search for Table No. or Order No.");
                     TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
                     TextView orderid=dialog.findViewById(R.id.orderid);
 
+
                     if(holder.mitem.getStatus().equals("New Order")){
                         dispatchbutton.setText("ACCEPT");
                     }
@@ -877,6 +932,16 @@ searchView.setHint("Search for Table No. or Order No.");
                     }
 
                     orderid.setText(holder.mitem.getOrder_detail().getOrder_id());
+                    TextView dispatchtext=dialog.findViewById(R.id.dispatchtext);
+                    TextView dispachedat=dialog.findViewById(R.id.dispachedat);
+                    dispatchtext.setTypeface(holder.font);
+                    if(holder.mitem.getOrder_detail().getDispatched_at()!=null){
+                        dispachedat.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
+                    }
+                    else{
+                        dispachedat.setText("-");
+
+                    }
 
                     RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
                     orderitemsdetail.setLayoutManager(new GridLayoutManager(context,2));
@@ -1307,15 +1372,17 @@ searchView.setHint("Search for Table No. or Order No.");
             String ordercreated;
             String description;
             String orderaccepted;
+            String dispatchedat1;
             String id;
             String status;
             int position1;
-            public Order_ItemAdapter1(String room,String guests1,String ordercreated,String description,String orderaccepted,String id,int position1,String status,ArrayList<RestaurantApp_Dashboard.Order_menu_items> order_items, Context context) {
+            public Order_ItemAdapter1(String room,String guests1,String ordercreated,String description,String orderaccepted,String id,int position1,String status,String dispatchedat1,ArrayList<RestaurantApp_Dashboard.Order_menu_items> order_items, Context context) {
                 this.order_items = order_items;
                 this.context = context;
                 this.room=room;
                 this.guests1=guests1;
                 this.ordercreated=ordercreated;
+                this.dispatchedat1=dispatchedat1;
                 this.orderaccepted=orderaccepted;
                 this.description=description;
                 this.status=status;
@@ -1402,7 +1469,16 @@ searchView.setHint("Search for Table No. or Order No.");
                             else{
                                 dispatchbutton.setText("SERVED");
                             }
+                            TextView dispatchtext=dialog.findViewById(R.id.dispatchtext);
+                            TextView dispachedat=dialog.findViewById(R.id.dispachedat);
+                            dispatchtext.setTypeface(font);
+                            if(dispatchedat1!=null){
+                                dispachedat.setText(getDate1(dispatchedat1));
+                            }
+                            else{
+                                dispachedat.setText("-");
 
+                            }
                             RecyclerView orderitemsdetail=dialog.findViewById(R.id.orderitemsdetail);
                             orderitemsdetail.setLayoutManager(new GridLayoutManager(context,2));
                             roomno.setText(room);
@@ -1680,7 +1756,7 @@ searchView.setHint("Search for Table No. or Order No.");
         ArrayList<RestaurantApp_Dashboard.Data> filterdNames = new ArrayList<>();
 
         //looping through existing elements
-        for (RestaurantApp_Dashboard.Data s :queuelist) {
+        for (RestaurantApp_Dashboard.Data s :queuelistnew) {
             //if the existing elements contains the search input
             if (s.getTable().getTable_no().toLowerCase().contains(text.toLowerCase())||s.getOrder_detail().getOrder_id().contains(text)) {
                 //adding the element to filtered list

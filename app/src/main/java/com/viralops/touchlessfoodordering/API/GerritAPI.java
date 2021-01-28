@@ -4,6 +4,8 @@ package com.viralops.touchlessfoodordering.API;
 import android.view.Menu;
 
 import com.viralops.touchlessfoodordering.BuildConfig;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Services;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Dashboard1;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantApp_Dashboard;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.Restaurant_Dashboard;
@@ -21,6 +23,7 @@ import com.viralops.touchlessfoodordering.Model.Laundry_Dashboard;
 import com.viralops.touchlessfoodordering.Model.Laundry_Header;
 import com.viralops.touchlessfoodordering.Model.Login;
 import com.viralops.touchlessfoodordering.Model.OrderHistory;
+import com.viralops.touchlessfoodordering.Model.Revenue;
 import com.viralops.touchlessfoodordering.Model.Spa_dashboard;
 
 import retrofit2.Call;
@@ -75,9 +78,9 @@ public interface GerritAPI {
     Call<Action> getSubaddonitemdisable(@Header("Authorization") String Authorization, @Url String url);
     @PUT()
     Call<Action> getSubcategorydisabled(@Header("Authorization") String Authorization, @Url String url);
-
-    @GET(BuildConfig.get_orders)
-    Call<HomeViewModel> getOrders(@Header("Authorization") String Authorization);
+    @FormUrlEncoded
+    @POST()
+    Call<Revenue> getRevenue(@Url String url,@Header("Authorization") String Authorization,@Field("start_date") String start_date,@Field("end_date") String end_date);
 
     @GET(BuildConfig.get_orders)
     Call<Dashboard> getOrders1(@Header("Authorization") String Authorization);
@@ -322,6 +325,15 @@ public interface GerritAPI {
     Call<Supervisor_Managers> Supervisor_getManagers(@Header("Authorization") String Authorization);
 
     //------------Supervisor App end-----------------------------//
+//----------------------Booking App------------------------------//
+
+    @GET(BuildConfig.booking_get_orders)
+    Call<Booking> Booking_getorders(@Header("Authorization") String Authorization,@Query("type") String type);
+
+    @GET(BuildConfig.booking_services)
+    Call<Services> Booking_services(@Header("Authorization") String Authorization);
+
+    //------------Booking App end-----------------------------//
 
 
 }

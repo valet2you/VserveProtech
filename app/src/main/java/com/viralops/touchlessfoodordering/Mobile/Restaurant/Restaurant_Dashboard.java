@@ -349,6 +349,7 @@ HomeAdapter homeAdapter;
                    //RestaurantMain.newcount.setText("( "+String.valueOf(login.getData().getNew_order())+" )");
                     totalorderslaundry.setText(String.valueOf(login.getData().getDispatched_order()+login.getData().getAccepted_order()+login.getData().getNew_order()+login.getData().getCleared_order()));
                     RestaurantMain.newcountevent.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
+                    RestaurantMain.newcountdispatched.setText("( "+String.valueOf(login.getData().getDispatched_order())+" )");
 
 
                 }
@@ -1577,6 +1578,8 @@ HomeAdapter homeAdapter;
                     acceptedat.setTypeface(holder.font);
                     TextView accepted=dialog.findViewById(R.id.accepted);
                     TextView dispatchbutton=dialog.findViewById(R.id.dispatch);
+                    TextView dispatchedtext=dialog.findViewById(R.id.dispatchedtext);
+                    TextView dispatchedat=dialog.findViewById(R.id.dispatchedat);
                     TextView statustext=dialog.findViewById(R.id.statustext);
                     statustext.setTypeface(holder.font);
                     TextView status=dialog.findViewById(R.id.status);
@@ -1587,9 +1590,16 @@ HomeAdapter homeAdapter;
                     TextView ordertext=dialog.findViewById(R.id.ordertext);
                     TextView orderid=dialog.findViewById(R.id.orderid);
                     ordertext.setTypeface(holder.font);
+                    dispatchedtext.setTypeface(holder.font);
                     if(holder.mitem.getOrder_detail()!=null){
                         orderid.setText(holder.mitem.getOrder_detail().getOrder_id());
 
+                    }
+                    if(holder.mitem.getOrder_detail().getDispatched_at()==null){
+                        dispatchedat.setText("-");
+                    }
+                    else {
+                        dispatchedat.setText(getDate1(holder.mitem.getOrder_detail().getDispatched_at()));
                     }
 
 

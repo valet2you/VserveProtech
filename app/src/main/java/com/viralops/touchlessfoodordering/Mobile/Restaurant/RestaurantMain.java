@@ -86,11 +86,11 @@ import retrofit2.Response;
 public class RestaurantMain extends AppCompatActivity implements View.OnClickListener{
     public static Animation shake;
 
-    public static LinearLayout homelayout,shiftlayout,orderslayout,profilelayout;
+    public static LinearLayout homelayout,shiftlayout,orderslayout,dispatchedlayout;
     public static ImageView homeicon,shufticon,ordersicon,profileicon;
-    public static TextView home,shift,orders,profile;
-    public static TextView newcount,newcountevent;
-    public View tab,tab1;
+    public static TextView home,shift,orders,dispatched;
+    public static TextView newcount,newcountevent,newcountdispatched;
+    public View tab,tab1,tab2;
     Logout logout;
     private SessionManager sessionManager;
     private SessionManagerFCM sessionManagerFCM;
@@ -152,6 +152,8 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
         tab=findViewById(R.id.tab);
         tab.setOnClickListener(this);
         tab1=findViewById(R.id.tab1);
+        tab2=findViewById(R.id.tab2);
+        tab2.setOnClickListener(this);
         tab1.setOnClickListener(this);
         newcount=findViewById(R.id.newcount);
         newcountevent=findViewById(R.id.newcountevent);
@@ -159,6 +161,8 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
 
         orderslayout=findViewById(R.id.eventlayout);
         orderslayout.setOnClickListener(this);
+        dispatchedlayout=findViewById(R.id.dispatchedlayout);
+        dispatchedlayout.setOnClickListener(this);
 
 
 
@@ -174,15 +178,23 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
         newcount.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         orders=findViewById(R.id.event);
         orders.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        newcountdispatched=findViewById(R.id.newcountdispatched);
+        newcountdispatched.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        dispatched=findViewById(R.id.dispatched);
+
+        dispatched.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
 
         if (savedInstanceState == null) {
             home.setTextColor(RestaurantMain.this.getResources().getColor(R.color.darkblue));
             orders.setTextColor(Color.parseColor("#6E7E7E"));
+            dispatched.setTextColor(Color.parseColor("#6E7E7E"));
             orderslayout.setBackgroundColor(getResources().getColor(R.color.white));
+            dispatchedlayout.setBackgroundColor(getResources().getColor(R.color.white));
             homelayout.setBackgroundColor(getResources().getColor(R.color.white));
             tab.setBackgroundColor(getResources().getColor(R.color.golddark));
             tab1.setBackgroundColor(getResources().getColor(R.color.white));
+            tab2.setBackgroundColor(getResources().getColor(R.color.white));
 
             Fragment fragmentmanager = new Restaurant_Dashboard();
             getSupportFragmentManager().beginTransaction()
@@ -205,10 +217,13 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
             }
             home.setTextColor(RestaurantMain.this.getResources().getColor(R.color.darkblue));
             orders.setTextColor(Color.parseColor("#707070"));
+            dispatched.setTextColor(Color.parseColor("#707070"));
             orderslayout.setBackgroundColor(getResources().getColor(R.color.white));
             homelayout.setBackgroundColor(getResources().getColor(R.color.white));
+            dispatchedlayout.setBackgroundColor(getResources().getColor(R.color.white));
             tab.setBackgroundColor(getResources().getColor(R.color.golddark));
             tab1.setBackgroundColor(getResources().getColor(R.color.white));
+            tab2.setBackgroundColor(getResources().getColor(R.color.white));
             Fragment fragmentmanager = new Restaurant_Dashboard();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commit();
@@ -223,10 +238,31 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
 
             orders.setTextColor(RestaurantMain.this.getResources().getColor(R.color.darkblue));
             home.setTextColor(Color.parseColor("#6E7E7E"));
+            dispatched.setTextColor(Color.parseColor("#6E7E7E"));
             homelayout.setBackgroundColor(getResources().getColor(R.color.white));
+            dispatchedlayout.setBackgroundColor(getResources().getColor(R.color.white));
             orderslayout.setBackgroundColor(getResources().getColor(R.color.white));
             tab.setBackgroundColor(getResources().getColor(R.color.white));
+            tab2.setBackgroundColor(getResources().getColor(R.color.white));
             tab1.setBackgroundColor(getResources().getColor(R.color.golddark));
+
+        }
+   if(view.getId()== R.id.dispatchedlayout){
+            isvisisble=false;
+
+            Fragment fragmentmanager = new Restaurant_Dashboard_Dispached();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.rootLayout, fragmentmanager, fragmentmanager.getClass().getSimpleName()).addToBackStack(null).commit();
+
+            dispatched.setTextColor(RestaurantMain.this.getResources().getColor(R.color.darkblue));
+            home.setTextColor(Color.parseColor("#6E7E7E"));
+            orders.setTextColor(Color.parseColor("#6E7E7E"));
+            homelayout.setBackgroundColor(getResources().getColor(R.color.white));
+            dispatchedlayout.setBackgroundColor(getResources().getColor(R.color.white));
+            orderslayout.setBackgroundColor(getResources().getColor(R.color.white));
+            tab.setBackgroundColor(getResources().getColor(R.color.white));
+            tab1.setBackgroundColor(getResources().getColor(R.color.white));
+            tab2.setBackgroundColor(getResources().getColor(R.color.golddark));
 
         }
 
@@ -3320,6 +3356,7 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
                     Header login = response.body();
                     newcount.setText("( "+String.valueOf(login.getData().getNew_order())+" )");
                     newcountevent.setText("( "+String.valueOf(login.getData().getAccepted_order())+" )");
+                    newcountdispatched.setText("( "+String.valueOf(login.getData().getDispatched_order())+" )");
 
 
                 }

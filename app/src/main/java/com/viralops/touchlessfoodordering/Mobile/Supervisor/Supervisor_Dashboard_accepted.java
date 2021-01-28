@@ -574,7 +574,7 @@ public class Supervisor_Dashboard_accepted extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull IRD_Adapter1.viewholder holder, int position) {
            // holder.item=supervior_models.get(position);
-                holder.outletname.setText("In Room Dinning (" + name + " )");
+                holder.outletname.setText("In Room Dining (" + name + " )");
             holder.typename.setText("Total Orders - ( "+supervior_models.size()+" )");
 
             holder.nofound.setText("No delayed order for dispatch.");
@@ -1392,6 +1392,8 @@ public class Supervisor_Dashboard_accepted extends Fragment {
                         TextView dispatchedtext=dialog.findViewById(R.id.dispatchedtext);
                         acceptedat.setTypeface(holder.font);
                         dispatchedtext.setTypeface(holder.font);
+                        dispatchedtext.setText("ORDER SERVED AT");
+
                         TextView accepted=dialog.findViewById(R.id.accepted);
                         TextView dispatched=dialog.findViewById(R.id.dispatched);
                         TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
@@ -1491,6 +1493,8 @@ public class Supervisor_Dashboard_accepted extends Fragment {
                         acceptedat.setTypeface(holder.font);
                         dispatchedtext.setTypeface(holder.font);
                         TextView accepted=dialog.findViewById(R.id.accepted);
+                        dispatchedtext.setText("ORDER SERVED AT");
+
                         TextView dispatched=dialog.findViewById(R.id.dispatched);
                         TextView dispatchbutton = dialog.findViewById(R.id.dispatch);
                         dispatchbutton.setVisibility(View.INVISIBLE);

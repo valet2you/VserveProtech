@@ -130,7 +130,7 @@ public class Laundry_Main_Mobile extends AppCompatActivity implements View.OnCli
 
         }
         // Set up the login form.
-        setContentView(R.layout.associate_main);
+        setContentView(R.layout.associate_main1);
         mDbHelper = new DbHelper(Laundry_Main_Mobile.this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

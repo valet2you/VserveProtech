@@ -62,6 +62,7 @@ import com.viralops.touchlessfoodordering.Model.Laundry_Header;
 import com.viralops.touchlessfoodordering.Model.Laundry_item;
 import com.viralops.touchlessfoodordering.Model.Menu;
 import com.viralops.touchlessfoodordering.Model.Minibar_WithoutSubcategory;
+import com.viralops.touchlessfoodordering.Model.Revenue;
 import com.viralops.touchlessfoodordering.Model.Spa_Categories;
 import com.viralops.touchlessfoodordering.Model.Spa_Data;
 import com.viralops.touchlessfoodordering.Model.Spa_withoutCategory;
@@ -100,6 +101,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     static public TextView busytray;
     static public TextView busytrolley;
+    static public TextView mtd;
+    static public TextView revenue;
     static public TextView busyassciate;
     static public TextView availabletray;
     static public TextView availabletrolley;
@@ -177,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static public LinearLayout newordersspa;
     static public LinearLayout newordersminibar;
     static public LinearLayout startndard;
+    static public LinearLayout revenuelayout;
      public String word="";
      LinearLayout hearderforird;
      LinearLayout hearderforlaundry;
@@ -243,6 +247,9 @@ Typeface font1;
         minibarlayout=  findViewById(R.id.minibarlayout);
         spalayout=  findViewById(R.id.spalayout);
         ayslayout=  findViewById(R.id.ayslayout);
+        revenuelayout=  findViewById(R.id.revenuelayout);
+        revenue=  findViewById(R.id.revenue);
+        mtd=  findViewById(R.id.mtd);
 
         imgBell=  findViewById(R.id.bell);
          imgBell.setImageResource(R.mipmap.calling);
@@ -646,6 +653,7 @@ Typeface font1;
 
             ayslayout.setBackgroundColor(getResources().getColor(R.color.white));
             connect.setTextColor(getResources().getColor(R.color.gray));
+            revenuelayout.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_view, MainFragmentcombine.newInstance())
                     .commitNow();

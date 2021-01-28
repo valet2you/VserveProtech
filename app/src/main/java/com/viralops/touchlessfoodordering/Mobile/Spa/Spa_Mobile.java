@@ -139,7 +139,7 @@ public class Spa_Mobile extends AppCompatActivity implements View.OnClickListene
 
         }
         // Set up the login form.
-        setContentView(R.layout.associate_main);
+        setContentView(R.layout.associate_main1);
         mDbHelper = new DbHelper1(Spa_Mobile.this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
