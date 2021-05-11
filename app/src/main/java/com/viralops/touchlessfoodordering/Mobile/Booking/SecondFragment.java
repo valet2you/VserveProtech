@@ -69,7 +69,7 @@ public class SecondFragment extends Fragment {
         norecord=view.findViewById(R.id.norecord);
         searchView=view.findViewById(R.id.searchView);
         homeAdapter=new HomeAdapter(getActivity(),bookingArrayListnew);
-        Booking_Activity.isVisible=false;
+        Booking_Activity.isVisible=1;
 
         if(Network.isNetworkAvailable(getActivity())){
             if(sessionManager.getFilterValue().equals("Fitness Center Booking")){
@@ -89,6 +89,11 @@ public class SecondFragment extends Fragment {
 
 
             }
+            else if(sessionManager.getFilterValue().equals("Breakfast Booking")){
+                GetBookingServices("breakfast");
+
+
+            }
         }
         else if(Network.isNetworkAvailable2(getActivity())){
             if(sessionManager.getFilterValue().equals("Fitness Center Booking")){
@@ -105,6 +110,11 @@ public class SecondFragment extends Fragment {
 
             }else if(sessionManager.getFilterValue().equals("Conference Booking")){
                 GetBookingServices("conference");
+
+
+            }
+            else if(sessionManager.getFilterValue().equals("Breakfast Booking")){
+                GetBookingServices("breakfast");
 
 
             }
@@ -535,6 +545,7 @@ public class SecondFragment extends Fragment {
             holder.guests.setText(holder.mitem.getNo_of_guest());
             holder.lastname.setText(holder.mitem.getGuest().getName());
             holder.bookedat.setText(getDate3(holder.mitem.getOrder_detail().getCreated_at()));
+            holder.venue.setText(toTitleCase(holder.mitem.getOrder_booking_services().get(0).getBooking_service_name()));
 
 
 
@@ -559,6 +570,7 @@ public class SecondFragment extends Fragment {
             TextView roomno;
             TextView lastname;
             TextView bookedat;
+            TextView venue;
             TextView guests;
             Booking.Data mitem;
             public viewholder(@NonNull View itemView) {
@@ -567,6 +579,7 @@ public class SecondFragment extends Fragment {
                 lastname=itemView.findViewById(R.id.lastname);
                 guests=itemView.findViewById(R.id.guests);
                 bookedat=itemView.findViewById(R.id.bookedat);
+                venue=itemView.findViewById(R.id.venue);
 
 
                 font = Typeface.createFromAsset(
@@ -725,5 +738,32 @@ public class SecondFragment extends Fragment {
 //If you need time just put specific format for time like 'HH:mm:ss'
         String dateStr = formatter.format(date);
         return dateStr;
+    }
+    public static String toTitleCase(String str) {
+
+        if (str == null) {
+            return null;
+        }
+
+        boolean space = true;
+        StringBuilder builder = new StringBuilder(str);
+        final int len = builder.length();
+
+        for (int i = 0; i < len; ++i) {
+            char c = builder.charAt(i);
+            if (space) {
+                if (!Character.isWhitespace(c)) {
+                    // Convert to title case and switch out of whitespace mode.
+                    builder.setCharAt(i, Character.toTitleCase(c));
+                    space = false;
+                }
+            } else if (Character.isWhitespace(c)) {
+                space = true;
+            } else {
+                builder.setCharAt(i, Character.toLowerCase(c));
+            }
+        }
+
+        return builder.toString();
     }
 }

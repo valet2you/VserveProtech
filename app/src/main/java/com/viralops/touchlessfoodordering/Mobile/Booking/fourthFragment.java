@@ -43,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class thirdFragment extends Fragment {
+public class fourthFragment extends Fragment {
     SessionManager sessionManager;
     SessionManagerFCM sessionManagerFCM;
     ShimmerRecyclerView shimmerRecyclerView;
@@ -53,8 +53,8 @@ public class thirdFragment extends Fragment {
     ArrayList<Booking> secondArraylist=new ArrayList<>();
     AutoCompleteTextView searchView;
     HomeAdapter homeAdapter;
-    public static thirdFragment newInstance() {
-        return new thirdFragment();
+    public static fourthFragment newInstance() {
+        return new fourthFragment();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class thirdFragment extends Fragment {
         norecord=view.findViewById(R.id.norecord);
         searchView=view.findViewById(R.id.searchView);
         homeAdapter=new HomeAdapter(getActivity(),bookingArrayListnew);
-        Booking_Activity.isVisible=2;
+        Booking_Activity.isVisible=3;
 
         if(Network.isNetworkAvailable(getActivity())){
             if(sessionManager.getFilterValue().equals("Fitness Center Booking")){
@@ -157,7 +157,7 @@ public class thirdFragment extends Fragment {
                     Date c = Calendar.getInstance().getTime();
                     System.out.println("Current time => " + c);
                     Calendar calendar = Calendar.getInstance();
-                    calendar.add(Calendar.DAY_OF_YEAR, 2);
+                    calendar.add(Calendar.DAY_OF_YEAR, 3);
                     Date tomorrow = calendar.getTime();
 
                     SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());

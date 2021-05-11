@@ -460,7 +460,12 @@ public class RestaurantMain extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(@NonNull Call<Action> call, @NonNull Throwable t) {
                 Log.d("response", Arrays.toString(t.getStackTrace()));
-                progressDialog.dismiss();
+                try {
+                    progressDialog.dismiss();
+                }
+                catch (Exception e){
+
+                }
 
             }
         });

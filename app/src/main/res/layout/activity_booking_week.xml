@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:id="@+id/appbar"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            app:title=""
+            android:background="@color/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="The Westin"
+                    android:textSize="19dp"
+                    android:gravity="center"
+                    android:id="@+id/porchname"
+                    android:textColor="@color/golddark"
+                    android:layout_centerInParent="true"
+                    android:layout_height="wrap_content" />
+
+
+
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/appbar"
+
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="right"
+            android:id="@+id/spiinerlsyout"
+            android:background="@drawable/goldenbox"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Booking For : "
+                android:textColor="@color/blue"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold"
+                android:padding="5dp"
+                android:textSize="15sp"
+                android:layout_height="wrap_content"/>
+            <Spinner
+                android:id="@+id/servicesspinner"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:spinnerMode="dropdown"/>
+
+
+        </LinearLayout>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            app:tabSelectedTextColor="@color/black"
+            app:tabTextColor="@color/graybuttton"
+            android:layout_height="match_parent" />
+
+        <androidx.viewpager.widget.ViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        </androidx.viewpager.widget.ViewPager>
+     <!--   <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:scrollbars="none"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="7"
+                android:background="@color/white"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/homelayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_gravity="center"
+                            android:visibility="invisible"
+                            android:id="@+id/favicon"
+
+                            android:layout_height="20dp"
+                            android:src="@mipmap/calling"></ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Today's Booking"
+                            android:layout_marginLeft="5dp"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:id="@+id/home"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:layout_marginBottom="5dp"
+                        android:id="@+id/newcount"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tab"
+                        android:background="@color/golddark"
+                        ></View>
+
+                </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:background="@color/lightgrey"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/eventlayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_gravity="center"
+                            android:visibility="invisible"
+                            android:id="@+id/df"
+                            android:src="@mipmap/calling"
+                            android:layout_height="20dp"
+                            ></ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Tomorrow's Booking"
+                            android:textSize="14sp"
+                            android:id="@+id/event"
+                            android:textStyle="bold"
+
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:id="@+id/two"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/calling"
+                            android:visibility="invisible"></ImageView>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:id="@+id/newcountevent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tab1"
+                        android:background="@color/white"
+                        ></View>
+                </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:background="@color/lightgrey"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/onelayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_gravity="center"
+                            android:visibility="invisible"
+                            android:id="@+id/one"
+                            android:src="@mipmap/calling"
+                            android:layout_height="20dp"
+                            ></ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Tomorrow's Booking"
+                            android:textSize="14sp"
+                            android:id="@+id/oneevent"
+                            android:textStyle="bold"
+
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:id="@+id/onecountevent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tabone"
+                        android:background="@color/white"
+                        ></View>
+                </LinearLayout>
+ <View
+                    android:layout_width="1dp"
+                    android:background="@color/lightgrey"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/twolayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Tomorrow's Booking"
+                            android:textSize="14sp"
+                            android:id="@+id/twoevent"
+                            android:textStyle="bold"
+
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:id="@+id/twocountevent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tabtwo"
+                        android:background="@color/white"
+                        ></View>
+                </LinearLayout>
+<View
+                    android:layout_width="1dp"
+                    android:background="@color/lightgrey"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/threelayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_gravity="center"
+                            android:visibility="invisible"
+                            android:id="@+id/three"
+                            android:src="@mipmap/calling"
+                            android:layout_height="20dp"
+                            ></ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Tomorrow's Booking"
+                            android:textSize="14sp"
+                            android:id="@+id/threeevent"
+                            android:textStyle="bold"
+
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:id="@+id/threecountevent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tabthree"
+                        android:background="@color/white"
+                        ></View>
+                </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:background="@color/lightgrey"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/fourlayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_gravity="center"
+                            android:visibility="invisible"
+                            android:id="@+id/four"
+                            android:src="@mipmap/calling"
+                            android:layout_height="20dp"
+                            ></ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Tomorrow's Booking"
+                            android:textSize="14sp"
+                            android:id="@+id/fourevent"
+                            android:textStyle="bold"
+
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:id="@+id/fourcountevent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tabfour"
+                        android:background="@color/white"
+                        ></View>
+                </LinearLayout>
+  <View
+                    android:layout_width="1dp"
+                    android:background="@color/lightgrey"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/fivelayout"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_gravity="center"
+                            android:visibility="invisible"
+                            android:id="@+id/five"
+                            android:src="@mipmap/calling"
+                            android:layout_height="20dp"
+                            ></ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Tomorrow's Booking"
+                            android:textSize="14sp"
+                            android:id="@+id/fiveevent"
+                            android:textStyle="bold"
+
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="visible"
+                        android:textColor="@color/green"
+                        android:id="@+id/fivecountevent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4sp"
+                        android:id="@+id/tabfive"
+                        android:background="@color/white"
+                        ></View>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </HorizontalScrollView>
+
+        <FrameLayout
+            android:id="@+id/rootLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </FrameLayout>-->
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

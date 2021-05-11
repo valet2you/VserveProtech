@@ -42,6 +42,7 @@ public class Booking {
         private  String bookingslot;
         private String opensttaus;
         private ArrayList<Data> data1ArrayList;
+        private String count;
         private String bookingslotid;
 
         private String payment_status;
@@ -93,6 +94,14 @@ public class Booking {
         private String id;
 
         private String status;
+
+        public String getCount() {
+            return count;
+        }
+
+        public void setCount(String count) {
+            this.count = count;
+        }
 
         public String getHotel_id ()
         {

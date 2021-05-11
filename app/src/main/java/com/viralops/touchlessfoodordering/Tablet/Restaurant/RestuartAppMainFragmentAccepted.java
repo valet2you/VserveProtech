@@ -502,7 +502,11 @@ searchView.setHint("Search for Table No. or Order No.");
                 if(response.code()==202||response.code()==200||response.code()==201){
                     Action  login = response.body();
                   //  Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(),login.getMessage(),Toast.LENGTH_SHORT).show();
+                    try {
+                        Toast.makeText(getActivity(), login.getMessage(), Toast.LENGTH_SHORT).show();
+                    }catch (Exception e){
+
+                    }
                     searchView.setText("");
 
                     if(Network.isNetworkAvailable(getActivity())){

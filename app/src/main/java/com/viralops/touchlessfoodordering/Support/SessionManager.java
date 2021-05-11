@@ -324,6 +324,7 @@ public class SessionManager {
        // ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).clearApplicationUserData();
         Intent  intent=new Intent(context, Login_Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
         editor.clear();
         editor.commit();

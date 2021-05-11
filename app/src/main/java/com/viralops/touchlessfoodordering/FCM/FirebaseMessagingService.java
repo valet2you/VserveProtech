@@ -27,6 +27,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity_new;
 import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
@@ -47,13 +48,18 @@ import com.viralops.touchlessfoodordering.Tablet.combine.Minibar_fragment_combin
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     SessionManager sessionManager;
     public static Ringtone r;
+    String des="";
 
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -75,6 +81,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         String message = "";
         String picupslot="";
         String booking_service_type="";
+        String booking_service_name="";
         sessionManager = new SessionManager(this);
         try {
             message = object.getString("message");
@@ -93,6 +100,13 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
               booking_service_type="";
             }
 
+            if(object.has("booking_service_name")){
+              booking_service_name=object.getString("booking_service_name");
+            }
+            else{
+                booking_service_name="";
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -102,7 +116,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         } else if (message.equals("New delayed order for dispatch")) {
             sessionManager.setDesignStyle(message);
         }else if (message.equals("New Booking Order")) {
-            sessionManager.setDesignStyle(booking_service_type);
+            sessionManager.setDesignStyle(booking_service_name);
             sessionManager.setSLOT1(picupslot);        }
 
     else
@@ -114,10 +128,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
 
-           sendNotification(message,target,picupslot,booking_service_type);
+           sendNotification(message,target,picupslot,booking_service_type,booking_service_name);
 
     }
-    private void sendNotification(String messageBody,String target,String picupslot,String booking_service_type ) {
+    private void sendNotification(String messageBody,String target,String picupslot,String booking_service_type,String bookingname ) {
 
         Bitmap logo = null;
         try {
@@ -244,12 +258,13 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 }else if (sessionManager.getNAME().equals("booking_service_manager")) {
-                    sessionManager.setDesignStyle(booking_service_type);
+                    sessionManager.setDesignStyle(bookingname);
                     sessionManager.setSLOT1(picupslot);
-                    Intent intent = new Intent(FirebaseMessagingService.this, Booking_Activity.class);
+                    Intent intent = new Intent(FirebaseMessagingService.this, Booking_Activity_new.class);
                     intent.putExtra("key", target);
                     intent.putExtra("pickupslaot",picupslot);
                     intent.putExtra("booking",booking_service_type);
+                    intent.putExtra("bookingname",bookingname);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                     pendingIntent = PendingIntent.getActivity(FirebaseMessagingService.this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -547,19 +562,22 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                             }
                         }
                         else if (target.equals("booking")){
-                            if (booking_service_type.equals("gym")) {
-                                message = "Alert! New Booking for Fitness center.";
-                            }else if (booking_service_type.equals("pool")) {
-                                message = "Alert! New Booking for Pool.";
-                            }else if (booking_service_type.equals("meeting")) {
-                                message = "Alert! New Booking for Meeting.";
-                            } else {
-                                message = "Alert! New Booking for Conference.";
+                            try {
+
+                                message = "Alert! New " + bookingname + " Request for " + getDate1(picupslot);
+                                des="New " + bookingname +" Request for " + getDate1(picupslot);
+                            }
+                            catch (Exception e){
+                                message = "Alert! New Request for "+bookingname;
+                                des="New " + bookingname +" Request for " + getDate1(picupslot);
 
                             }
+
+
                         }
                         else {
                             message = "New Food Order Request";
+
 
                         }
                         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -567,6 +585,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                                 .setSmallIcon(R.mipmap.launcherbluesmall)
                                 .setLargeIcon(logo)
                                 .setContentTitle(message).
+                                        setContentText(des).
                                         setContentIntent(pendingIntent)
                                 . setAutoCancel(true)
                                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
@@ -585,6 +604,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setContentText("this is a item1" );*/
                         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
                         bigText.setBigContentTitle(message);
+                        bigText.setSummaryText(des);
                         mBuilder.setStyle(bigText);
                         mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
                         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -655,5 +675,20 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
         boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
         return (xlarge || large);
+    }
+    private String getDate1(String time) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = null;//You will get date object relative to server/client timezone wherever it is parsed
+        try {
+            date = dateFormat.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+//If you need time just put specific format for time like 'HH:mm:ss'
+        String dateStr = formatter.format(date);
+        return dateStr;
     }
 }

@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity_new;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_new_booking;
 import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
@@ -160,7 +162,7 @@ public class Splash_Screen extends AppCompatActivity {
                                 else if(sessionManager.getNAME().equals("booking_service_manager")){
 
 
-                                    Intent intent = new Intent(Splash_Screen.this, Booking_Activity.class);
+                                    Intent intent = new Intent(Splash_Screen.this, Booking_Activity_new.class);
                                     intent.putExtra("openvalue", "dashboard");
 
                                     startActivity(intent);

@@ -16,6 +16,7 @@ import com.viralops.touchlessfoodordering.Model.Action;
 import com.viralops.touchlessfoodordering.Model.ConnectHistory;
 import com.viralops.touchlessfoodordering.Model.Connect_Header;
 import com.viralops.touchlessfoodordering.Model.Dashboard;
+import com.viralops.touchlessfoodordering.Model.GetBookingServices;
 import com.viralops.touchlessfoodordering.Model.HomeViewModel;
 import com.viralops.touchlessfoodordering.Model.IRD_Menu;
 import com.viralops.touchlessfoodordering.Model.LaundryOrderHistory1;
@@ -332,6 +333,9 @@ public interface GerritAPI {
 
     @GET(BuildConfig.booking_services)
     Call<Services> Booking_services(@Header("Authorization") String Authorization);
+
+    @GET()
+    Call<GetBookingServices> Booking_Services_Days(@Url String url, @Header("Authorization") String Authorization);
 
     //------------Booking App end-----------------------------//
 

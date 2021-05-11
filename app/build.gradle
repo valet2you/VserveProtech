@@ -8,8 +8,8 @@ android {
         applicationId "com.viralops.touchlessfoodordering"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 15
-        versionName "2.4"
+        versionCode 17
+        versionName "2.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,9 +21,9 @@ android {
                 checkReleaseBuilds false
                 abortOnError false
             }
-            buildConfigField "String", "BASE_URL", '"https://vserve-api.valet2you.in/api/v5/"'
+            // buildConfigField "String", "BASE_URL", '"https://vserve-api.valet2you.in/api/v5/"'
             // buildConfigField "String", "BASE_URL", '"https://acda94e6509c.ngrok.io/workspace/contact_less_room_services/public/api/v5/"'
-             //buildConfigField "String", "BASE_URL", '"http://3.7.246.52/api/v5/"'
+            buildConfigField "String", "BASE_URL", '"http://3.7.246.52/api/v5/"'
 
 
             buildConfigField "String", "imageurl", '"https://master-vserve.s3.ap-south-1.amazonaws.com/menu-items/"'
@@ -169,6 +169,7 @@ android {
             //----------------Booking---------------------------//
             buildConfigField "String", "booking_get_orders", '"booking-service/order"'
             buildConfigField "String", "booking_services", '"booking-services"'
+            buildConfigField "String", "booking_services_deatails", '"common/hotel/booking-services/"'
 
             //-------------Booking----------------------//
 
@@ -179,9 +180,9 @@ android {
             //  buildConfigField "String", "BASE_URL", '"https://acda94e6509c.ngrok.io/workspace/contact_less_room_services/public/api/v5/"'
             buildConfigField "String", "imageurl", '"https://master-vserve.s3.ap-south-1.amazonaws.com/menu-items/"'
             buildConfigField "String", "imageurlsig", '"https://master-vserve.s3.ap-south-1.amazonaws.com/guest-signature/"'
-             //  buildConfigField "String", "BASE_URL", '"http://3.7.246.52/api/v5/"'
+            buildConfigField "String", "BASE_URL", '"http://3.7.246.52/api/v5/"'
 
-           buildConfigField "String", "BASE_URL", '"https://vserve-api.valet2you.in/api/v5/"'
+              // buildConfigField "String", "BASE_URL", '"https://vserve-api.valet2you.in/api/v5/"'
             buildConfigField "String", "login", '"login"'
             buildConfigField "String", "logout", '"logout"'
             //----------------IRD--------------------------------//
@@ -319,6 +320,8 @@ android {
             //----------------Booking---------------------------//
             buildConfigField "String", "booking_get_orders", '"booking-service/order"'
             buildConfigField "String", "booking_services", '"booking-services"'
+            buildConfigField "String", "booking_services_deatails", '"common/hotel/booking-services/"'
+
 
             //-------------Booking----------------------//
 

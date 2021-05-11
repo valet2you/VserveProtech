@@ -24,6 +24,7 @@ import com.viralops.touchlessfoodordering.API.RetrofitClientInstance;
 import com.viralops.touchlessfoodordering.MainActivity;
 import com.viralops.touchlessfoodordering.Mobile.AYS.AYSMain_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity;
+import com.viralops.touchlessfoodordering.Mobile.Booking.Booking_Activity_new;
 import com.viralops.touchlessfoodordering.Mobile.IRD.MainActivity_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Laundry.Laundry_Main_Mobile;
 import com.viralops.touchlessfoodordering.Mobile.Restaurant.RestaurantMain;
@@ -172,6 +173,15 @@ SessionManagerFCM sessionManagerFCM;
 
 
                     sessionManager.setACCESSTOKEN(login.getAccess_token());
+                    try {
+                        if (login.getHotel() != null) {
+                            sessionManager.setHotelId(login.getHotel().getId());
+                        }
+
+                    }catch (Exception e){
+
+                    }
+
                    if(isTablet(Login_Activity.this)){
                        Toast.makeText(Login_Activity.this,login.getMessage(),Toast.LENGTH_SHORT).show();
 
@@ -249,7 +259,7 @@ SessionManagerFCM sessionManagerFCM;
 
                            sessionManager.setPorchName(login.getHotel().getName());
 
-                            Intent intent = new Intent(Login_Activity.this, Booking_Activity.class);
+                            Intent intent = new Intent(Login_Activity.this, Booking_Activity_new.class);
                             startActivity(intent);
                             finish();
 

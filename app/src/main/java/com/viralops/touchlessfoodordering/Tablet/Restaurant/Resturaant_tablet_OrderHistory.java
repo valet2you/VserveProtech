@@ -68,6 +68,8 @@ public class Resturaant_tablet_OrderHistory extends Fragment {
 
         recyclerview=view.findViewById(R.id.sidelist);
         recyclerview.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
+        homeAdapter=new ResturantHistoryAdapter(getActivity(),orderslist);
+
         filter=view.findViewById(R.id.filter);
         roomno=view.findViewById(R.id.roomno);
         guest=view.findViewById(R.id.guest);
@@ -216,7 +218,11 @@ public class Resturaant_tablet_OrderHistory extends Fragment {
         }
 
         //calling a method of the adapter class and passing the filtered list
-        homeAdapter.filterList(filterdNames);
+        try {
+            homeAdapter.filterList(filterdNames);
+        }catch (Exception e){
+
+        }
     }
 
 
